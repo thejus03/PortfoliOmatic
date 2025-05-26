@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Badge,
     Button,
@@ -9,15 +10,12 @@ import {
     Input, 
     InputGroup,
     Text,
+    Icon,
 } from "@chakra-ui/react";
-
 import {
     PasswordInput,
   } from "@/components/ui/password-input"
-
-import { LuMail, LuLock  } from "react-icons/lu";
-
-import React from "react";
+import { LuMail, LuLock, LuShieldAlert  } from "react-icons/lu";
 import { Space_Grotesk } from "next/font/google";
 
 const spaceGrotesk = Space_Grotesk({
@@ -60,7 +58,7 @@ function Login() {
             />
             <Box flex="1" px="16">
               <Card.Body>
-                <Card.Title mb="2" textStyle="3xl" fontFamily="Space Grotesk"> Log in to <Text color="teal.solid" letterSpacing="wider">Portfoli-O-matic</Text></Card.Title>
+                <Card.Title mb="2" textStyle="3xl" fontFamily="Space Grotesk"> Login to <Text color="teal.solid" letterSpacing="wider">Portfoli-O-matic</Text></Card.Title>
                 <HStack marginTop="10">
                     <InputGroup startElement={<LuMail />}>
                         <Input placeholder="Email" variant="outline" borderWidth="2px" rounded="lg" minW="300px" borderColor="teal.800" _focus={{borderColor: "teal.600"}}/>
@@ -74,7 +72,17 @@ function Login() {
                 <HStack marginTop="5"><Text color="teal" textStyle="sm" textDecoration="underline">Forgot your password?</Text></HStack>
               </Card.Body>
               <Card.Footer className="flex justify-center w-full">
-                <Button marginTop="5" colorPalette="teal" variant="solid" rounded="xl" width="100%">Log In</Button>
+                <VStack className ="w-full">
+                    <Button marginTop="5" colorPalette="teal" variant="solid" rounded="xl" width="75%">Log In</Button>
+                    <Box marginTop="5" bg="blue.300" rounded="xl" p="3" opacity="50%">
+                        <HStack>
+                            <Icon size="lg" color="tomato">
+                                <LuShieldAlert></LuShieldAlert>
+                            </Icon>
+                            <Text width="90%" textStyle="sm" color='gray.700'>Never share any of your login details with anyone. Always be aware of phishing attempts when asked for such details.</Text>
+                        </HStack>
+                    </Box>
+                </VStack>
               </Card.Footer>
             </Box>
           </Card.Root>
