@@ -1,5 +1,10 @@
+import os
+from supabase import create_client, Client
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from dotenv import load_dotenv
+
+
 
 app = FastAPI()
 
@@ -17,8 +22,14 @@ app.add_middleware(
     allow_headers=["*"],              # allow all headers
 )
 
+load_dotenv()
+url: str = os.getenv("SUPABASE_URL")
+key: str = os.getenv("SUPABASE_KEY")
+supabase: Client = create_client(url, key)
+
 @app.get("/")
 def start():
-    return {"message": "Hello, World!"}
+    data, error = supabase.table("Users").select("*").execute()
+    return {"message": data}
 
 
