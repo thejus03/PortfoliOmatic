@@ -58,7 +58,7 @@ function Login() {
             />
             <Box flex="1" px="16">
               <Card.Body>
-                <Card.Title mb="2" textStyle="3xl" fontFamily="Space Grotesk"> Login to <Text color="teal.solid" letterSpacing="wider">Portfoli-O-matic</Text></Card.Title>
+                <Card.Title mb="2" textStyle="3xl" fontFamily="Space Grotesk"> Log in to <Text color="teal.solid" letterSpacing="wider">Portfoli-O-matic</Text></Card.Title>
                 <HStack marginTop="10">
                     <InputGroup startElement={<LuMail />}>
                         <Input placeholder="Email" variant="outline" borderWidth="2px" rounded="lg" minW="300px" borderColor="teal.800" _focus={{borderColor: "teal.600"}}/>
