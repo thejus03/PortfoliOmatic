@@ -38,7 +38,7 @@ function Login() {
             >
               Portfoli-O-matic
             </Box>
-            <Button onClick={() => router.push("/register")} olorPalette="blue" variant="ghost" size="md" rounded="lg">
+            <Button onClick={() => router.push("/register")} colorPalette="blue" variant="ghost" size="md" rounded="lg">
               Sign Up
             </Button>
           </div>
@@ -118,7 +118,7 @@ function Login() {
                     bg="blue.300"
                     rounded="xl"
                     p="3"
-                    opacity="50%"
+                    opacity="55%"
                   >
                     <HStack>
                       <Icon size="lg" color="tomato">

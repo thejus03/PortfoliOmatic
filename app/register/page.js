@@ -163,7 +163,7 @@ function Register() {
           rounded="xl" 
           p="4" 
           borderWidth="3px" 
-          borderColor={criteria.all? "green.300" : "red.300"} 
+          borderColor={criteria.all? "green.400" : "red.300"} 
           shadow="sm" 
           padding="5" 
           opacity="0.8" 
