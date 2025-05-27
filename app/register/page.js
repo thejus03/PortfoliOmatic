@@ -18,23 +18,11 @@ import { useRouter } from "next/navigation";
 import {
     PasswordInput, PasswordStrengthMeter
   } from "@/components/ui/password-input"
-import { LuMail, LuLock, LuShieldAlert, LuMessageCircleWarning  } from "react-icons/lu";
+import { LuShieldAlert } from "react-icons/lu";
 import { Space_Grotesk } from "next/font/google";
 import { Highlight } from "@chakra-ui/react"
+import { toaster } from "@/components/ui/toaster";
 
-const Warning = ({ message }) => {
-  return (
-    <Alert.Root status="error" mt="4" rounded="lg">
-      <Alert.Indicator />
-      <Alert.Content>
-        <Alert.Title>Invalid Fields</Alert.Title>
-        <Alert.Description>
-          {message}
-        </Alert.Description>
-      </Alert.Content>
-    </Alert.Root>
-  )
-}
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   weight: ["600"],
@@ -45,8 +33,6 @@ function Register() {
   const [email, setEmail] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-  const [showError, setShowError] = useState(false);
   const [criteria, setCriteria] = useState({
     length: false,
     uppercase: false,
@@ -56,12 +42,13 @@ function Register() {
     all: false,
   });
   
-  const handleCreateAccount = () => {
-    setShowError(false);
+  const handleCreateAccount = async () => {
     
     if (email === '') {
-      setErrorMessage('Please enter a valid email address.');
-      setShowError(true);
+      toaster.error({
+        title: "Invalid Email",
+        description: "Please enter a valid email address."
+      });
       setEmail('');
       setPassword('');
       setConfirmPassword('');
@@ -70,8 +57,10 @@ function Register() {
     
  
     else if (password !== confirmPassword) {
-      setErrorMessage('Passwords do not match. Please try again.');
-      setShowError(true);
+      toaster.error({
+        title: "Password Mismatch",
+        description: "Passwords do not match. Please try again."
+      });
       setEmail('');
       setPassword('');
       setConfirmPassword('');
@@ -80,9 +69,54 @@ function Register() {
     
     // send to backend from creation
     else {
-
+      try {
+        toaster.create({
+          title: "Creating Account",
+          description: "Please wait...",
+          type: "info",
+          duration: 1000
+        });
+        
+        const response = await fetch('http://127.0.0.1:8000/api/user/register', {
+          method: 'POST',
+          body: JSON.stringify({ email, password }),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+          if (data.token) {
+            localStorage.setItem('token', data.token);
+          }
+          
+          toaster.create({
+            title: "Success!",
+            description: "Account created successfully. Redirecting to home page...",
+            type: "success"
+          });
+          
+          setTimeout(() => {
+            router.push('/login');
+          }, 1500);
+        } else {
+          toaster.error({
+            title: "Registration Failed",
+            description: data.detail 
+          });
+          setEmail('');
+          setPassword('');
+          setConfirmPassword('');
+        }
+      } catch (error) {
+        toaster.error({
+          title: "Connection Error",
+          description: "Unable to connect to the server. Please try again later."
+        });
+      }
     }
-    
   }
 
   const handleCriteria = (password) => {
@@ -203,7 +237,6 @@ function Register() {
           <PasswordInput placeholder="Choose a password" variant="outline"  value={confirmPassword}  onChange={(e) => setConfirmPassword(e.target.value)} rounded="lg" borderWidth="2px" minW="300px" borderColor="teal.800"_focus={{ borderColor: "teal.600" , outline: "none"}}/>
         </Field.Root>
         
-        {showError && <Warning message={errorMessage} />}
         <Button 
           mt="5" 
           colorPalette="teal" 
