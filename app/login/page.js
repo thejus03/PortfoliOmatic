@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import { useState } from "react";
 import {
   Button,
   Box,
@@ -10,12 +11,13 @@ import {
   Input,
   InputGroup,
   Text,
-  Icon,
+  Icon
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "@/components/ui/password-input";
 import { LuMail, LuLock, LuShieldAlert } from "react-icons/lu";
 import { Space_Grotesk } from "next/font/google";
+import { toaster } from "@/components/ui/toaster"
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -24,6 +26,48 @@ const spaceGrotesk = Space_Grotesk({
 
 function Login() {
   const router = useRouter();
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleLogin = async () => {
+    try {    
+      
+      toaster.create({
+        title: "Logging in",
+        description: "Please wait...",
+        type: "info",
+        duration: 1000
+      }); 
+      const response = await fetch('http://127.0.0.1:8000/api/user/login', {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem('token', data.token);
+        router.push('/');
+      } else {
+        toaster.create({
+          title: "Login failed",
+          description: "Invalid email or password",
+          type: "error"
+        });
+      }
+
+    } catch (error) {
+      console.log(error);
+      toaster.create({
+        title: "Connection error",
+        description: "Unable to connect to the server. Please try again later.",
+        type: "error"
+      });
+    }
+  }
   return (
     <div className="min-h-screen flex flex-col bg-slate-900 text-white">
       <VStack>
@@ -38,7 +82,7 @@ function Login() {
             >
               Portfoli-O-matic
             </Box>
-            <Button onClick={() => router.push("/register")} olorPalette="blue" variant="ghost" size="md" rounded="lg">
+            <Button onClick={() => router.push("/register")} colorPalette="blue" variant="ghost" size="md" rounded="lg">
               Sign Up
             </Button>
           </div>
@@ -80,6 +124,8 @@ function Login() {
                       minW="300px"
                       borderColor="teal.800"
                       _focus={{ borderColor: "teal.600" , outline: "none"}}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                   </InputGroup>
                 </HStack>
@@ -93,6 +139,8 @@ function Login() {
                       minW="300px"
                       borderColor="teal.800"
                       _focus={{ borderColor: "teal.600" , outline: "none"}}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </InputGroup>
                 </HStack>
@@ -110,6 +158,7 @@ function Login() {
                     variant="solid"
                     rounded="xl"
                     width="75%"
+                    onClick={handleLogin}
                   >
                     Log In
                   </Button>
@@ -118,7 +167,7 @@ function Login() {
                     bg="blue.300"
                     rounded="xl"
                     p="3"
-                    opacity="50%"
+                    opacity="55%"
                   >
                     <HStack>
                       <Icon size="lg" color="tomato">
