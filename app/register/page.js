@@ -171,7 +171,7 @@ function Register() {
           <Field.Label>
             Email <Field.RequiredIndicator />
           </Field.Label>
-          <Input placeholder="me@example.com" variant="outline" value={email} onChange={(e) => setEmail(e.target.value)} rounded="lg" borderWidth="2px" minW="300px" borderColor="teal.800"_focus={{ borderColor: "teal.600" , outline: "none"}}/>
+          <Input placeholder="me@example.com" variant="outline" value={email} onChange={(e) => setEmail(e.target.value)} rounded="lg" borderWidth="2px" minW="300px" borderColor="teal.800" _focus={{ borderColor: "teal.600" , outline: "none"}}/>
         </Field.Root>
         <Field.Root required>
           <Field.Label>
@@ -234,7 +234,7 @@ function Register() {
           <Field.Label>
             Confirm Password<Field.RequiredIndicator />
           </Field.Label>
-          <PasswordInput placeholder="Choose a password" variant="outline"  value={confirmPassword}  onChange={(e) => setConfirmPassword(e.target.value)} rounded="lg" borderWidth="2px" minW="300px" borderColor="teal.800"_focus={{ borderColor: "teal.600" , outline: "none"}}/>
+          <PasswordInput placeholder="Choose a password" variant="outline"  value={confirmPassword}  onChange={(e) => setConfirmPassword(e.target.value)} rounded="lg" borderWidth="2px" minW="300px" borderColor="teal.800" _focus={{ borderColor: "teal.600" , outline: "none"}}/>
         </Field.Root>
         
         <Button 
