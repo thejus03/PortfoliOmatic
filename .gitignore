@@ -40,3 +40,5 @@ logs/
 
 # Python backend
 backend/venv/
+backend/_pycache__/
+*.pyc
