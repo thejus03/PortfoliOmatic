@@ -1,6 +1,6 @@
 "use client"
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { 
     Breadcrumb,
@@ -15,6 +15,8 @@ import {
 } from "@chakra-ui/react"
 import { RiArrowRightLine, RiArrowLeftLine } from "react-icons/ri"
 import DropdownSelector from "@/components/ui/dropdown-selector.jsx"
+import { toaster } from '@/components/ui/toaster'
+import { getFormData, saveFormData } from '@/utils/formStorage'
 
 const Background = () => {
     const router = useRouter();
@@ -22,6 +24,16 @@ const Background = () => {
     const [incomeLevel, setIncomeLevel] = useState(-1)
     const [monthlyExpense, setMonthlyExpenses] = useState(-1)
     const [investmentPercentage, setInvestmentPercentage] = useState(-1)
+
+    useEffect(() => {
+        const savedData = getFormData();
+        if (savedData.partB) {
+        setTimeHorizon(savedData.partB.timeHorizon || -1);
+        setIncomeLevel(savedData.partB.incomeLevel || -1);
+        setMonthlyExpenses(savedData.partB.monthlyExpense || -1);
+        setInvestmentPercentage(savedData.partB.investmentPercentage || -1);
+        }
+    }, []);
 
     const timeHorizons = createListCollection({
         items: [
@@ -63,10 +75,17 @@ const Background = () => {
         ],
         })
     
-    const handleTimeHorizonChange = (t) => {setTimeHorizon(t)}
-    const handleIncomeLevelChange = (t) => {setIncomeLevel(t)}
-    const handleMonthlyExpensesChange = (t) => {setMonthlyExpenses(t)}
-    const handleInvestmentPercentageChange = (t) => {setInvestmentPercentage(t)}
+    const handleNext = () => {
+        if (timeHorizon == -1 || incomeLevel == -1 || monthlyExpense == -1 || investmentPercentage == -1) {
+            toaster.error({
+                    title: "Incomplete form",
+                    description: "Please fill in all fields."
+                  });
+        } else {
+            saveFormData("partB", {timeHorizon: timeHorizon, incomeLevel: incomeLevel, monthlyExpense: monthlyExpense, investmentPercentage: investmentPercentage})
+            router.push("/account-setup/behavioural")
+        }
+    }
     
     return (
         <Box>
@@ -94,20 +113,20 @@ const Background = () => {
                     </Box>
 
                     {/* Time Horizon Question*/}
-                    <DropdownSelector size="lg" collection={timeHorizons} func={handleTimeHorizonChange} 
-                    label="What is your expected investment time horizon" placeholder="Select time horizon" />
+                    <DropdownSelector size="lg" collection={timeHorizons} func={setTimeHorizon} 
+                    label="What is your expected investment time horizon" placeholder="Select time horizon" value={timeHorizon} />
 
                     {/* Income level Question*/}
-                    <DropdownSelector size="lg" collection={incomeLevels} func={handleIncomeLevelChange} 
-                    label="What is your annual income range?" placeholder="Select annual income range" />
+                    <DropdownSelector size="lg" collection={incomeLevels} func={setIncomeLevel} 
+                    label="What is your annual income range?" placeholder="Select annual income range" value={incomeLevel}/>
 
                     {/* Monthly expenses Question*/}
-                    <DropdownSelector size="lg" collection={monthlyExpenses} func={handleMonthlyExpensesChange} 
-                    label="What is your monthly expenditure as a percentage of your monthly income?" placeholder="Select monthly expenditure percentage" />
+                    <DropdownSelector size="lg" collection={monthlyExpenses} func={setMonthlyExpenses} 
+                    label="What is your monthly expenditure as a percentage of your monthly income?" placeholder="Select monthly expenditure percentage" value={monthlyExpense}/>
 
                     {/* Investment percentage Question*/}
-                    <DropdownSelector size="lg" collection={incomeLevels} func={handleInvestmentPercentageChange} 
-                    label="What percentage of your net liquid assets are your planning to invest?" placeholder="Select investment percentage" />
+                    <DropdownSelector size="lg" collection={investmentPercentages} func={setInvestmentPercentage} 
+                    label="What percentage of your net liquid assets are your planning to invest?" placeholder="Select investment percentage" value={investmentPercentage}/>
                     
                     <Box>
                         <HStack
@@ -116,7 +135,7 @@ const Background = () => {
                             <Button colorPalette="blue" variant="outline" onClick={() => router.push("/account-setup/risk-preference")}>
                                 Back <RiArrowLeftLine />
                             </Button>
-                            <Button colorPalette="blue" variant="outline" onClick={() => router.push("/account-setup/behavioural")}>
+                            <Button colorPalette="blue" variant="outline" onClick={handleNext}>
                                 Next <RiArrowRightLine />
                             </Button>
                         </HStack>
