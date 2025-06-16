@@ -9,7 +9,11 @@ export const AccountSetupProvider = ({ children }) => {
             risk: "balanced",
         },
         background: -1,
-        behavioural: -1
+        behavioural: {
+            selectedOption: "nothing",
+            selectedOption2: "portfolio1",
+            selectedOption3: "take-profit"
+        }
     });
 
     return (

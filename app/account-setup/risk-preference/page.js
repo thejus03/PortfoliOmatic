@@ -15,6 +15,7 @@ import {
     Checkbox,
     Button
 } from "@chakra-ui/react"
+import { RiArrowRightCircleLine } from 'react-icons/ri'
 import { useState } from "react";
 
 function page() {
@@ -28,8 +29,12 @@ function page() {
 
   const router = useRouter();
 
+  const savePage = () => {
+    setFormData({...formData, riskPreference: {risk: selectedRisk}})
+  }
+
   const handleNext = () => {
-    setFormData({...formData, riskPreference: {risk: selectedRisk}});
+    savePage()
       router.push("/account-setup/background");
   }
 
@@ -44,11 +49,11 @@ function page() {
                           </Breadcrumb.Item>
                           <Breadcrumb.Separator />
                           <Breadcrumb.Item>
-                              <Breadcrumb.Link onClick={() => router.push("/account-setup/background")} cursor="pointer">Background</Breadcrumb.Link>
+                              <Breadcrumb.Link onClick={() => {savePage(); router.push("/account-setup/background")}} cursor="pointer">Background</Breadcrumb.Link>
                           </Breadcrumb.Item>
                           <Breadcrumb.Separator />
                           <Breadcrumb.Item>
-                              <Breadcrumb.Link onClick={() => router.push("/account-setup/behavioural")} cursor="pointer">Behavioural</Breadcrumb.Link>
+                              <Breadcrumb.Link onClick={() => {savePage(); router.push("/account-setup/behavioural")}} cursor="pointer">Behavioural</Breadcrumb.Link>
                           </Breadcrumb.Item>
                       </Breadcrumb.List>
                   </Breadcrumb.Root>
@@ -142,7 +147,7 @@ function page() {
                         _hover={{backgroundColor: "blue.900", color: "blue.400", opacity: 0.7}}
                         alignSelf="flex-end" 
                         marginY="10">
-                        Next
+                        Next <RiArrowRightCircleLine />
                     </Button>
                 </Stack>
               </Stack>
