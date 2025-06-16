@@ -12,6 +12,12 @@ import {
 } from '@chakra-ui/react'
 import { RiArrowLeftCircleLine, RiCheckboxCircleFill } from 'react-icons/ri'
 import { useAccountSetup } from '../context/AccountSetupContext'
+import { Space_Grotesk } from 'next/font/google'
+
+const spaceGrotesk = Space_Grotesk({
+    subsets: ['latin'],
+    weight: ['400', '500', '600', '700'],
+})
 
 function page() {
     const router = useRouter()
@@ -58,7 +64,7 @@ function page() {
           </Box>
           <Box width="100%" maxWidth="1000px">
             <Stack direction="column" gap="16">
-                <Heading textStyle="3xl" textAlign="center" color="blue.400" fontWeight="bold">Behavioural</Heading>
+                <Heading textStyle="3xl" textAlign="center" color="blue.400" fontWeight="bold" fontFamily={spaceGrotesk.style.fontFamily}>Behavioural</Heading>
                 <Stack>
                     <Heading textStyle="xl" fontWeight="bold" color="blue.200">How would you feel if your portfolio dropped 20% in a market crash?</Heading>
                     <RadioGroup.Root 

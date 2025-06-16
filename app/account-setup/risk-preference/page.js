@@ -17,6 +17,12 @@ import {
 } from "@chakra-ui/react"
 import { RiArrowRightCircleLine } from 'react-icons/ri'
 import { useState } from "react";
+import { Space_Grotesk } from 'next/font/google'
+
+const spaceGrotesk = Space_Grotesk({
+    subsets: ['latin'],
+    weight: ['400', '500', '600', '700'],
+})
 
 function page() {
   const { formData, setFormData } = useAccountSetup();
@@ -61,7 +67,7 @@ function page() {
           </Box>
           <Box width="100%" maxWidth="1000px">
               <Stack direction="column" gap="16">
-                <Heading textStyle="3xl" textAlign="center" color="blue.400" fontWeight="bold">Risk Preference</Heading>
+                <Heading textStyle="3xl" textAlign="center" color="blue.400" fontWeight="bold" fontFamily={spaceGrotesk.style.fontFamily}>Risk Preference</Heading>
                 <Stack>
                     <Heading textStyle="xl" fontWeight="bold" color="blue.200">What best describes your investment risk preference?</Heading>
                     <CheckboxGroup>
