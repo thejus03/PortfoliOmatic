@@ -5,7 +5,9 @@ const AccountSetupContext = createContext();
 
 export const AccountSetupProvider = ({ children }) => {
     const [formData, setFormData] = useState({
-        riskPreference : -1,
+        riskPreference : {
+            risk: "balanced",
+        },
         background: -1,
         behavioural: -1
     });
