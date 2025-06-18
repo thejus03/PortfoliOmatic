@@ -8,9 +8,14 @@ export const AccountSetupProvider = ({ children }) => {
         riskPreference : {
             risk: "balanced",
         },
-        background: -1,
+        background: {
+            timeHorizon: "less-than-1-year",
+            incomeLevel: "less-than-40000",
+            monthlyExpense: "less-than-15",
+            investmentPercentage: "less-than-15"
+        },
         behavioural: {
-            selectedOption: "nothing",
+            selectedOption: "sell",
             selectedOption2: "portfolio1",
             selectedOption3: "take-profit"
         }

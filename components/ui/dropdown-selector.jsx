@@ -9,8 +9,8 @@ const DropdownSelector = ({size, collection, func, label, placeholder, value}) =
     <Select.Root
     collection={collection}
     size={size}
-    value={[value]}
-    onValueChange = {(e) => func(e.value[0])}
+    value={value}
+    onValueChange = {(e) => func(e.value)}
     >
         <Select.HiddenSelect />
         <Select.Label>{label}</Select.Label>

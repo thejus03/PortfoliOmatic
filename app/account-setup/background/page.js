@@ -1,150 +1,264 @@
 "use client"
-import React from 'react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { 
-    Breadcrumb,
+import {
+    Stack,
     Box,
-    AbsoluteCenter,
-    createListCollection,
-    Stack, 
-    StackSeparator,
     Center,
+    Breadcrumb,
+    Heading,
     Button,
-    HStack
-} from "@chakra-ui/react"
-import { RiArrowRightLine, RiArrowLeftLine } from "react-icons/ri"
-import DropdownSelector from "@/components/ui/dropdown-selector.jsx"
-import { toaster } from '@/components/ui/toaster'
-import { getFormData, saveFormData } from '@/utils/formStorage'
+    createListCollection,
+    RadioGroup
+} from '@chakra-ui/react'
+import { RiArrowLeftCircleLine, RiArrowRightCircleLine } from 'react-icons/ri'
+import { useAccountSetup } from '../context/AccountSetupContext'
+import { Space_Grotesk } from 'next/font/google'
 
-const Background = () => {
-    const router = useRouter();
-    const [timeHorizon, setTimeHorizon] = useState(-1)
-    const [incomeLevel, setIncomeLevel] = useState(-1)
-    const [monthlyExpense, setMonthlyExpenses] = useState(-1)
-    const [investmentPercentage, setInvestmentPercentage] = useState(-1)
+const spaceGrotesk = Space_Grotesk({
+    subsets: ['latin'],
+    weight: ['400', '500', '600', '700'],
+})
 
-    useEffect(() => {
-        const savedData = getFormData();
-        if (savedData.partB) {
-        setTimeHorizon(savedData.partB.timeHorizon || -1);
-        setIncomeLevel(savedData.partB.incomeLevel || -1);
-        setMonthlyExpenses(savedData.partB.monthlyExpense || -1);
-        setInvestmentPercentage(savedData.partB.investmentPercentage || -1);
-        }
-    }, []);
+function page() {
+    const router = useRouter()
+    const { formData, setFormData } = useAccountSetup()
 
-    const timeHorizons = createListCollection({
-        items: [
-            { label: "Less than 1 year", value: 1 },
-            { label: "1 to 3 years", value: 2 },
-            { label: "3 to 5 years", value: 3 },
-            { label: "5 to 10 years", value: 4 },
-            { label: "5 to 10 years", value: 5}
-        ],
-        })
-    
-    const incomeLevels = createListCollection({
-        items: [
-            { label: "Less than $40,000 ", value: 1 },
-            { label: "Between $40,000 and $80,000", value: 2 },
-            { label: "Between $80,000 and $120,000", value: 3 },
-            { label: "Between $120,000 and $200,000", value: 4 },
-            { label: "Between $200,000 and $500,000", value: 5}
-        ],
-        })
-    
-    const monthlyExpenses = createListCollection({
-        items: [
-            { label: "Less than 15%", value: 5 },
-            { label: "Between 15% and 25%", value: 4 },
-            { label: "Between 25% and 35%", value: 3 },
-            { label: "Between 35% and 45%", value: 2 },
-            { label: "More than 45%", value: 1}
-        ],
-        })
-    
-    const investmentPercentages = createListCollection({
-        items: [
-            { label: "Less than 15%", value: 1 },
-            { label: "Between 15% and 25%", value: 2 },
-            { label: "Between 25% and 35%", value: 3 },
-            { label: "Between 35% and 45%", value: 4 },
-            { label: "More than 45%", value: 5}
-        ],
-        })
-    
-    const handleNext = () => {
-        if (timeHorizon == -1 || incomeLevel == -1 || monthlyExpense == -1 || investmentPercentage == -1) {
-            toaster.error({
-                    title: "Incomplete form",
-                    description: "Please fill in all fields."
-                  });
-        } else {
-            saveFormData("partB", {timeHorizon: timeHorizon, incomeLevel: incomeLevel, monthlyExpense: monthlyExpense, investmentPercentage: investmentPercentage})
-            router.push("/account-setup/behavioural")
-        }
+    const [timeHorizon, setTimeHorizon] = useState(formData.background.timeHorizon)
+    const [incomeLevel, setIncomeLevel] = useState(formData.background.incomeLevel)
+    const [monthlyExpense, setMonthlyExpense] = useState(formData.background.monthlyExpense)
+    const [investmentPercentage, setInvestmentPercentage] = useState(formData.background.investmentPercentage)
+
+    const savePage = () => {
+        setFormData({...formData, background: {timeHorizon, incomeLevel, monthlyExpense, investmentPercentage}})
     }
-    
-    return (
-        <Box>
-            <AbsoluteCenter>
-                <Stack separator={<StackSeparator />} width="1000px" gap="10">
 
-                    <Box>
-                        <Center>
-                            <Breadcrumb.Root>
-                                <Breadcrumb.List>
-                                    <Breadcrumb.Item>
-                                        <Breadcrumb.Link onClick={() => router.push("/account-setup/risk-preference")}>Risk Preference</Breadcrumb.Link>
-                                    </Breadcrumb.Item>
-                                    <Breadcrumb.Separator />
-                                    <Breadcrumb.Item>
-                                            <Breadcrumb.CurrentLink>Background</Breadcrumb.CurrentLink>
-                                    </Breadcrumb.Item>
-                                    <Breadcrumb.Separator />
-                                    <Breadcrumb.Item>
-                                        <Breadcrumb.Link onClick={() => router.push("/account-setup/behavioural")}>Behavioural</Breadcrumb.Link>
-                                    </Breadcrumb.Item>
-                                </Breadcrumb.List>
-                            </Breadcrumb.Root>
-                        </Center>
-                    </Box>
+    const handleNext = () => {
+        savePage()
+        router.push("/account-setup/behavioural")
+    }
 
-                    {/* Time Horizon Question*/}
-                    <DropdownSelector size="lg" collection={timeHorizons} func={setTimeHorizon} 
-                    label="What is your expected investment time horizon" placeholder="Select time horizon" value={timeHorizon} />
+    const handleBack = () => {
+        savePage()
+        router.push("/account-setup/risk-preference")
+    }
 
-                    {/* Income level Question*/}
-                    <DropdownSelector size="lg" collection={incomeLevels} func={setIncomeLevel} 
-                    label="What is your annual income range?" placeholder="Select annual income range" value={incomeLevel}/>
+  return (
+    <Stack direction="column" align="center" justify="center" gap="10">
+        <Box className="mt-16">
+              <Center>
+                  <Breadcrumb.Root size="sm" border="1px solid" borderColor="blue.600" borderRadius="full" padding="2" paddingX="4" backgroundColor="blue.900" opacity={0.75}>
+                      <Breadcrumb.List>
+                          <Breadcrumb.Item>
+                              <Breadcrumb.Link onClick={() => {savePage(); router.push("/account-setup/risk-preference")}} cursor="pointer">Risk Preference</Breadcrumb.Link>
+                          </Breadcrumb.Item>
+                          <Breadcrumb.Separator />
+                          <Breadcrumb.Item>
+                              <Breadcrumb.CurrentLink color="blue.400" fontWeight="bold">Background</Breadcrumb.CurrentLink>
+                          </Breadcrumb.Item>
+                          <Breadcrumb.Separator />
+                          <Breadcrumb.Item>
+                              <Breadcrumb.Link onClick={() => {savePage(); router.push("/account-setup/behavioural")}} cursor="pointer">Behavioural</Breadcrumb.Link>
+                          </Breadcrumb.Item>
+                      </Breadcrumb.List>
+                  </Breadcrumb.Root>
+              </Center>
+          </Box>
+          <Box width="100%" maxWidth="1000px">
+            <Stack direction="column" gap="16">
+                <Heading textStyle="3xl" textAlign="center" color="blue.400" fontWeight="bold" fontFamily={spaceGrotesk.style.fontFamily}>Background</Heading>
+                <Stack>
 
-                    {/* Monthly expenses Question*/}
-                    <DropdownSelector size="lg" collection={monthlyExpenses} func={setMonthlyExpenses} 
-                    label="What is your monthly expenditure as a percentage of your monthly income?" placeholder="Select monthly expenditure percentage" value={monthlyExpense}/>
+                    <Heading textStyle="xl" fontWeight="bold" color="blue.200">What is your expected investment time horizon?</Heading>
+                    <RadioGroup.Root 
+                        value={timeHorizon} 
+                        onValueChange={(e)=>setTimeHorizon(e.value)} 
+                        colorPalette="blue" 
+                        variant="subtle"
+                        size="lg"
+                        margin="4"
+                    >
 
-                    {/* Investment percentage Question*/}
-                    <DropdownSelector size="lg" collection={investmentPercentages} func={setInvestmentPercentage} 
-                    label="What percentage of your net liquid assets are your planning to invest?" placeholder="Select investment percentage" value={investmentPercentage}/>
-                    
-                    <Box>
-                        <HStack
-                        justify="space-between"
-                        w="100%">
-                            <Button colorPalette="blue" variant="outline" onClick={() => router.push("/account-setup/risk-preference")}>
-                                Back <RiArrowLeftLine />
-                            </Button>
-                            <Button colorPalette="blue" variant="outline" onClick={handleNext}>
-                                Next <RiArrowRightLine />
-                            </Button>
-                        </HStack>
-                    </Box>
+                        <Stack direction="column" gap="6">
+                            <RadioGroup.Item key="less-than-1-year" value="less-than-1-year">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>Less than 1 year</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                            <RadioGroup.Item key="1-to-3-years" value="1-to-3-years">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>1 to 3 years</RadioGroup.ItemText>
+                            </RadioGroup.Item>  
+                            <RadioGroup.Item key="3-to-5-years" value="3-to-5-years">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>3 to 5 years</RadioGroup.ItemText>
+                            </RadioGroup.Item> 
+                            <RadioGroup.Item key="5-to-10-years" value="5-to-10-years">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>5 to 10 years</RadioGroup.ItemText>
+                            </RadioGroup.Item> 
+                            <RadioGroup.Item key="more-than-10-years" value="more-than-10-years">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>more than 10 years</RadioGroup.ItemText>
+                            </RadioGroup.Item>  
+                        </Stack>
+                    </RadioGroup.Root>
 
-                </Stack>
-            </AbsoluteCenter>
-        </Box>
-    )
+                    <Heading textStyle="xl" fontWeight="bold" color="blue.200" marginTop="4">What is your annual income range?</Heading>
+                        <RadioGroup.Root 
+                            value={incomeLevel}
+                            onValueChange={(e)=>setIncomeLevel(e.value)}
+                            colorPalette="blue"
+                            variant="subtle"
+                            size="lg"
+                            margin="4"
+                        >
+                            <Stack direction="column" gap="6">
+                                <RadioGroup.Item key="less-than-40000" value="less-than-40000">
+                                    <RadioGroup.ItemHiddenInput />
+                                    <RadioGroup.ItemIndicator />
+                                    <RadioGroup.ItemText>Less than $40,000</RadioGroup.ItemText>
+                                </RadioGroup.Item>
+                                <RadioGroup.Item key="40000-to-80000" value="40000-to-80000">
+                                    <RadioGroup.ItemHiddenInput />
+                                    <RadioGroup.ItemIndicator />
+                                    <RadioGroup.ItemText>$40,000 to $80,000</RadioGroup.ItemText>
+                                </RadioGroup.Item>
+                                <RadioGroup.Item key="80000-to-1200000" value="80000-to-1200000">
+                                    <RadioGroup.ItemHiddenInput />
+                                    <RadioGroup.ItemIndicator />
+                                    <RadioGroup.ItemText>$80,000 to $120,000</RadioGroup.ItemText>
+                                </RadioGroup.Item>
+                                <RadioGroup.Item key="1200000-to-200000" value="1200000-to-200000">
+                                    <RadioGroup.ItemHiddenInput />
+                                    <RadioGroup.ItemIndicator />
+                                    <RadioGroup.ItemText>$120,000 to $200,000</RadioGroup.ItemText>
+                                </RadioGroup.Item>
+                                <RadioGroup.Item key="more-than-200000" value="more-than-200000">
+                                    <RadioGroup.ItemHiddenInput />
+                                    <RadioGroup.ItemIndicator />
+                                    <RadioGroup.ItemText>more than $200,000</RadioGroup.ItemText>
+                                </RadioGroup.Item>
+                            </Stack>
+                        </RadioGroup.Root>
+
+                    <Heading textStyle="xl" fontWeight="bold" color="blue.200" marginTop="4">What is your monthly expenditure as a percentage of your monthly income?</Heading>
+                    <RadioGroup.Root
+                        value={monthlyExpense}
+                        onValueChange={(e)=>setMonthlyExpense(e.value)}
+                        colorPalette="blue"
+                        variant="subtle"
+                        size="lg"
+                        margin="4"
+                    >
+                        <Stack direction="column" gap="6">
+                            <RadioGroup.Item key="less-than-15" value="less-than-15">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>Less than 15%</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                            <RadioGroup.Item key="between-15-to-25" value="between-15-to-25">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>Between 15% to 25%</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                            <RadioGroup.Item key="between-25-to-35" value="between-25-to-35">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>Between 25% to 35%</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                            <RadioGroup.Item key="between-35-to-45" value="between-35-to-45">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>Between 35% to 45%</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                            <RadioGroup.Item key="more-than-45" value="more-than-45">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>More than 45%</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                        </Stack>
+                    </RadioGroup.Root>
+
+                    <Heading textStyle="xl" fontWeight="bold" color="blue.200" marginTop="4">What percentage of your net liquid assets are your planning to invest?</Heading>
+                    <RadioGroup.Root
+                        value={investmentPercentage}
+                        onValueChange={(e)=>setInvestmentPercentage(e.value)}
+                        colorPalette="blue"
+                        variant="subtle"
+                        size="lg"
+                        margin="4"
+                    >
+                        <Stack direction="column" gap="6">
+                            <RadioGroup.Item key="less-than-15" value="less-than-15">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>Less than 15%</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                            <RadioGroup.Item key="between-15-to-25" value="between-15-to-25">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>Between 15% to 25%</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                            <RadioGroup.Item key="between-25-to-35" value="between-25-to-35">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>Between 25% to 35%</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                            <RadioGroup.Item key="between-35-to-45" value="between-35-to-45">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>Between 35% to 45%</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                            <RadioGroup.Item key="more-than-45" value="more-than-45">
+                                <RadioGroup.ItemHiddenInput />
+                                <RadioGroup.ItemIndicator />
+                                <RadioGroup.ItemText>More than 45%</RadioGroup.ItemText>
+                            </RadioGroup.Item>
+                        </Stack>
+                    </RadioGroup.Root>
+
+                    <Stack direction="row" justify="space-between">
+                        <Button 
+                            onClick={handleBack} 
+                            borderRadius="lg" 
+                            width="300px" 
+                            border="1px solid"
+                            borderColor="teal.700"
+                            color="teal.400" 
+                            fontWeight="bold" 
+                            variant="outline"
+                            _hover={{backgroundColor: "teal.900", color: "teal.400", opacity: 0.7}}
+                            alignSelf="flex-end" 
+                            marginY="10">
+                            <RiArrowLeftCircleLine /> Back
+                        </Button>
+
+                        <Button 
+                            onClick={handleNext} 
+                            borderRadius="lg" 
+                            width="300px" 
+                            border="1px solid"
+                            borderColor="blue.700"
+                            color="blue.400" 
+                            fontWeight="bold" 
+                            variant="outline"
+                            _hover={{backgroundColor: "blue.900", color: "blue.400", opacity: 0.7}}
+                            alignSelf="flex-end" 
+                            marginY="10">
+                            Next <RiArrowRightCircleLine />
+                        </Button>
+
+                    </Stack>
+                </Stack>    
+            </Stack>
+          </Box>
+    </Stack>
+  )
 }
 
-export default Background
+export default page
