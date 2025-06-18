@@ -77,10 +77,10 @@ function page() {
                     >
 
                         <Stack direction="column" gap="6">
-                            <RadioGroup.Item key="panic" value="panic">
+                            <RadioGroup.Item key="sell" value="sell">
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
-                                <RadioGroup.ItemText>Panic and sell</RadioGroup.ItemText>
+                                <RadioGroup.ItemText>Sell</RadioGroup.ItemText>
                             </RadioGroup.Item>
                             <RadioGroup.Item key="nothing" value="nothing">
                                 <RadioGroup.ItemHiddenInput />

@@ -4,11 +4,12 @@ import {
     Select
 } from "@chakra-ui/react"
 
-const DropdownSelector = ({size, collection, func, label, placeholder}) => {
+const DropdownSelector = ({size, collection, func, label, placeholder, value}) => {
   return (
     <Select.Root
     collection={collection}
     size={size}
+    value={value}
     onValueChange = {(e) => func(e.value)}
     >
         <Select.HiddenSelect />
