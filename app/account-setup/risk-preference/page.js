@@ -91,8 +91,7 @@ function page() {
                                      <CheckboxCard.Content color="teal.100">
                                          <CheckboxCard.Label fontWeight="bold" fontSize="xl" paddingX="4">Conservative</CheckboxCard.Label>
                                          <CheckboxCard.Description textStyle="md" marginTop="5" paddingX="4">
-                                             Your priority is to keep your portfolio balance up with inflation, but not
-                                             to increase its real value.
+                                             Your priority is to keep your portfolio balance up with inflation
                                          </CheckboxCard.Description>
                                      </CheckboxCard.Content>
                                      <CheckboxCard.Indicator />
