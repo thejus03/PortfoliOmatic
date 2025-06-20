@@ -27,6 +27,6 @@ class Portfolio:
     # returns the expected return, annual volatility and sharpe ratio of the portfolio
     def get_RVS(self):
         if self.initialised:
-            return self.ef.portfolio_performance()
+            return self.ef.portfolio_performance(risk_free_rate=self.risk_free_rate)
         else:
             return None

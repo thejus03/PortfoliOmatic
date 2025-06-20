@@ -8,7 +8,7 @@ import os
 
 class RoboAdvisor:
     def __init__(self, risk_level: str):
-       # risk level: ultra_low, low, medium, high, very high
+       # risk level: ultra_low, low, medium, high, very_high
        self.risk_level = risk_level
        self.assets = self._get_assets()
 
@@ -51,7 +51,15 @@ class RoboAdvisor:
     
     # Method to get historical returns
     def _get_historical_returns(self):
-        return self._get_historical_prices().pct_change().dropna().mean() * 252
+        prices = self._get_historical_prices()
+        daily_returns = prices.pct_change().dropna()
+
+        # Calculate geometric annual return for each asset
+        compounded_growth = (1 + daily_returns).prod()
+        n_days = daily_returns.shape[0]
+        
+        annual_returns = compounded_growth ** (252 / n_days) - 1
+        return annual_returns
 
     # Method to get Pick and View Matrices
     def _get_P_and_Q(self):
@@ -103,10 +111,9 @@ class RoboAdvisor:
     
 if __name__ == "__main__":
     # Create an instance with a valid risk level
-    advisor = RoboAdvisor(risk_level="ultra_low")
+    advisor = RoboAdvisor(risk_level="very_high")
 
     print(advisor._get_historical_prices())
-    print(advisor._get_market_caps())
     print(advisor._get_historical_returns())
 
     # Test generating portfolio

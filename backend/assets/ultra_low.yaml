@@ -1,5 +1,17 @@
 tickers:
-  - "AAPL"
-  - "MSFT"
-  - "GOOG"
-  - "STIP"
+- "SHV"  # iShares Short Treasury Bond ETF
+- "SGOV" # iShares 0-3 Month Treasury Bond ETF
+- "BIL"  # SPDR Bloomberg 1-3 Month T-Bill ETF
+- "VGSH" # Vanguard Short-Term Treasury ETF
+- "SCHO" # Schwab Short-Term U.S. Treasury ETF
+- "STIP" # iShares 0-5 Year TIPS Bond ETF
+- "TIP"  # iShares TIPS Bond ETF
+- "VTIP" # Vanguard Short-Term Inflation-Protected Securities ETF
+- "MINT" # PIMCO Enhanced Short Maturity Active ETF
+- "ICSH" # iShares Ultra Short-Term Bond ETF
+- "JPST" # JPMorgan Ultra-Short Income ETF
+- "FLTR" # VanEck Investment Grade Floating Rate ETF
+- "USFR" # WisdomTree Floating Rate Treasury ETF
+- "GSY"  # Invesco Ultra Short Duration ETF
+- "BSV"  # Vanguard Short-Term Bond ETF
+- "IAU"  # iShares Gold Trust
