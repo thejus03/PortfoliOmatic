@@ -1,22 +1,22 @@
 tickers:
-- "AGG"  # iShares Core U.S. Aggregate Bond ETF
-- "BND"  # Vanguard Total Bond Market ETF
-- "LQD"  # iShares iBoxx $ Investment Grade Corporate Bond ETF
-- "VCSH" # Vanguard Short-Term Corporate Bond ETF
-- "IGSB" # iShares Short-Term Corporate Bond ETF
-- "SPLB" # SPDR Portfolio Long Term Corporate Bond ETF
-- "SCHZ" # Schwab U.S. Aggregate Bond ETF
-- "GBIL" # Goldman Sachs Access Treasury 0-1 Year ETF
-- "FLOT" # iShares Floating Rate Bond ETF
-- "PFIG" # Invesco Fundamental Investment Grade Corporate Bond ETF
-- "IUSB" # iShares Core Total USD Bond Market ETF
-- "SPAB" # SPDR Portfolio Aggregate Bond ETF
-- "BIV"  # Vanguard Intermediate-Term Bond ETF
-- "TLT"  # iShares 20+ Year Treasury Bond ETF
-- "EDV"  # Vanguard Extended Duration Treasury ETF
-- "IEF"  # iShares 7-10 Year Treasury Bond ETF
-- "SCHR" # Schwab Intermediate-Term U.S. Treasury ETF
-- "SPTL" # SPDR Portfolio Long Term Treasury ETF
-- "TLH"  # iShares 10-20 Year Treasury Bond ETF
-- "MUB"  # iShares National Muni Bond ETF
-- "IAU"  # iShares Gold Trust
+- "AGG"  # iShares Core U.S. Aggregate Bond ETF - Bond
+- "BND"  # Vanguard Total Bond Market ETF - Bond
+- "LQD"  # iShares iBoxx $ Investment Grade Corporate Bond ETF - Bond
+- "VCSH" # Vanguard Short Term Corporate Bond ETF - Bond
+- "IGSB" # iShares Short Term Corporate Bond ETF - Bond
+- "SPLB" # SPDR Portfolio Long Term Corporate Bond ETF - Bond
+- "SCHZ" # Schwab U.S. Aggregate Bond ETF - Bond
+- "GBIL" # Goldman Sachs Access Treasury 0-1 Year ETF - Bond
+- "FLOT" # iShares Floating Rate Bond ETF - Bond
+- "PFIG" # Invesco Fundamental Investment Grade Corporate Bond ETF - Bond
+- "IUSB" # iShares Core Total USD Bond Market ETF - Bond
+- "SPAB" # SPDR Portfolio Aggregate Bond ETF - Bond
+- "BIV"  # Vanguard Intermediate Term Bond ETF - Bond
+- "TLT"  # iShares 20+ Year Treasury Bond ETF - Bond
+- "EDV"  # Vanguard Extended Duration Treasury ETF - Bond
+- "IEF"  # iShares 7 to 10 Year Treasury Bond ETF - Bond
+- "SCHR" # Schwab Intermediate Term U.S. Treasury ETF - Bond
+- "SPTL" # SPDR Portfolio Long Term Treasury ETF - Bond
+- "TLH"  # iShares 10 to 20 Year Treasury Bond ETF -Bond
+- "MUB"  # iShares National Muni Bond ETF - Bond
+- "IAU"  # iShares Gold Trust - Gold

@@ -1,17 +1,17 @@
 tickers:
-- "SHV"  # iShares Short Treasury Bond ETF
-- "SGOV" # iShares 0-3 Month Treasury Bond ETF
-- "BIL"  # SPDR Bloomberg 1-3 Month T-Bill ETF
-- "VGSH" # Vanguard Short-Term Treasury ETF
-- "SCHO" # Schwab Short-Term U.S. Treasury ETF
-- "STIP" # iShares 0-5 Year TIPS Bond ETF
-- "TIP"  # iShares TIPS Bond ETF
-- "VTIP" # Vanguard Short-Term Inflation-Protected Securities ETF
-- "MINT" # PIMCO Enhanced Short Maturity Active ETF
-- "ICSH" # iShares Ultra Short-Term Bond ETF
-- "JPST" # JPMorgan Ultra-Short Income ETF
-- "FLTR" # VanEck Investment Grade Floating Rate ETF
-- "USFR" # WisdomTree Floating Rate Treasury ETF
-- "GSY"  # Invesco Ultra Short Duration ETF
-- "BSV"  # Vanguard Short-Term Bond ETF
-- "IAU"  # iShares Gold Trust
+- "SHV"  # iShares Short Treasury Bond ETF - Bond
+- "SGOV" # iShares 0 to 3 Month Treasury Bond ETF - Bond
+- "BIL"  # SPDR Bloomberg 1 to 3 Month TBill ETF - Bond
+- "VGSH" # Vanguard Short Term Treasury ETF - Bond
+- "SCHO" # Schwab Short Term U.S. Treasury ETF - Bond
+- "STIP" # iShares 0 to 5 Year TIPS Bond ETF - Bond
+- "TIP"  # iShares TIPS Bond ETF - Bond
+- "VTIP" # Vanguard Short Term Inflation Protected Securities ETF - Bond
+- "MINT" # PIMCO Enhanced Short Maturity Active ETF - Bond
+- "ICSH" # iShares Ultra Short Term Bond ETF - Bond
+- "JPST" # JPMorgan Ultra Short Income ETF - Bond
+- "FLTR" # VanEck Investment Grade Floating Rate ETF - Bond
+- "USFR" # WisdomTree Floating Rate Treasury ETF - Bond
+- "GSY"  # Invesco Ultra Short Duration ETF - Bond
+- "BSV"  # Vanguard Short Term Bond ETF - Bond
+- "IAU"  # iShares Gold Trust - Gold

@@ -1,22 +1,20 @@
 tickers:
-- "AMZN"   # Amazon - Large Cap Growth Stock
-- "TSLA"   # Tesla - Large Cap Growth Stock
-- "META"   # Meta Platforms - Large Cap Growth Stock
-- "GOOGL"  # Alphabet Class A - Large Cap Growth Stock
-- "NFLX"   # Netflix - Large Cap Growth Stock
-- "CRM"    # Salesforce - Tech Growth Stock
-- "ADBE"   # Adobe - Tech Growth Stock
-- "AMD"    # Advanced Micro Devices - Semiconductor Growth Stock
-- "AVGO"   # Broadcom - Semiconductor Growth Stock
-- "COST"   # Costco - Large Cap Growth Stock
-- "QQQ"    # Invesco QQQ Trust - NASDAQ-100 ETF
-- "IWF"    # iShares Russell 1000 Growth ETF
-- "VUG"    # Vanguard Growth ETF
-- "XLK"    # Technology Select Sector SPDR ETF
-- "ARKK"   # ARK Innovation ETF - Thematic Growth
-- "MGK"    # Vanguard Mega Cap Growth ETF
-- "IWM"    # iShares Russell 2000 ETF - Small Cap Exposure
-- "VTWO"   # Vanguard Russell 2000 ETF - Small Cap Exposure
-- "HYLB"   # Xtrackers USD High Yield Corporate Bond ETF - High-Yield Bond
-- "HYG"    # iShares iBoxx High Yield Corporate Bond ETF - High-Yield Bond
-- "GLD"    # SPDR Gold Shares - Gold Hedge
+- "AMZN"   # Amazon - Equity
+- "TSLA"   # Tesla  - Equity
+- "META"   # Meta Platforms - Equity
+- "GOOGL"  # Alphabet Class A - Equity
+- "NFLX"   # Netflix - Equity
+- "CRM"    # Salesforce - Equity
+- "ADBE"   # Adobe - Equity
+- "AMD"    # Advanced Micro Devices - Equity
+- "AVGO"   # Broadcom - Equity
+- "COST"   # Costco - Equity
+- "QQQ"    # Invesco QQQ Trust - Equity
+- "IWF"    # iShares Russell 1000 Growth ETF - Equity
+- "VUG"    # Vanguard Growth ETF - Equity
+- "XLK"    # Technology Select Sector SPDR ETF - Equity
+- "ARKK"   # ARK Innovation ETF - Equity
+- "MGK"    # Vanguard Mega Cap Growth ETF - Equity
+- "IWM"    # iShares Russell 2000 ETF - Equity
+- "VTWO"   # Vanguard Russell 2000 ETF - Equity
+- "HYLB"   # Xtrackers USD High Yield Corporate Bond ETF - Bond

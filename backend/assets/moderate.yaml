@@ -1,27 +1,26 @@
 tickers:
-- "AAPL"  # Apple Inc. - Blue Chip Stocks
-- "MSFT"  # Microsoft Corp - Blue Chip Stocks
-- "JNJ"   # Johnson & Johnson - Blue Chip Stocks
-- "V"     # Visa Inc. - Blue Chip Stocks
-- "PG"    # Procter & Gamble - Blue Chip Stocks
-- "UNH"   # UnitedHealth Group - Blue Chip Stocks
-- "HD"    # Home Depot - Blue Chip Stocks
-- "KO"    # Coca-Cola - Blue Chip Stocks
-- "XOM"   # Exxon Mobil - Blue Chip Stocks
-- "NVDA"  # NVIDIA - Blue Chip Stocks
-- "MA"    # Mastercard - Blue Chip Stocks
-- "MRK"   # Merck & Co. - Blue Chip Stocks
-- "PEP"   # PepsiCo - Blue Chip Stocks
-- "WMT"   # Walmart - Blue Chip Stocks
-- "MCD"   # McDonald’s - Blue Chip Stocks
-- "VTI"   # Vanguard Total Stock Market ETF
-- "SPY"   # SPDR S&P 500 ETF
-- "SCHD"  # Schwab U.S. Dividend Equity ETF
-- "VYM"   # Vanguard High Dividend Yield ETF
-- "VEA"   # Vanguard Developed Markets Index Fund
-- "AGG"   # iShares Core U.S. Aggregate Bond ETF
-- "BND"   # Vanguard Total Bond Market ETF
-- "LQD"   # iShares iBoxx $ Investment Grade Corporate Bond ETF
-- "MUB"   # iShares National Muni Bond ETF
-- "TIP"   # iShares TIPS Bond ETF
-- "IAU"   # iShares Gold Trust
+- "AAPL"  # Apple Inc. - Equity
+- "MSFT"  # Microsoft Corp - Equity
+- "JNJ"   # Johnson & Johnson - Equity
+- "V"     # Visa Inc. - Equity
+- "PG"    # Procter & Gamble - Equity
+- "UNH"   # UnitedHealth Group - Equity
+- "HD"    # Home Depot - Equity
+- "KO"    # Coca Cola - Equity
+- "XOM"   # Exxon Mobil - Equity
+- "NVDA"  # NVIDIA - Equity
+- "MA"    # Mastercard - Equity
+- "MRK"   # Merck & Co. - Equity
+- "PEP"   # PepsiCo - Equity
+- "WMT"   # Walmart - Equity
+- "MCD"   # McDonalds - Equity
+- "VTI"   # Vanguard Total Stock Market ETF - Equity
+- "SPY"   # SPDR S&P 500 ETF - Equity
+- "SCHD"  # Schwab U.S. Dividend Equity ETF - Equity
+- "VYM"   # Vanguard High Dividend Yield ETF - Equity
+- "VEA"   # Vanguard Developed Markets Index Fund - Equity
+- "AGG"   # iShares Core U.S. Aggregate Bond ETF - Bond
+- "BND"   # Vanguard Total Bond Market ETF - Bond
+- "LQD"   # iShares iBoxx $ Investment Grade Corporate Bond ETF - Bond
+- "TIP"   # iShares TIPS Bond ETF - Bond
+- "IAU"   # iShares Gold Trust - Gold

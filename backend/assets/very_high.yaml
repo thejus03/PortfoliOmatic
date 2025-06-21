@@ -1,26 +1,26 @@
 tickers:
-- "ROKU"   # Roku Inc. - High Volatility Small Cap
-- "PLTR"   # Palantir Technologies - Speculative Tech Stock
-- "U"      # Unity Software - Volatile Tech Stock
-- "SNOW"   # Snowflake Inc. - High Growth Data Cloud Company
-- "TWLO"   # Twilio Inc. - Speculative SaaS Stock
-- "AFRM"   # Affirm Holdings - Fintech Disruptor
-- "FVRR"   # Fiverr International - Gig Economy Stock
-- "CRSP"   # CRISPR Therapeutics - Biotech Stock
-- "MRNA"   # Moderna - Biotech Stock
-- "NVAX"   # Novavax - Biotech Stock
-- "ARKK"   # ARK Innovation ETF - Thematic High Growth
-- "ARKG"   # ARK Genomic Revolution ETF - Thematic Biotech
-- "ARKW"   # ARK Next Gen Internet ETF - Thematic Disruptive Tech
-- "FDN"    # First Trust Dow Jones Internet ETF
-- "EEM"    # iShares MSCI Emerging Markets ETF
-- "VWO"    # Vanguard FTSE Emerging Markets ETF
-- "IWM"    # iShares Russell 2000 ETF - Small Cap Exposure
-- "SLY"    # SPDR S&P 600 Small Cap ETF - Small Cap Exposure
-- "SOXX"   # iShares Semiconductor ETF - High Growth Tech
-- "GME"    # GameStop - Meme Stock / Speculative
-- "AMC"    # AMC Entertainment - Meme Stock / Speculative
-- "COIN"   # Coinbase - Crypto Proxy Stock
-- "KWEB"   # KraneShares CSI China Internet ETF - China Tech Exposure
-- "BOTZ"   # Global X Robotics & AI ETF - Thematic AI
-- "ROBO"   # ROBO Global Robotics & Automation ETF - Thematic AI
+- "ROKU"   # Roku Inc. - Equity
+- "PLTR"   # Palantir Technologies - Equity
+- "U"      # Unity Software - Equity
+- "SNOW"   # Snowflake Inc. - Equity
+- "TWLO"   # Twilio Inc. - Equity
+- "AFRM"   # Affirm Holdings - Equity
+- "FVRR"   # Fiverr International - Equity
+- "CRSP"   # CRISPR Therapeutics - Equity
+- "MRNA"   # Moderna - Equity
+- "NVAX"   # Novavax - Equity
+- "ARKK"   # ARK Innovation ETF - Equity
+- "ARKG"   # ARK Genomic Revolution ETF - Equity
+- "ARKW"   # ARK Next Gen Internet ETF - Equity
+- "FDN"    # First Trust Dow Jones Internet ETF - Equity
+- "EEM"    # iShares MSCI Emerging Markets ETF - Equity
+- "VWO"    # Vanguard FTSE Emerging Markets ETF - Equity
+- "IWM"    # iShares Russell 2000 ETF - Equity
+- "SLY"    # SPDR S&P 600 Small Cap ETF - Equity
+- "SOXX"   # iShares Semiconductor ETF - Equity
+- "GME"    # GameStop - Equity
+- "AMC"    # AMC Entertainment - Equity
+- "COIN"   # Coinbase - Equity
+- "KWEB"   # KraneShares CSI China Internet ETF - Equity
+- "BOTZ"   # Global X Robotics & AI ETF - Equity
+- "ROBO"   # ROBO Global Robotics & Automation ETF - Equity
