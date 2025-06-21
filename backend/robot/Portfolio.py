@@ -3,8 +3,9 @@ import pandas as pd
 from pypfopt import risk_models, expected_returns, black_litterman, EfficientFrontier
 
 class Portfolio:
-    def __init__(self, efficient_frontier: EfficientFrontier, risk_free_rate=0):
+    def __init__(self, efficient_frontier: EfficientFrontier, ticker_to_class_and_name_mapping, risk_free_rate=0):
         self.ef = efficient_frontier
+        self.ticker_to_class_and_name_mapping = ticker_to_class_and_name_mapping
         self.initialised = False
         self.risk_free_rate = risk_free_rate
     
@@ -16,13 +17,53 @@ class Portfolio:
             self.risk_free_rate = risk_free_rate
         
         self.ef.max_sharpe(risk_free_rate=self.risk_free_rate)
-        return self.ef.clean_weights()
+        ticker_to_weightage_mapping = self.ef.clean_weights()
+
+        asset_class_to_weightage_mapping = {}
+        ticker_to_full_info_mapping = {}
+
+        for ticker in ticker_to_weightage_mapping:
+            if ticker_to_weightage_mapping[ticker] == 0.0:
+                continue
+        
+            info = self.ticker_to_class_and_name_mapping[ticker]
+            info["weightage"] = ticker_to_weightage_mapping[ticker]
+            
+            if info["asset_class"] in asset_class_to_weightage_mapping:
+                asset_class_to_weightage_mapping[info["asset_class"]] += ticker_to_weightage_mapping[ticker]
+            else:
+                asset_class_to_weightage_mapping[info["asset_class"]] = ticker_to_weightage_mapping[ticker]
+            
+            ticker_to_full_info_mapping[ticker] = info
+
+        return ticker_to_full_info_mapping, asset_class_to_weightage_mapping
 
     # returns a dictionary mapping ticker to weight in the min volatility portfolio
     def get_min_volatility_portfolio(self):
         self.initialised = True
+        
         self.ef.min_volatility()
-        return self.ef.clean_weights()
+        ticker_to_weightage_mapping = self.ef.clean_weights()
+
+        asset_class_to_weightage_mapping = {}
+        ticker_to_full_info_mapping = {}
+
+        for ticker in ticker_to_weightage_mapping:
+            if ticker_to_weightage_mapping[ticker] == 0.0:
+                continue
+        
+            info = self.ticker_to_class_and_name_mapping[ticker]
+            info["weightage"] = ticker_to_weightage_mapping[ticker]
+            
+            if info["asset_class"] in asset_class_to_weightage_mapping:
+                asset_class_to_weightage_mapping[info["asset_class"]] += ticker_to_weightage_mapping[ticker]
+            else:
+                asset_class_to_weightage_mapping[info["asset_class"]] = ticker_to_weightage_mapping[ticker]
+            
+            ticker_to_full_info_mapping[ticker] = info
+
+        return ticker_to_full_info_mapping, asset_class_to_weightage_mapping
+
     
     # returns the expected return, annual volatility and sharpe ratio of the portfolio
     def get_RVS(self):

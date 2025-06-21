@@ -3,14 +3,14 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 from pypfopt import risk_models, expected_returns, black_litterman, EfficientFrontier
-from .Portfolio import Portfolio
+from Portfolio import Portfolio
 import os
 
 class RoboAdvisor:
     def __init__(self, risk_level: str):
        # risk level: ultra_low, low, moderate, high, very_high
        self.risk_level = risk_level
-       self.assets = self._get_assets()
+       self.assets, self.ticker_to_class_and_name_mapping = self._get_assets()
 
     def _get_assets(self) -> list[str]:
         # Get absolute path of the current file (RoboAdvisor.py)
@@ -23,8 +23,22 @@ class RoboAdvisor:
         file_path = os.path.join(backend_dir, "assets", f"{self.risk_level}.yaml")
 
         with open(file_path, "r") as f:
-            data = yaml.safe_load(f)
-        return data["tickers"]
+            lines = f.readlines()
+
+        tickers = []
+        ticker_to_class_and_name_mapping = {}
+
+        for line in lines:
+            if line.strip().startswith('-'):
+                parts = line.split('#')
+                ticker = parts[0].strip().lstrip('-').strip().strip('"')
+                tickers.append(ticker)
+                if len(parts) > 1 and '-' in parts[1]:
+                    asset_class = parts[1].split('-')[-1].strip()
+                    asset_name = parts[1].split('-')[0].strip()
+                    ticker_to_class_and_name_mapping[ticker] = {"asset_class": asset_class.lower(), "asset_name": asset_name}
+        
+        return tickers, ticker_to_class_and_name_mapping
 
     # Method to get daily adjusted closing price of assets
     def _get_historical_prices(self):
@@ -63,29 +77,27 @@ class RoboAdvisor:
 
     # Method to get Pick and View Matrices
     def _get_P_and_Q(self):
-        # To get Q
         Q = []
+        P_rows = []
 
-        for ticker in self.assets:
-            target = yf.Ticker(ticker).info.get("targetMeanPrice")
-            current = yf.Ticker(ticker).info.get("currentPrice")
+        for i, ticker in enumerate(self.assets):
+            info = yf.Ticker(ticker).info
+            target = info.get("targetMeanPrice")
+            current = info.get("currentPrice")
+
             if target is None or current is None:
-                expected_return = 0  
-            else:
-                expected_return = (target - current) / current  
+                continue  # Skip this view if data is missing
+
+            expected_return = (target - current) / current
             Q.append(expected_return)
-        
+
+            row = [0] * len(self.assets)
+            row[i] = 1
+            P_rows.append(row)
+
+        P = pd.DataFrame(P_rows, columns=self.assets)
         Q = np.array(Q)
 
-        # To get P
-        P = pd.DataFrame(columns=self.assets)
-
-        for i in range(len(self.assets)):
-            row = [0] * len(self.assets)
-            if Q[i] != 0:
-                row[i] = 1
-            P.loc[len(P)] = row
-        
         return P, Q
 
     # Method to generate the portfolio
@@ -106,18 +118,32 @@ class RoboAdvisor:
             Q=Q
         )
 
-        ef = EfficientFrontier(expected_returns=bl.bl_returns(), cov_matrix=bl.bl_cov())
-        return Portfolio(efficient_frontier=ef)
+        # Generate the efficient frontier with max weightage of any asset set to 30% (prevent oversaturation in a particular asset)
+        ef = EfficientFrontier(expected_returns=bl.bl_returns(), cov_matrix=bl.bl_cov(), weight_bounds=(0, 0.3))
+
+        return Portfolio(efficient_frontier=ef, ticker_to_class_and_name_mapping=self.ticker_to_class_and_name_mapping)
     
-# if __name__ == "__main__":
-#     # Create an instance with a valid risk level
-#     advisor = RoboAdvisor(risk_level="very_high")
+if __name__ == "__main__":
+    # Create an instance with a valid risk level
+    advisor = RoboAdvisor(risk_level="moderate")
 
-#     print(advisor._get_historical_prices())
-#     print(advisor._get_historical_returns())
+    # Test generating portfolio
+    portfolio = advisor.generate_portfolio()
+    ticker_to_full_info_mapping, asset_class_to_weightage_mapping = portfolio.get_max_sharpe_ratio_portfolio()
 
-#     # Test generating portfolio
-#     portfolio = advisor.generate_portfolio()
-#     print("Generated portfolio:")
-#     print(portfolio.get_max_sharpe_ratio_portfolio())
-#     print(portfolio.get_RVS())
+    print("\n Ticker to full info mapping:")
+    print(ticker_to_full_info_mapping)
+
+    print("\n Asset class to weightage mapping: ")
+    print(asset_class_to_weightage_mapping)
+
+    returns, volatility, sharpe_ratio  = portfolio.get_RVS()
+
+    print("\n Returns:")
+    print(returns)
+
+    print("\n Volatility:")
+    print(volatility)
+
+    print("\n Sharpe_ratio:")
+    print(sharpe_ratio)
