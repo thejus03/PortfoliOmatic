@@ -3,12 +3,12 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 from pypfopt import risk_models, expected_returns, black_litterman, EfficientFrontier
-from Portfolio import Portfolio
+from .Portfolio import Portfolio
 import os
 
 class RoboAdvisor:
     def __init__(self, risk_level: str):
-       # risk level: ultra_low, low, medium, high, very_high
+       # risk level: ultra_low, low, moderate, high, very_high
        self.risk_level = risk_level
        self.assets = self._get_assets()
 
@@ -109,15 +109,15 @@ class RoboAdvisor:
         ef = EfficientFrontier(expected_returns=bl.bl_returns(), cov_matrix=bl.bl_cov())
         return Portfolio(efficient_frontier=ef)
     
-if __name__ == "__main__":
-    # Create an instance with a valid risk level
-    advisor = RoboAdvisor(risk_level="very_high")
+# if __name__ == "__main__":
+#     # Create an instance with a valid risk level
+#     advisor = RoboAdvisor(risk_level="very_high")
 
-    print(advisor._get_historical_prices())
-    print(advisor._get_historical_returns())
+#     print(advisor._get_historical_prices())
+#     print(advisor._get_historical_returns())
 
-    # Test generating portfolio
-    portfolio = advisor.generate_portfolio()
-    print("Generated portfolio:")
-    print(portfolio.get_max_sharpe_ratio_portfolio())
-    print(portfolio.get_RVS())
+#     # Test generating portfolio
+#     portfolio = advisor.generate_portfolio()
+#     print("Generated portfolio:")
+#     print(portfolio.get_max_sharpe_ratio_portfolio())
+#     print(portfolio.get_RVS())

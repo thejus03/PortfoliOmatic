@@ -26,7 +26,7 @@ export default function AccountSetupLayout({ children }) {
                         </Box>
                     </div>
                 </div>
-                <div className="w-full flex-1">{children}</div>
+                <div className="w-full flex-1 ">{children}</div>
             </div>
         </AccountSetupProvider>
     )
