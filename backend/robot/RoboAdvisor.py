@@ -3,7 +3,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 from pypfopt import risk_models, expected_returns, black_litterman, EfficientFrontier
-from Portfolio import Portfolio
+from robot.Portfolio import Portfolio
 import os
 
 class RoboAdvisor:
@@ -48,14 +48,14 @@ class RoboAdvisor:
     def _get_covariance_matrix(self):
         return risk_models.sample_cov(self._get_historical_prices())
     
-    # Method to get market cap of assets
+    # Method to get market cap of assets - currently not in use
     def _get_market_caps(self):
         market_caps = {}
         for ticker in self.assets:
             market_caps[ticker] = yf.Ticker(ticker).info.get("marketCap")
         return market_caps
     
-    # Method to reverse engineer expected returns from market cap of assets
+    # Method to reverse engineer expected returns from market cap of assets - currently not in use
     def _get_implied_returns(self):
         return black_litterman.market_implied_prior_returns(
             market_caps=self._get_market_caps(),

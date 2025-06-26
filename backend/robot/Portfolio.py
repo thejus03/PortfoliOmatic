@@ -1,6 +1,5 @@
-import yfinance as yf
 import pandas as pd
-from pypfopt import risk_models, expected_returns, black_litterman, EfficientFrontier
+from pypfopt import EfficientFrontier
 
 class Portfolio:
     def __init__(self, efficient_frontier: EfficientFrontier, ticker_to_class_and_name_mapping, risk_free_rate=0):
