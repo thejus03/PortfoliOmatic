@@ -43,6 +43,12 @@ function page() {
         router.push("/account-setup/risk-preference")
     }
 
+    const option1 = 0
+    const option2 = 2.5
+    const option3 = 5
+    const option4 = 7.5
+    const option5 = 10
+
   return (
     <Stack direction="column" align="center" justify="center" gap="10">
         <Box className="mt-16">
@@ -80,27 +86,27 @@ function page() {
                     >
 
                         <Stack direction="column" gap="6">
-                            <RadioGroup.Item key="less-than-1-year" value="less-than-1-year">
+                            <RadioGroup.Item key="less-than-1-year" value={option1}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Less than 1 year</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="1-to-3-years" value="1-to-3-years">
+                            <RadioGroup.Item key="1-to-3-years" value={option2}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>1 to 3 years</RadioGroup.ItemText>
                             </RadioGroup.Item>  
-                            <RadioGroup.Item key="3-to-5-years" value="3-to-5-years">
+                            <RadioGroup.Item key="3-to-5-years" value={option3}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>3 to 5 years</RadioGroup.ItemText>
                             </RadioGroup.Item> 
-                            <RadioGroup.Item key="5-to-10-years" value="5-to-10-years">
+                            <RadioGroup.Item key="5-to-10-years" value={option4}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>5 to 10 years</RadioGroup.ItemText>
                             </RadioGroup.Item> 
-                            <RadioGroup.Item key="more-than-10-years" value="more-than-10-years">
+                            <RadioGroup.Item key="more-than-10-years" value={option5}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>more than 10 years</RadioGroup.ItemText>
@@ -118,27 +124,27 @@ function page() {
                             margin="4"
                         >
                             <Stack direction="column" gap="6">
-                                <RadioGroup.Item key="less-than-40000" value="less-than-40000">
+                                <RadioGroup.Item key="less-than-40000" value={option1}>
                                     <RadioGroup.ItemHiddenInput />
                                     <RadioGroup.ItemIndicator />
                                     <RadioGroup.ItemText>Less than $40,000</RadioGroup.ItemText>
                                 </RadioGroup.Item>
-                                <RadioGroup.Item key="40000-to-80000" value="40000-to-80000">
+                                <RadioGroup.Item key="40000-to-80000" value={option2}>
                                     <RadioGroup.ItemHiddenInput />
                                     <RadioGroup.ItemIndicator />
                                     <RadioGroup.ItemText>$40,000 to $80,000</RadioGroup.ItemText>
                                 </RadioGroup.Item>
-                                <RadioGroup.Item key="80000-to-1200000" value="80000-to-1200000">
+                                <RadioGroup.Item key="80000-to-1200000" value={option3}>
                                     <RadioGroup.ItemHiddenInput />
                                     <RadioGroup.ItemIndicator />
                                     <RadioGroup.ItemText>$80,000 to $120,000</RadioGroup.ItemText>
                                 </RadioGroup.Item>
-                                <RadioGroup.Item key="1200000-to-200000" value="1200000-to-200000">
+                                <RadioGroup.Item key="1200000-to-200000" value={option4}>
                                     <RadioGroup.ItemHiddenInput />
                                     <RadioGroup.ItemIndicator />
                                     <RadioGroup.ItemText>$120,000 to $200,000</RadioGroup.ItemText>
                                 </RadioGroup.Item>
-                                <RadioGroup.Item key="more-than-200000" value="more-than-200000">
+                                <RadioGroup.Item key="more-than-200000" value={option5}>
                                     <RadioGroup.ItemHiddenInput />
                                     <RadioGroup.ItemIndicator />
                                     <RadioGroup.ItemText>more than $200,000</RadioGroup.ItemText>
@@ -156,30 +162,30 @@ function page() {
                         margin="4"
                     >
                         <Stack direction="column" gap="6">
-                            <RadioGroup.Item key="less-than-15" value="less-than-15">
+                            <RadioGroup.Item key="less-than-15" value={option1}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
-                                <RadioGroup.ItemText>Less than 15%</RadioGroup.ItemText>
+                                <RadioGroup.ItemText>More than 85%</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="between-15-to-25" value="between-15-to-25">
+                            <RadioGroup.Item key="between-15-to-25" value={option2}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
-                                <RadioGroup.ItemText>Between 15% to 25%</RadioGroup.ItemText>
+                                <RadioGroup.ItemText>Between 75% to 85%</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="between-25-to-35" value="between-25-to-35">
+                            <RadioGroup.Item key="between-25-to-35" value={option3}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
-                                <RadioGroup.ItemText>Between 25% to 35%</RadioGroup.ItemText>
+                                <RadioGroup.ItemText>Between 65% to 75%</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="between-35-to-45" value="between-35-to-45">
+                            <RadioGroup.Item key="between-35-to-45" value={option4}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
-                                <RadioGroup.ItemText>Between 35% to 45%</RadioGroup.ItemText>
+                                <RadioGroup.ItemText>Between 55% to 65%</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="more-than-45" value="more-than-45">
+                            <RadioGroup.Item key="more-than-45" value={option5}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
-                                <RadioGroup.ItemText>More than 45%</RadioGroup.ItemText>
+                                <RadioGroup.ItemText>Less than 55%</RadioGroup.ItemText>
                             </RadioGroup.Item>
                         </Stack>
                     </RadioGroup.Root>
@@ -194,27 +200,27 @@ function page() {
                         margin="4"
                     >
                         <Stack direction="column" gap="6">
-                            <RadioGroup.Item key="less-than-15" value="less-than-15">
+                            <RadioGroup.Item key="less-than-15" value={option1}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Less than 15%</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="between-15-to-25" value="between-15-to-25">
+                            <RadioGroup.Item key="between-15-to-25" value={option2}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Between 15% to 25%</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="between-25-to-35" value="between-25-to-35">
+                            <RadioGroup.Item key="between-25-to-35" value={option3}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Between 25% to 35%</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="between-35-to-45" value="between-35-to-45">
+                            <RadioGroup.Item key="between-35-to-45" value={option4}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Between 35% to 45%</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="more-than-45" value="more-than-45">
+                            <RadioGroup.Item key="more-than-45" value={option5}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>More than 45%</RadioGroup.ItemText>

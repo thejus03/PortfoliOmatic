@@ -33,13 +33,17 @@ function page() {
 
     const handleNext = () => {
         savePage()
-        router.push("/")
+        router.push("/account-setup/portfolio-suggestions")
     }
 
     const handleBack = () => {
         savePage()
         router.push("/account-setup/background")
     }
+
+    const option1 = 0
+    const option2 = 5
+    const option3 = 10
 
   return (
     <Stack direction="column" align="center" justify="center" gap="10">
@@ -77,17 +81,17 @@ function page() {
                     >
 
                         <Stack direction="column" gap="6">
-                            <RadioGroup.Item key="sell" value="sell">
+                            <RadioGroup.Item key="sell" value={option1}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Sell</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="nothing" value="nothing">
+                            <RadioGroup.Item key="nothing" value={option2}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Do nothing</RadioGroup.ItemText>
                             </RadioGroup.Item>  
-                            <RadioGroup.Item key="invest" value="invest">
+                            <RadioGroup.Item key="invest" value={option3}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Invest more (buy the dip)</RadioGroup.ItemText>
@@ -104,12 +108,12 @@ function page() {
                             margin="4"
                         >
                             <Stack direction="column" gap="6">
-                                <RadioGroup.Item key="portfolio1" value="portfolio1">
+                                <RadioGroup.Item key="portfolio1" value={option1}>
                                     <RadioGroup.ItemHiddenInput />
                                     <RadioGroup.ItemIndicator />
                                     <RadioGroup.ItemText>5% average return with 5% possible loss</RadioGroup.ItemText>
                                 </RadioGroup.Item>
-                                <RadioGroup.Item key="portfolio2" value="portfolio2">
+                                <RadioGroup.Item key="portfolio2" value={option3}>
                                     <RadioGroup.ItemHiddenInput />
                                     <RadioGroup.ItemIndicator />
                                     <RadioGroup.ItemText>10% average return with 20% possible loss</RadioGroup.ItemText>
@@ -127,17 +131,17 @@ function page() {
                         margin="4"
                     >
                         <Stack direction="column" gap="6">
-                            <RadioGroup.Item key="take-profit" value="take-profit">
+                            <RadioGroup.Item key="take-profit" value={option1}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Take profit</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="reinvest" value="reinvest">
+                            <RadioGroup.Item key="reinvest" value={option2}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Reinvest everything</RadioGroup.ItemText>
                             </RadioGroup.Item>
-                            <RadioGroup.Item key="increase" value="increase">
+                            <RadioGroup.Item key="increase" value={option3}>
                                 <RadioGroup.ItemHiddenInput />
                                 <RadioGroup.ItemIndicator />
                                 <RadioGroup.ItemText>Increase contributions</RadioGroup.ItemText>

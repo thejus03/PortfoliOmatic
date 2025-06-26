@@ -13,7 +13,9 @@ import {
     CheckboxCard,
     Flex,
     Checkbox,
-    Button
+    Button,
+    Avatar,
+    Card
 } from "@chakra-ui/react"
 import { RiArrowRightCircleLine } from 'react-icons/ri'
 import { useState } from "react";
@@ -44,6 +46,12 @@ function page() {
       router.push("/account-setup/background");
   }
 
+  const option1 = 0
+  const option2 = 7.5
+  const option3 = 15
+  const option4 = 22.5
+  const option5 = 30
+
   return (
       <Stack direction="column" align="center" justify="center" gap="10">
           <Box className="mt-16">
@@ -72,7 +80,7 @@ function page() {
                     <Heading textStyle="xl" fontWeight="bold" color="blue.200">What best describes your investment risk preference?</Heading>
                     <CheckboxGroup>
                         <Flex gap="4" flexWrap="wrap">
-                             <CheckboxCard.Root checked={selectedRisk === "protective"} onClick={()=>handleRiskChange("protective")} variant="outline" colorPalette="teal" minWidth="400px" borderRadius="xl" backgroundColor="teal.900">
+                             <CheckboxCard.Root checked={selectedRisk === option1} onClick={()=>handleRiskChange(option1)} variant="outline" colorPalette="teal" minWidth="400px" borderRadius="xl" backgroundColor="teal.900">
                                  <CheckboxCard.HiddenInput />
                                  <CheckboxCard.Control onClick={()=>console.log("clicked")}>
                                      <CheckboxCard.Content color="teal.100">
@@ -85,7 +93,7 @@ function page() {
                                      <CheckboxCard.Indicator />
                                  </CheckboxCard.Control>
                              </CheckboxCard.Root>
-                             <CheckboxCard.Root checked={selectedRisk === "conservative"} onClick={()=>handleRiskChange("conservative")} variant="outline" colorPalette="teal" minWidth="400px" borderRadius="xl" backgroundColor="teal.900">
+                             <CheckboxCard.Root checked={selectedRisk === option2} onClick={()=>handleRiskChange(option2)} variant="outline" colorPalette="teal" minWidth="400px" borderRadius="xl" backgroundColor="teal.900">
                                  <CheckboxCard.HiddenInput />
                                  <CheckboxCard.Control>
                                      <CheckboxCard.Content color="teal.100">
@@ -97,7 +105,7 @@ function page() {
                                      <CheckboxCard.Indicator />
                                  </CheckboxCard.Control>
                              </CheckboxCard.Root>
-                             <CheckboxCard.Root defaultChecked checked={selectedRisk === "balanced"} onClick={()=>handleRiskChange("balanced")} variant="outline" colorPalette="teal" minWidth="400px" borderRadius="xl" backgroundColor="teal.900">
+                             <CheckboxCard.Root defaultChecked checked={selectedRisk === option3} onClick={()=>handleRiskChange(option3)} variant="outline" colorPalette="teal" minWidth="400px" borderRadius="xl" backgroundColor="teal.900">
                                  <CheckboxCard.HiddenInput />
                                  <CheckboxCard.Control>
                                      <CheckboxCard.Content color="teal.100">
@@ -110,7 +118,7 @@ function page() {
                                      <CheckboxCard.Indicator />
                                  </CheckboxCard.Control>
                              </CheckboxCard.Root>
-                             <CheckboxCard.Root checked={selectedRisk === "growth"} onClick={()=>handleRiskChange("growth")} variant="outline" colorPalette="teal" minWidth="400px" borderRadius="xl" backgroundColor="teal.900">
+                             <CheckboxCard.Root checked={selectedRisk === option4} onClick={()=>handleRiskChange(option4)} variant="outline" colorPalette="teal" minWidth="400px" borderRadius="xl" backgroundColor="teal.900">
                                  <CheckboxCard.HiddenInput />
                                  <CheckboxCard.Control>
                                      <CheckboxCard.Content color="teal.100">
@@ -123,7 +131,7 @@ function page() {
                                      <CheckboxCard.Indicator />
                                  </CheckboxCard.Control>
                              </CheckboxCard.Root>
-                             <CheckboxCard.Root checked={selectedRisk === "aggressive"} onClick={()=>handleRiskChange("aggressive")} variant="outline" colorPalette="teal" minWidth="400px" borderRadius="xl" backgroundColor="teal.900">
+                             <CheckboxCard.Root checked={selectedRisk === option5} onClick={()=>handleRiskChange(option5)} variant="outline" colorPalette="teal" minWidth="400px" borderRadius="xl" backgroundColor="teal.900">
                                  <CheckboxCard.HiddenInput />
                                  <CheckboxCard.Control>
                                      <CheckboxCard.Content color="teal.100">

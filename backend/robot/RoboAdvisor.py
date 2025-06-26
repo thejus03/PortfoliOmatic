@@ -3,7 +3,7 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 from pypfopt import risk_models, expected_returns, black_litterman, EfficientFrontier
-from robot.Portfolio import Portfolio
+from Portfolio import Portfolio
 import os
 
 class RoboAdvisor:

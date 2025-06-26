@@ -6,18 +6,18 @@ const AccountSetupContext = createContext();
 export const AccountSetupProvider = ({ children }) => {
     const [formData, setFormData] = useState({
         riskPreference : {
-            risk: "balanced",
+            risk: 0
         },
         background: {
-            timeHorizon: "less-than-1-year",
-            incomeLevel: "less-than-40000",
-            monthlyExpense: "less-than-15",
-            investmentPercentage: "less-than-15"
+            timeHorizon: 0,
+            incomeLevel: 0,
+            monthlyExpense: 0,
+            investmentPercentage: 0
         },
         behavioural: {
-            selectedOption: "sell",
-            selectedOption2: "portfolio1",
-            selectedOption3: "take-profit"
+            selectedOption: 0,
+            selectedOption2: 0,
+            selectedOption3: 0
         }
     });
 
