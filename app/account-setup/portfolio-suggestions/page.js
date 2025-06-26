@@ -12,7 +12,7 @@ function page() {
                 <Heading textStyle="2xl" color="blue.200" fontWeight="bold" fontFamily={spaceGrotesk.style.fontFamily}>Great! We've got some portfolio suggestions for you.</Heading>
             </Box>
             <Box className="mt-16">
-
+            
             </Box>
         </Stack>
     )

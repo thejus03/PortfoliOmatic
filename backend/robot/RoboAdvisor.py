@@ -2,7 +2,7 @@ import yaml
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from pypfopt import risk_models, expected_returns, black_litterman, EfficientFrontier
+from pypfopt import risk_models, black_litterman, EfficientFrontier
 from robot.Portfolio import Portfolio
 import os
 
@@ -11,6 +11,7 @@ class RoboAdvisor:
        # risk level: ultra_low, low, moderate, high, very_high
        self.risk_level = risk_level
        self.assets, self.ticker_to_class_and_name_mapping = self._get_assets()
+       self.prices = self._get_historical_prices()
 
     def _get_assets(self) -> list[str]:
         # Get absolute path of the current file (RoboAdvisor.py)
@@ -46,7 +47,7 @@ class RoboAdvisor:
     
     # Method to get covariance of all assets
     def _get_covariance_matrix(self):
-        return risk_models.sample_cov(self._get_historical_prices())
+        return risk_models.sample_cov(self.prices)
     
     # Method to get market cap of assets - currently not in use
     def _get_market_caps(self):
@@ -65,7 +66,7 @@ class RoboAdvisor:
     
     # Method to get historical returns
     def _get_historical_returns(self):
-        prices = self._get_historical_prices()
+        prices = self.prices
         daily_returns = prices.pct_change().dropna()
 
         # Calculate geometric annual return for each asset
@@ -123,27 +124,27 @@ class RoboAdvisor:
 
         return Portfolio(efficient_frontier=ef, ticker_to_class_and_name_mapping=self.ticker_to_class_and_name_mapping)
     
-if __name__ == "__main__":
-    # Create an instance with a valid risk level
-    advisor = RoboAdvisor(risk_level="moderate")
+# if __name__ == "__main__":
+#     # Create an instance with a valid risk level
+#     advisor = RoboAdvisor(risk_level="moderate")
 
-    # Test generating portfolio
-    portfolio = advisor.generate_portfolio()
-    ticker_to_full_info_mapping, asset_class_to_weightage_mapping = portfolio.get_max_sharpe_ratio_portfolio()
+#     # Test generating portfolio
+#     portfolio = advisor.generate_portfolio()
+#     ticker_to_full_info_mapping, asset_class_to_weightage_mapping = portfolio.get_max_sharpe_ratio_portfolio()
 
-    print("\n Ticker to full info mapping:")
-    print(ticker_to_full_info_mapping)
+#     print("\n Ticker to full info mapping:")
+#     print(ticker_to_full_info_mapping)
 
-    print("\n Asset class to weightage mapping: ")
-    print(asset_class_to_weightage_mapping)
+#     print("\n Asset class to weightage mapping: ")
+#     print(asset_class_to_weightage_mapping)
 
-    returns, volatility, sharpe_ratio  = portfolio.get_RVS()
+#     returns, volatility, sharpe_ratio  = portfolio.get_RVS()
 
-    print("\n Returns:")
-    print(returns)
+#     print("\n Returns:")
+#     print(returns)
 
-    print("\n Volatility:")
-    print(volatility)
+#     print("\n Volatility:")
+#     print(volatility)
 
-    print("\n Sharpe_ratio:")
-    print(sharpe_ratio)
+#     print("\n Sharpe_ratio:")
+#     print(sharpe_ratio)
