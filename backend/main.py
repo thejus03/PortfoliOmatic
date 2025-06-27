@@ -92,6 +92,10 @@ def login(request: LoginRequest):
 
     return { "message": "Login successful", "token": f"Bearer {token}", "profiled": response.data[0]["profiled"]}
 
+@app.get("/update_portfolios")
+def update_portfolios():
+    generate_portfolios(supabase)
+    return {"message": "Portfolio updated successfully"}
 
 @app.post("/api/portfolio_suggestions")
 def portfolio_suggestions(request: PortfolioSuggestionsRequest, payload: dict = Depends(validate_token)):
