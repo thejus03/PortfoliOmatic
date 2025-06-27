@@ -90,7 +90,7 @@ def login(request: LoginRequest):
     # generate jwt token
     token = get_token(response.data[0]["id"], email)
 
-    return { "message": "Login successful", "token": f"Bearer {token}"}
+    return { "message": "Login successful", "token": f"Bearer {token}", "profiled": response.data[0]["profiled"]}
 
 
 @app.post("/api/portfolio_suggestions")

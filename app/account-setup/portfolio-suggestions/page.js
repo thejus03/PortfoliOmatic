@@ -25,7 +25,7 @@ function Page() {
     const router = useRouter();
     const { formData } = useAccountSetup();
     const [portfolios, setPortfolios] = useState(null);
-
+    const token = localStorage.getItem('token');
     useEffect(() => {
         const fetchPortfolio = async () => {
         const totalScore = Object.values(formData)
@@ -33,11 +33,12 @@ function Page() {
             .reduce((sum, val) => sum + val, 0);
 
         try {
-            const response = await fetch('http://127.0.0.1:8000/api/portfolio-suggestion', {
+            const response = await fetch('http://127.0.0.1:8000/api/portfolio_suggestions', {
             method: 'POST',
-            body: JSON.stringify({ totalScore }),
+            body: JSON.stringify({ score: totalScore }),
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': token
             },
             });
 

@@ -50,7 +50,11 @@ function Login() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem('token', data.token);
-        router.push('/');
+        if (!data.profiled) {
+          router.push('/account-setup/risk-preference');
+        } else {
+          router.push('/');
+        }
       } else {
         toaster.create({
           title: "Login failed",
