@@ -34,6 +34,11 @@ class Portfolio:
                 asset_class_to_weightage_mapping[info["asset_class"]] = ticker_to_weightage_mapping[ticker]
             
             ticker_to_full_info_mapping[ticker] = info
+        
+        returns, volatility, sharpe_ratio = self.get_RVS()
+
+        asset_class_to_weightage_mapping["returns"] = float(returns)
+        asset_class_to_weightage_mapping["volatility"] = float(volatility)
 
         return ticker_to_full_info_mapping, asset_class_to_weightage_mapping
 
