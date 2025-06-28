@@ -9,4 +9,4 @@ class SetPortfolioRequest(BaseModel):
     portfolio_id: int
 
 class PortfolioSuggestionsRequest(BaseModel):
-    score: int
+    score: float
