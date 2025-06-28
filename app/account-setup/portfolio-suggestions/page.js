@@ -10,7 +10,8 @@ import {    Stack,
             For,
             VStack,
             Spinner,
-            HStack
+            HStack,
+            SimpleGrid
         } from "@chakra-ui/react"
 import { Space_Grotesk } from "next/font/google"
 import { useAccountSetup } from '../context/AccountSetupContext'
@@ -25,12 +26,14 @@ function Page() {
     const router = useRouter();
     const { formData } = useAccountSetup();
     const [portfolios, setPortfolios] = useState(null);
-    const token = localStorage.getItem('token');
+    
     useEffect(() => {
         const fetchPortfolio = async () => {
         const totalScore = Object.values(formData)
             .flatMap(Object.values)
             .reduce((sum, val) => sum + val, 0);
+        
+        const token = localStorage.getItem('token');
 
         try {
             const response = await fetch('http://127.0.0.1:8000/api/portfolio_suggestions', {
@@ -185,7 +188,7 @@ function Page() {
             <Box className="mt-10">
                 <Heading textStyle="2xl" color="blue.200" fontWeight="bold" fontFamily={spaceGrotesk.style.fontFamily}>Our Recommended Portfolio: </Heading>
             </Box>
-            <Card.Root width="500px" height="300px" bg="blue.900">
+            <Card.Root width="600px" height="300px" bg="blue.900">
                 <Card.Body gap="2">
                     <Card.Title mt="2" mb="3" fontSize="xl" fontWeight="bold">{name_and_description[suggestedPortfolio.name].name}</Card.Title>
                     <Card.Description fontSize="md">
@@ -200,25 +203,26 @@ function Page() {
             <Box className="mt-5">
                 <Heading textStyle="2xl" color="blue.200" fontWeight="bold" fontFamily={spaceGrotesk.style.fontFamily}>Or, select another Portfolio that better suits your needs: </Heading>
             </Box>
-            <HStack>
-                <For each={otherPortfolios}>
-                    {(otherPortfolio, index) => (
-                        <Card.Root width="450px" height="300px" key={index} bg="blue.900">
-                            <Card.Body gap="2">
-                                <Card.Title mt="2" mb="3" fontSize="xl" fontWeight="bold">{name_and_description[otherPortfolio.name].name}</Card.Title>
-                                <Card.Description fontSize="md">
-                                {name_and_description[otherPortfolio.name].description}
-                                </Card.Description>
-                            </Card.Body>
-                            <Card.Footer justifyContent="space-between">
-                                <Popup portfolio={otherPortfolio} title={name_and_description[otherPortfolio.name].name}/>
-                                <Button variant="outline" borderWidth="2px" borderColor="white" color="white" px={5} py={2}>Select</Button>
-                            </Card.Footer>
-                        </Card.Root>
-                    )}
-                </For>
-            </HStack>
-            <Box></Box>
+            <Box padding="4">
+                <SimpleGrid columns={2} gap="40px">
+                    <For each={otherPortfolios}>
+                        {(otherPortfolio, index) => (
+                            <Card.Root height="300px" width="500px" key={index} bg="blue.900" spaceX="8">
+                                <Card.Body gap="2">
+                                    <Card.Title mt="2" mb="3" fontSize="xl" fontWeight="bold">{name_and_description[otherPortfolio.name].name}</Card.Title>
+                                    <Card.Description fontSize="md">
+                                    {name_and_description[otherPortfolio.name].description}
+                                    </Card.Description>
+                                </Card.Body>
+                                <Card.Footer justifyContent="space-between">
+                                    <Popup portfolio={otherPortfolio} title={name_and_description[otherPortfolio.name].name}/>
+                                    <Button variant="outline" borderWidth="2px" borderColor="white" color="white" px={5} py={2}>Select</Button>
+                                </Card.Footer>
+                            </Card.Root>
+                        )}
+                    </For>
+                </SimpleGrid>
+            </Box>
         </Stack>
     )
 }
