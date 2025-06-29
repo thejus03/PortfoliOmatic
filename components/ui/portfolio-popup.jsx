@@ -22,12 +22,24 @@ const asset_class_to_colour = {
   gold: "yellow.800",
 };
 
-const formatDate = (isoDate) =>
-  new Date(isoDate).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
+const formatDate = (date) => {
+  if (date == undefined) {
+    return new Date().toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  }
+  
+  else {
+    new Date(date).toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  } 
+}
+  
 
 const Popup = ({ portfolio, title }) => {
   if (!portfolio) return null;
