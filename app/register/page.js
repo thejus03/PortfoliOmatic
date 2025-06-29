@@ -99,7 +99,7 @@ function Register() {
           });
           
           setTimeout(() => {
-            router.push('/login');
+            router.push('/account-setup/risk-preference');
           }, 1500);
         } else {
           toaster.error({
@@ -155,7 +155,7 @@ function Register() {
             >
               Portfoli-O-matic
             </Box>
-            <Button onClick={() => router.push("/login")} colorPalette="blue" variant="ghost" size="md" rounded="lg">
+            <Button onClick={() => router.push("/login")} borderWidth="2px" borderColor="blue.700" color="white" px={5} py={2}>
               Log In 
             </Button>
           </div>
@@ -247,6 +247,7 @@ function Register() {
           fontFamily="Space Grotesk"
           onClick={() => handleCreateAccount()}
           disabled={!criteria.all}
+          borderWidth="2px" borderColor="blue.700" color="white" px={5} py={2}
         >
           Create Account
         </Button>

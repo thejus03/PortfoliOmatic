@@ -86,7 +86,7 @@ function Login() {
             >
               Portfoli-O-matic
             </Box>
-            <Button onClick={() => router.push("/register")} colorPalette="blue" variant="ghost" size="md" rounded="lg">
+            <Button onClick={() => router.push("/register")} borderWidth="2px" borderColor="blue.700" color="white" px={5} py={2}>
               Sign Up
             </Button>
           </div>
@@ -163,6 +163,7 @@ function Login() {
                     rounded="xl"
                     width="75%"
                     onClick={handleLogin}
+                    borderWidth="2px" borderColor="blue.700" color="white" px={5} py={2}
                   >
                     Log In
                   </Button>
