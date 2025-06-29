@@ -16,10 +16,11 @@
    pip install -r requirements.txt
    ```
 
-3. Create a `.env` file in the backend directory with your Supabase credentials
+3. Create a `.env` file in the backend directory with your Supabase credentials and a JWT Secret
    ```
    SUPABASE_URL=`your_supabase_url`
    SUPABASE_KEY=`your_supabase_key`
+   JWT_SECRET=`your_jwt_secret`
    ```
 
 4. Install frontend dependencies
