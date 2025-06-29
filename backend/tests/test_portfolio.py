@@ -38,6 +38,8 @@ def test_max_sharpe(mock_portfolio):
     assert result[1] == {
         "equity": 0.6,
         "bond": 0.4,
+        "returns": 0.08,
+        "volatility": 0.12
     }
 
 # Testing the Min. Volatility Portfolio Generator
