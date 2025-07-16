@@ -11,6 +11,7 @@ import jwt
 from models.Portfolios import UpdatePortfolioRequest, SetPortfolioRequest, PortfolioSuggestionsRequest
 from models.Users import LoginRequest
 from scripts.generate_portfolios import generate_portfolios
+from fastapi.responses import JSONResponse
 
 app = FastAPI()
 
@@ -195,7 +196,84 @@ def update_portfolio(request: UpdatePortfolioRequest):
     
     
     return {"message": "Portfolio updated successfully"}
-    
+
+@app.get("/api/portfolio_value_change")
+def get_portfolio_value(payload: dict = Depends(validate_token)):
+    user_id = payload["id"]
+
+    # Query the "Users" table where id == user_id
+    response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
+
+    # Check if the user exists and if data was returned
+    if not response.data or len(response.data) == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Get the user's portfolio_ids
+    portfolio_ids = response.data[0]["portfolio_ids"]
+
+    # Create a dictionary to store the portfolio_id to change in real value of that portfolio for the user 
+    portfolio_id_to_values = dict()
+
+    for portfolio_id in portfolio_ids:
+
+        # Get the date and amount that the user has invested
+        response = supabase.table("User_Portfolio_Value").select("created_at", "capital_invested").eq("user_id", user_id).eq("portfolio_id", portfolio_id).order("created_at", desc=False).execute()
+        list_of_date_and_capital = response.data
+
+        # Convert created_at to just date (YYYY-MM-DD)
+        for item in list_of_date_and_capital:
+            item["created_at"] = item["created_at"].split("T")[0]
+
+        # Get the earliest date the user invested
+        first_date = list_of_date_and_capital[0]["created_at"]
+
+        # Get all the normalised values of the portfolio after and including the date the user has invested
+        response = supabase.table("Portfolio_Value").select("normalised_value", "created_at").eq("portfolio_id", portfolio_id).gte("created_at", first_date).execute()
+        list_of_date_and_normalised_value = response.data
+
+        # Convert created_at to just date (YYYY-MM-DD)
+        for item in list_of_date_and_normalised_value:
+            item["created_at"] = item["created_at"].split("T")[0]
+
+        # Create a values array to track the changes in real portfolio value for the user
+        values = []
+
+        # Create a pointer to track the date at which the user has bought/sold 
+        pos = 0
+
+        # Create a variable to track the amount the normalised value must be multiplied by
+        multiple = 0
+
+        # Get the name of the Portfolio 
+        response = supabase.table()
+
+        # Calculate the changes in real value for that particular portfolio
+        for item in list_of_date_and_normalised_value:
+            if item["created_at"] == list_of_date_and_capital[pos]["created_at"]:
+
+                # Format the date
+                date_str = item["created_at"]
+                date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                formatted_date = date_obj.strftime("%d %b %Y")
+
+                values.append({"date": formatted_date, "value": list_of_date_and_capital[pos]["capital_invested"]})
+
+                multiple = list_of_date_and_capital[pos]["capital_invested"] / float(item["normalised_value"])
+                pos += 1
+            else:
+
+                # Format the date
+                date_str = item["created_at"]
+                date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                formatted_date = date_obj.strftime("%d %b %Y")
+
+                values.append({"date": formatted_date, "value": float(item["normalised_value"]) * multiple})
+        
+        # Add the list of values to the dictionary
+        portfolio_id_to_values[portfolio_id] = values
+
+    return JSONResponse(portfolio_id_to_values)
+
 
 # Helper functions
 def get_token(id, email):
