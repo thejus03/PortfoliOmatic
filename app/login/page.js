@@ -18,6 +18,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { LuMail, LuLock, LuShieldAlert } from "react-icons/lu";
 import { Space_Grotesk } from "next/font/google";
 import { toaster } from "@/components/ui/toaster"
+import { login } from "@/app/apis/auth"
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -31,43 +32,26 @@ function Login() {
   const [password, setPassword] = useState("");
 
   const handleLogin = async () => {
-    try {    
-      
-      toaster.create({
-        title: "Logging in",
-        description: "Please wait...",
-        type: "info",
-        duration: 1000
-      }); 
-      const response = await fetch('http://127.0.0.1:8000/api/user/login', {
-        method: 'POST',
-        body: JSON.stringify({ email, password }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
+    toaster.create({
+      title: "Logging in",
+      description: "Please wait...",
+      type: "info",
+      duration: 1000
+    }); 
 
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem('token', data.token);
-        if (!data.profiled) {
-          router.push('/account-setup/risk-preference');
-        } else {
-          router.push('/');
-        }
+    const result = await login(email, password);
+    
+    if (result.success) {
+      localStorage.setItem('token', result.data.token);
+      if (!result.data.profiled) {
+        router.push('/account-setup/risk-preference');
       } else {
-        toaster.create({
-          title: "Login failed",
-          description: "Invalid email or password",
-          type: "error"
-        });
+        router.push('/');
       }
-
-    } catch (error) {
-      console.log(error);
+    } else {
       toaster.create({
-        title: "Connection error",
-        description: "Unable to connect to the server. Please try again later.",
+        title: "Login failed",
+        description: result.error,
         type: "error"
       });
     }

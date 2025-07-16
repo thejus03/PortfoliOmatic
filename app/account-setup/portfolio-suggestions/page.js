@@ -1,6 +1,5 @@
 "use client"
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
 import {    Stack, 
             Box, 
             Heading, 
@@ -16,6 +15,7 @@ import {    Stack,
 import { Space_Grotesk } from "next/font/google"
 import { useAccountSetup } from '../context/AccountSetupContext'
 import Popup from '@/components/ui/portfolio-popup'
+import { getPortfolioSuggestions } from '@/app/apis/portfolio'
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
     weight: ["600"],
@@ -23,131 +23,24 @@ const spaceGrotesk = Space_Grotesk({
 
 
 function Page() {
-    const router = useRouter();
     const { formData } = useAccountSetup();
     const [portfolios, setPortfolios] = useState(null);
     
     useEffect(() => {
         const fetchPortfolio = async () => {
-        const totalScore = Object.values(formData)
-            .flatMap(Object.values)
-            .reduce((sum, val) => sum + val, 0);
-        
-        const token = localStorage.getItem('token');
+            const totalScore = Object.values(formData)
+                .flatMap(Object.values)
+                .reduce((sum, val) => sum + val, 0);
+            
+            const token = localStorage.getItem('token');
 
-        try {
-            const response = await fetch('http://127.0.0.1:8000/api/portfolio_suggestions', {
-            method: 'POST',
-            body: JSON.stringify({ score: totalScore }),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            },
-            });
-
-            if (response.ok) {
-            const data = await response.json();
-            setPortfolios(data);
+            const result = await getPortfolioSuggestions(totalScore, token);
+            
+            if (result.success) {
+                setPortfolios(result.data);
             } else {
-            throw new Error("API failed");
+                console.error("Error fetching portfolio suggestions");
             }
-        } catch (error) {
-            console.error("Using fallback mock data due to API failure.");
-
-            const mockData = {
-                "suggested": [
-                    {
-                    "id": 1,
-                    "name": "moderate",
-                    "tickers_weight": {
-                        "BND": {
-                        "asset_class": "bond",
-                        "asset_name": "Vanguard Total Bond Market ETF",
-                        "weightage": 0.35
-                        },
-                        "IAU": {
-                        "asset_class": "gold",
-                        "asset_name": "iShares Gold Trust",
-                        "weightage": 0.15
-                        },
-                        "JNJ": {
-                        "asset_class": "equity",
-                        "asset_name": "Johnson & Johnson",
-                        "weightage": 0.5
-                        }
-                    },
-                    "asset_class_weight": {
-                        "bond": 0.35,
-                        "gold": 0.15,
-                        "equity": 0.5,
-                        "returns": 0.14,
-                        "volatility": 0.07
-                    },
-                    "created_at": "2025-06-26T15:00:00.000Z"
-                    }
-                ],
-                "others": [
-                    {
-                    "id": 2,
-                    "name": "ultra_low",
-                    "tickers_weight": {
-                        "SHY": {
-                        "asset_class": "bond",
-                        "asset_name": "iShares 1-3 Year Treasury Bond ETF",
-                        "weightage": 0.7
-                        },
-                        "TIP": {
-                        "asset_class": "bond",
-                        "asset_name": "iShares TIPS Bond ETF",
-                        "weightage": 0.25
-                        },
-                        "GLD": {
-                        "asset_class": "gold",
-                        "asset_name": "SPDR Gold Shares",
-                        "weightage": 0.05
-                        }
-                    },
-                    "asset_class_weight": {
-                        "bond": 0.95,
-                        "gold": 0.05,
-                        "returns": 0.02,
-                        "volatility": 0
-                    },
-                    "created_at": "2025-06-25T14:00:00.000Z"
-                    },
-                    {
-                    "id": 3,
-                    "name": "high",
-                    "tickers_weight": {
-                        "AAPL": {
-                        "asset_class": "equity",
-                        "asset_name": "Apple Inc.",
-                        "weightage": 0.45
-                        },
-                        "MSFT": {
-                        "asset_class": "equity",
-                        "asset_name": "Microsoft Corporation",
-                        "weightage": 0.4
-                        },
-                        "TLT": {
-                        "asset_class": "bond",
-                        "asset_name": "iShares 20+ Year Treasury Bond ETF",
-                        "weightage": 0.15
-                        }
-                    },
-                    "asset_class_weight": {
-                        "equity": 0.85,
-                        "bond": 0.15,
-                        "returns": 0.40,
-                        "volatility": 0.30
-                    },
-                    "created_at": "2025-06-26T15:30:00.000Z"
-                    }
-                ]
-            }
-
-            setPortfolios(mockData);
-        }
         };
 
         fetchPortfolio();
