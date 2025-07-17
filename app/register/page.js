@@ -21,7 +21,8 @@ import {
 import { LuShieldAlert } from "react-icons/lu";
 import { Space_Grotesk } from "next/font/google";
 import { Highlight } from "@chakra-ui/react"
-import { toaster } from "@/components/ui/toaster";
+import { toaster } from "@/components/ui/toaster"
+import { register } from "@/app/apis/auth";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -69,52 +70,37 @@ function Register() {
     
     // send to backend from creation
     else {
-      try {
-        toaster.create({
-          title: "Creating Account",
-          description: "Please wait...",
-          type: "info",
-          duration: 1000
-        });
-        
-        const response = await fetch('http://127.0.0.1:8000/api/user/register', {
-          method: 'POST',
-          body: JSON.stringify({ email, password }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-          if (data.token) {
-            localStorage.setItem('token', data.token);
-          }
-          
-          toaster.create({
-            title: "Success!",
-            description: "Account created successfully. Redirecting to home page...",
-            type: "success"
-          });
-          
-          setTimeout(() => {
-            router.push('/account-setup/risk-preference');
-          }, 1500);
-        } else {
-          toaster.error({
-            title: "Registration Failed",
-            description: data.detail 
-          });
-          setEmail('');
-          setPassword('');
-          setConfirmPassword('');
+      toaster.create({
+        title: "Creating Account",
+        description: "Please wait...",
+        type: "info",
+        duration: 1000
+      });
+
+      const result = await register(email, password);
+      
+      if (result.success) {
+        if (result.data.token) {
+          localStorage.setItem('token', result.data.token);
         }
-      } catch (error) {
-        toaster.error({
-          title: "Connection Error",
-          description: "Unable to connect to the server. Please try again later."
+        
+        toaster.create({
+          title: "Success!",
+          description: "Account created successfully. Redirecting to home page...",
+          type: "success"
         });
+        
+        setTimeout(() => {
+          router.push('/account-setup/risk-preference');
+        }, 1500);
+      } else {
+        toaster.error({
+          title: "Registration Failed",
+          description: result.error 
+        });
+        setEmail('');
+        setPassword('');
+        setConfirmPassword('');
       }
     }
   }
