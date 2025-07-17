@@ -52,6 +52,7 @@ export default function LatestNews() {
                                 isExternal
                                 _hover={{ textDecoration: "none" }}
                                 width="100%"
+                                focusRing="none"
                             >
                                 <Box
                                     borderRadius="md"
@@ -70,9 +71,12 @@ export default function LatestNews() {
                                                 color="white"
                                                 fontSize="xs"
                                                 fontWeight="medium"
-                                                className="font-space-grotesk"
+                                                className="font-sans"
                                                 lineHeight="1.2"
                                                 marginBottom="0.5rem"
+                                                _focus={{
+                                                    outline: "none",
+                                                }}
                                             >
                                                 {article.headline || article.title}
                                             </Text>

@@ -113,7 +113,7 @@ export default function ActivityChart() {
         series: [
             {
                 name: "value",
-                color: "blue.500",
+                color: "blue.400",
             }
         ],
     });
@@ -150,7 +150,7 @@ export default function ActivityChart() {
                 </Stat.Root>
                 )}
                 {chartData.length === 0 ? (
-                    <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="286px" width="95%" />
+                    <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="279px" width="95%" />
                 ) : (
                     <>
                         <Chart.Root chart={chart} height="300px" width="100%">
@@ -159,7 +159,7 @@ export default function ActivityChart() {
                                 stroke="gray" 
                                 vertical={false} 
                                 opacity={0.2}
-                                strokeDasharray="3 3"
+                                strokeDasharray="2 2"
                                 />
                             
                             <XAxis 
@@ -189,7 +189,7 @@ export default function ActivityChart() {
                                     <Chart.Gradient
                                     id={`${item.name}-gradient`}
                                     stops={[
-                                        { offset: "0%", color: item.color, opacity: 0.2 },
+                                        { offset: "0%", color: item.color, opacity: 0.15 },
                                         { offset: "100%", color: item.color, opacity: 0.01 },
                                     ]}
                                     />
@@ -204,6 +204,8 @@ export default function ActivityChart() {
                                 stroke={chart.color(item.color)}
                                 strokeWidth={2}
                                 stackId="a"
+                                dot={{ fill: chart.color(item.color), fillOpacity:1, strokeWidth: 0.5}}
+                                activeDot={false}
                             />
                             ))}
                             </AreaChart> 
@@ -213,20 +215,20 @@ export default function ActivityChart() {
                             defaultValue={selectedPeriod} 
                             marginBottom="1rem"
                             marginTop="-1rem"
-                            border="1px solid"
-                            borderColor="blue.800/50"
-                            bgColor="blue.900/40"
+                            border="none"
+                            borderColor="transparent"
+                            bgColor="transparent"
                             borderRadius="2xl"
                             letterSpacing="wide"
                             fontWeight="bold"
                             fontSize="sm"
                             value={selectedPeriod}
                             onChange={(e) => setSelectedPeriod(e.target.value)}
-                            padding="0.25rem"
+                            padding="0.1rem"
                         >
                             <SegmentGroup.Indicator  
                                 bgColor="blue.700/40" 
-                                borderRadius="xl" 
+                                borderRadius="2xl" 
                             />
                             <SegmentGroup.Items 
                                 color="gray.300" 

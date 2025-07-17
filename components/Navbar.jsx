@@ -1,8 +1,9 @@
 "use client";
-import { Box, HStack, Button, Avatar } from "@chakra-ui/react";
+import { Box, HStack, Button, Avatar, Menu, Portal } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useCallback } from "react";
+import { LuLogOut } from "react-icons/lu";
 
 export default function Navbar() {
     const router = useRouter();
@@ -14,8 +15,8 @@ export default function Navbar() {
         return {
             color: isActive ? "blue.400" : "inherit",
             bgColor: isActive ? "blue.600/20" : "transparent",
-            size: "sm",
-            borderRadius: "md",
+            size: "xs",
+            borderRadius: "xs",
             paddingX: "1rem",
             fontWeight: isActive ? "bold" : "semibold",
             textStyle: "sm",
@@ -57,10 +58,34 @@ export default function Navbar() {
                         </Button>
                     ))}
                 </HStack>
-                <Avatar.Root size="sm" >
+                <Menu.Root positioning={{ placement: "bottom-start" }}>
+                <Menu.Trigger rounded="full" focusRing="none">
+                    <Avatar.Root size="sm">
                     <Avatar.Fallback name="Segun Adebayo" />
                     <Avatar.Image src="https://bit.ly/sage-adebayo" />
-                </Avatar.Root>
+                    </Avatar.Root>
+                </Menu.Trigger>
+                <Portal>
+                    <Menu.Positioner>
+                    <Menu.Content
+                        bgColor="blue.900/40"
+                        backdropFilter="blur(10px)"
+                        border="1px solid"
+                        borderColor="blue.800/50"
+                        borderRadius="sm"
+                    >
+                        <Menu.ItemGroup>
+                            <Menu.Item value="account">Account</Menu.Item>
+                            <Menu.Item value="settings">Settings</Menu.Item>
+                            <Menu.Item value="logout">
+                                <LuLogOut />
+                                Logout
+                            </Menu.Item>
+                        </Menu.ItemGroup>
+                    </Menu.Content>
+                    </Menu.Positioner>
+                </Portal>
+                </Menu.Root>
             </div>
         </div>
     )
