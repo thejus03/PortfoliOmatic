@@ -14,9 +14,11 @@ export default function Navbar() {
         return {
             color: isActive ? "blue.400" : "inherit",
             bgColor: isActive ? "blue.600/20" : "transparent",
+            size: "sm",
             borderRadius: "md",
             paddingX: "1rem",
-            fontWeight: isActive ? "semibold" : "normal",
+            fontWeight: isActive ? "bold" : "semibold",
+            textStyle: "sm",
             _hover: {
                 color: "blue.400",
                 bgColor: "blue.600/20",
@@ -55,7 +57,7 @@ export default function Navbar() {
                         </Button>
                     ))}
                 </HStack>
-                <Avatar.Root size="sm" key="md">
+                <Avatar.Root size="sm" >
                     <Avatar.Fallback name="Segun Adebayo" />
                     <Avatar.Image src="https://bit.ly/sage-adebayo" />
                 </Avatar.Root>

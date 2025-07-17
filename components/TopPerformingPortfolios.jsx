@@ -32,9 +32,9 @@ export default function TopPerformingPortfolios() {
       const trend = (closing.value - opening.value) / opening.value
 
     return (
-        <Center marginX="2rem" marginTop="4rem">
+        <Box marginX="2rem" marginTop="4rem" >
             <Box 
-                width="95%"
+                width="100%"
                 display="flex"
                 flexDirection="column"
                 alignItems="center"
@@ -43,7 +43,7 @@ export default function TopPerformingPortfolios() {
                 <Heading
                     textStyle="xl"
                     fontWeight="semibold"
-                    className="font-space-grotesk"
+                    className="font-sans"
                     color="white"
                     alignSelf="flex-start"
                 >
@@ -56,9 +56,10 @@ export default function TopPerformingPortfolios() {
                     alignItems="flex-start"
                     marginTop="2rem"
                     gap="1rem"
+                    minWidth="300px"
                 >
 
-                    <Card.Root maxW="sm" size="sm" bgColor="cyan.950" >
+                    <Card.Root  width="100%" size="sm" bgColor="gray.900/70" border="1px solid" borderColor="gray.800" >
                         <Card.Body flexDirection="row" alignItems="center" >
                             <Stack gap="0" flex="1">
                             <Box fontWeight="semibold" textStyle="sm">
@@ -113,7 +114,7 @@ export default function TopPerformingPortfolios() {
                             </Stat.Root>
                         </Card.Body>
                     </Card.Root>
-                    <Card.Root maxW="sm" size="sm" bgColor="cyan.950" >
+                    <Card.Root width="100%" size="sm" bgColor="gray.900/70" border="1px solid" borderColor="gray.800" >
                         <Card.Body flexDirection="row" alignItems="center">
                             <Stack gap="0" flex="1">
                             <Box fontWeight="semibold" textStyle="sm">
@@ -170,6 +171,6 @@ export default function TopPerformingPortfolios() {
                     </Card.Root>
                 </Box>
             </Box>
-        </Center>
+        </Box>
     )
 }

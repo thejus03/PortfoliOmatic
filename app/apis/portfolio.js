@@ -81,3 +81,20 @@ export const updatePortfolio = async (riskLevel, tickers, assetClassWeight) => {
         };
     }
 }; 
+
+export const getNews = async () => {
+    const TOKEN = process.env.NEXT_PUBLIC_FINNHUB_TOKEN;
+    return axios.get(`https://finnhub.io/api/v1/news?category=general&token=${TOKEN}`)
+        .then(response => {
+            return {
+                success: true,
+                data: response.data
+            };
+        })
+        .catch(error => {
+            return {
+                success: false,
+                error: error.response?.data?.detail || "Failed to fetch news"
+            };
+        });
+}

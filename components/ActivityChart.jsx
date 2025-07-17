@@ -97,7 +97,7 @@ export default function ActivityChart() {
             case "1Y":
                 daysToShow = 365;
                 break;
-            case "ALL":
+            case "All":
                 daysToShow = chartData.length;
                 break;
             default:
@@ -213,28 +213,27 @@ export default function ActivityChart() {
                             defaultValue={selectedPeriod} 
                             marginBottom="1rem"
                             marginTop="-1rem"
-                            bg="gray.900/60"
                             border="1px solid"
-                            borderColor="gray.700/50"
-                            borderRadius="xl"
+                            borderColor="blue.800/50"
+                            bgColor="blue.900/40"
+                            borderRadius="2xl"
                             letterSpacing="wide"
                             fontWeight="bold"
                             fontSize="sm"
                             value={selectedPeriod}
                             onChange={(e) => setSelectedPeriod(e.target.value)}
                             padding="0.25rem"
-                            gap="1px"
                         >
                             <SegmentGroup.Indicator  
-                                bgColor="blue.700/60" 
-                                borderRadius="lg" 
+                                bgColor="blue.700/40" 
+                                borderRadius="xl" 
                             />
                             <SegmentGroup.Items 
                                 color="gray.300" 
-                                items={["7D", "1M", "6M", "1Y", "ALL"]} 
+                                items={["7D", "1M", "6M", "1Y", "All"]} 
                                 _hover={{
-                                    color: "blue.500",
-                                    bgColor: "blue.800/30",
+                                    color: "blue.400",
+                                    bgColor: "transparent",
                                     borderRadius: "lg"
                                 }}
                                 transition="all 0.15s ease-in-out"
