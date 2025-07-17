@@ -1,7 +1,6 @@
 "use client"
 
 import { Heading, Box, Center } from "@chakra-ui/react";
-import { Space_Grotesk } from "next/font/google";
 import { Chart, useChart } from "@chakra-ui/charts"
 import {
   Badge,
@@ -12,11 +11,6 @@ import {
   Stat,
 } from "@chakra-ui/react"
 import { Area, AreaChart } from "recharts"
-
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["400", "500", "600", "700"],
-});
 
 export default function TopPerformingPortfolios() {
     const chart = useChart({
@@ -49,7 +43,7 @@ export default function TopPerformingPortfolios() {
                 <Heading
                     textStyle="xl"
                     fontWeight="semibold"
-                    className={spaceGrotesk.className}
+                    className="font-space-grotesk"
                     color="white"
                     alignSelf="flex-start"
                 >

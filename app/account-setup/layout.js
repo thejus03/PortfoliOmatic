@@ -1,12 +1,5 @@
 import { AccountSetupProvider } from "./context/AccountSetupContext";
 import { Box, Button } from "@chakra-ui/react";
-import { Space_Grotesk } from "next/font/google";
-
-
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["600"],
-  });
 
 export default function AccountSetupLayout({ children }) {
     return (
@@ -19,7 +12,7 @@ export default function AccountSetupLayout({ children }) {
                         textStyle="xl"
                         fontWeight="semibold"
                         letterSpacing="wider"
-                        className={spaceGrotesk.className}
+                        className="font-space-grotesk"
                         color="white"
                         >
                         Portfoli-O-matic

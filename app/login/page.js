@@ -16,14 +16,8 @@ import {
 import { useRouter } from "next/navigation";
 import { PasswordInput } from "@/components/ui/password-input";
 import { LuMail, LuLock, LuShieldAlert } from "react-icons/lu";
-import { Space_Grotesk } from "next/font/google";
 import { toaster } from "@/components/ui/toaster"
 import { login } from "@/app/apis/auth"
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["600"],
-});
 
 function Login() {
   const router = useRouter();
@@ -66,7 +60,7 @@ function Login() {
               textStyle="xl"
               fontWeight="semibold"
               letterSpacing="wider"
-              className={spaceGrotesk.className}
+              className="font-space-grotesk"
             >
               Portfoli-O-matic
             </Box>

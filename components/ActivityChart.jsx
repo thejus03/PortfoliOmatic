@@ -10,7 +10,7 @@ import {
   YAxis,
 } from "recharts"
 import { Box, Center, Text, Stat, HStack, Badge, FormatNumber } from "@chakra-ui/react"
-import { SegmentGroup, VStack} from "@chakra-ui/react"
+import { SegmentGroup, VStack, Skeleton} from "@chakra-ui/react"
 import { getChartData } from "@/app/apis/portfolio"
 
 export default function ActivityChart() {
@@ -132,6 +132,10 @@ export default function ActivityChart() {
 
             >
             <VStack width="100%">
+                {chartData.length === 0 ? (
+                    <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="52px" width="250px" />
+                ) : (
+                    
                 <Stat.Root justifyContent="flex-start" alignSelf="flex-start" margin="2rem">
                     <Stat.Label textStyle="xs" color="gray.400">Value</Stat.Label>
                     <HStack alignItems="center">
@@ -144,96 +148,103 @@ export default function ActivityChart() {
                         </Badge>
                     </HStack>
                 </Stat.Root>
-                <Chart.Root chart={chart} height="300px" width="100%">
-                    <AreaChart data={chart.data} margin={{ left: 0, bottom: 0, right: 0, top: 0 }}>
-                    <CartesianGrid 
-                        stroke="gray" 
-                        vertical={false} 
-                        opacity={0.2}
-                        strokeDasharray="2 2"
-                        />
-                    
-                    <XAxis 
-                        dataKey="date"
-                        axisLine={false}
-                        tickLine={false}
-                        tickMargin={0}
-                        display="none"
-                        stroke={chart.color("border")}
-                        />
-                    <YAxis
-                        axisLine={false}
-                        tickLine={false}
-                        tickMargin={10}
-                        yAxisId="right"
-                        orientation="right"
-                        dataKey={chart.key("value")}
-                        stroke={chart.color("border")}
-                        />
-                    <Tooltip
-                        animationDuration={100}
-                        cursor={{ stroke: chart.color("border") }}
-                        content={<Chart.Tooltip />}
-                        />
-                    {chart.series.map((item) => (
-                        <defs key={item.name}>
-                            <Chart.Gradient
-                            id={`${item.name}-gradient`}
-                            stops={[
-                                { offset: "0%", color: item.color, opacity: 0.3 },
-                                { offset: "100%", color: item.color, opacity: 0.05 },
-                            ]}
+                )}
+                {chartData.length === 0 ? (
+                    <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="286px" width="95%" />
+                ) : (
+                    <>
+                        <Chart.Root chart={chart} height="300px" width="100%">
+                            <AreaChart data={chart.data} margin={{ left: 0, bottom: 0, right: 0, top: 0 }}>
+                            <CartesianGrid 
+                                stroke="gray" 
+                                vertical={false} 
+                                opacity={0.2}
+                                strokeDasharray="3 3"
+                                />
+                            
+                            <XAxis 
+                                dataKey="date"
+                                axisLine={false}
+                                tickLine={false}
+                                tickMargin={0}
+                                display="none"
+                                stroke={chart.color("border")}
+                                />
+                            <YAxis
+                                axisLine={false}
+                                tickLine={false}
+                                tickMargin={10}
+                                yAxisId="right"
+                                orientation="right"
+                                dataKey={chart.key("value")}
+                                stroke={chart.color("border")}
+                                />
+                            <Tooltip
+                                animationDuration={100}
+                                cursor={{ stroke: chart.color("border") }}
+                                content={<Chart.Tooltip />}
+                                />
+                            {chart.series.map((item) => (
+                                <defs key={item.name}>
+                                    <Chart.Gradient
+                                    id={`${item.name}-gradient`}
+                                    stops={[
+                                        { offset: "0%", color: item.color, opacity: 0.2 },
+                                        { offset: "100%", color: item.color, opacity: 0.01 },
+                                    ]}
+                                    />
+                                </defs>
+                                ))}
+                            {chart.series.map((item) => (
+                            <Area
+                                key={item.name}
+                                isAnimationActive={true}
+                                dataKey={chart.key(item.name)}
+                                fill={`url(#${item.name}-gradient)`}
+                                stroke={chart.color(item.color)}
+                                strokeWidth={2}
+                                stackId="a"
                             />
-                        </defs>
-                        ))}
-                    {chart.series.map((item) => (
-                    <Area
-                        key={item.name}
-                        isAnimationActive={true}
-                        dataKey={chart.key(item.name)}
-                        fill={`url(#${item.name}-gradient)`}
-                        stroke={chart.color(item.color)}
-                        strokeWidth={2}
-                        stackId="a"
-                    />
-                    ))}
-                    </AreaChart> 
-                </Chart.Root>
+                            ))}
+                            </AreaChart> 
+                        </Chart.Root>
+                        <SegmentGroup.Root 
+                            size="sm" 
+                            defaultValue={selectedPeriod} 
+                            marginBottom="1rem"
+                            marginTop="-1rem"
+                            bg="gray.900/60"
+                            border="1px solid"
+                            borderColor="gray.700/50"
+                            borderRadius="xl"
+                            letterSpacing="wide"
+                            fontWeight="bold"
+                            fontSize="sm"
+                            value={selectedPeriod}
+                            onChange={(e) => setSelectedPeriod(e.target.value)}
+                            padding="0.25rem"
+                            gap="1px"
+                        >
+                            <SegmentGroup.Indicator  
+                                bgColor="blue.700/60" 
+                                borderRadius="lg" 
+                            />
+                            <SegmentGroup.Items 
+                                color="gray.300" 
+                                items={["7D", "1M", "6M", "1Y", "ALL"]} 
+                                _hover={{
+                                    color: "blue.500",
+                                    bgColor: "blue.800/30",
+                                    borderRadius: "lg"
+                                }}
+                                transition="all 0.15s ease-in-out"
+                                paddingX="1rem"
+                                paddingY="0.5rem"
+                            />
+                        </SegmentGroup.Root>
+                    </>
+                )}
 
-                <SegmentGroup.Root 
-                    size="sm" 
-                    defaultValue={selectedPeriod} 
-                    marginBottom="1rem"
-                    marginTop="-1rem"
-                    bg="gray.900/60"
-                    border="1px solid"
-                    borderColor="gray.700/50"
-                    borderRadius="xl"
-                    letterSpacing="wide"
-                    fontWeight="bold"
-                    fontSize="sm"
-                    value={selectedPeriod}
-                    onChange={(e) => setSelectedPeriod(e.target.value)}
-                    padding="0.25rem"
-                    gap="1px"
-                >
-                    <SegmentGroup.Indicator  
-                        bgColor="blue.700/60" 
-                        borderRadius="lg" 
-                    />
-                    <SegmentGroup.Items 
-                        color="gray.300" 
-                        items={["7D", "1M", "6M", "1Y", "ALL"]} 
-                        _hover={{
-                            color: "blue.500",
-                            bgColor: "blue.800/30",
-                            borderRadius: "lg"
-                        }}
-                        transition="all 0.15s ease-in-out"
-                        paddingX="1rem"
-                        paddingY="0.5rem"
-                    />
-                </SegmentGroup.Root>
             </VStack>
 
             </Box>

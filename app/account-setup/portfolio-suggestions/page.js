@@ -12,16 +12,9 @@ import {    Stack,
             HStack,
             SimpleGrid
         } from "@chakra-ui/react"
-import { Space_Grotesk } from "next/font/google"
 import { useAccountSetup } from '../context/AccountSetupContext'
 import Popup from '@/components/ui/portfolio-popup'
 import { getPortfolioSuggestions } from '@/app/apis/portfolio'
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["600"],
-  });
-
-
 function Page() {
     const { formData } = useAccountSetup();
     const [portfolios, setPortfolios] = useState(null);

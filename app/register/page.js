@@ -19,15 +19,9 @@ import {
     PasswordInput, PasswordStrengthMeter
   } from "@/components/ui/password-input"
 import { LuShieldAlert } from "react-icons/lu";
-import { Space_Grotesk } from "next/font/google";
 import { Highlight } from "@chakra-ui/react"
 import { toaster } from "@/components/ui/toaster"
 import { register } from "@/app/apis/auth";
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["600"],
-});
 
 function Register() {
   const router = useRouter();
@@ -137,7 +131,7 @@ function Register() {
               fontWeight="semibold"
 
               letterSpacing="wider"
-              className={spaceGrotesk.className}
+              className="font-space-grotesk"
             >
               Portfoli-O-matic
             </Box>
