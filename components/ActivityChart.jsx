@@ -9,16 +9,16 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { Box, Center, Text } from "@chakra-ui/react"
+import { Box, Center, Text, Stat, HStack, Badge, FormatNumber } from "@chakra-ui/react"
 import { SegmentGroup, VStack} from "@chakra-ui/react"
 import { getChartData } from "@/app/apis/portfolio"
 
-export default function ActivityChart({ data }) {
+export default function ActivityChart() {
     const [chartData, setChartData] = useState([]);
     const [selectedPeriod, setSelectedPeriod] = useState("1M");
     const [displayData, setDisplayData] = useState([]);
     // Get data from the API
-    data = {
+    const data = {
         "total": [
             { date: "01 Jan 2025", value: 100 },
             { date: "02 Jan 2025", value: 102 },
@@ -132,28 +132,18 @@ export default function ActivityChart({ data }) {
 
             >
             <VStack width="100%">
-                <Text 
-                    alignSelf="flex-start" 
-                    marginLeft="2rem" 
-                    marginTop="2rem"
-                    fontSize="xs"
-                    color="gray.500"
-                    fontWeight="semibold"
-                >
-                    Value (SGD)
-                </Text>
-                <Text 
-                    alignSelf="flex-start" 
-                    marginLeft="2rem" 
-                    fontSize="2xl"
-                    fontWeight="bold"
-                    color="blue.100"
-                    letterSpacing="wide"
-                    marginBottom="1rem"
-                    marginTop="-0.5rem"
-                >
-                    $200,000.00
-                </Text>
+                <Stat.Root justifyContent="flex-start" alignSelf="flex-start" margin="2rem">
+                    <Stat.Label textStyle="xs" color="gray.400">Value</Stat.Label>
+                    <HStack alignItems="center">
+                        <Stat.ValueText>
+                        <FormatNumber value={200000} style="currency" currency="SGD" />
+                        </Stat.ValueText>
+                        <Badge colorPalette="green" gap="0">
+                        <Stat.UpIndicator />
+                        12%
+                        </Badge>
+                    </HStack>
+                </Stat.Root>
                 <Chart.Root chart={chart} height="300px" width="100%">
                     <AreaChart data={chart.data} margin={{ left: 0, bottom: 0, right: 0, top: 0 }}>
                     <CartesianGrid 
@@ -214,18 +204,35 @@ export default function ActivityChart({ data }) {
                     size="sm" 
                     defaultValue={selectedPeriod} 
                     marginBottom="1rem"
-                    bg="transparent"
+                    marginTop="-1rem"
+                    bg="gray.900/60"
                     border="1px solid"
-                    borderColor="blue.800"
-                    borderRadius="md"
+                    borderColor="gray.700/50"
+                    borderRadius="xl"
                     letterSpacing="wide"
                     fontWeight="bold"
                     fontSize="sm"
                     value={selectedPeriod}
                     onChange={(e) => setSelectedPeriod(e.target.value)}
+                    padding="0.25rem"
+                    gap="1px"
                 >
-                    <SegmentGroup.Indicator  bg="blue.700" opacity="0.5"/>
-                    <SegmentGroup.Items color="gray.400" items={["7D", "1M", "6M", "1Y", "ALL"]} />
+                    <SegmentGroup.Indicator  
+                        bgColor="blue.700/60" 
+                        borderRadius="lg" 
+                    />
+                    <SegmentGroup.Items 
+                        color="gray.300" 
+                        items={["7D", "1M", "6M", "1Y", "ALL"]} 
+                        _hover={{
+                            color: "blue.500",
+                            bgColor: "blue.800/30",
+                            borderRadius: "lg"
+                        }}
+                        transition="all 0.15s ease-in-out"
+                        paddingX="1rem"
+                        paddingY="0.5rem"
+                    />
                 </SegmentGroup.Root>
             </VStack>
 
