@@ -39,9 +39,9 @@ export default function LatestNews() {
                     border="1px solid"
                     borderColor="gray.800"
                     borderRadius="lg"
-                    backgroundColor="gray.900/70"
-                    paddingY="0.5rem"
-                    paddingX="0.25rem"
+                    backgroundColor="gray.900/60"
+                    backdropFilter="blur(10px)"
+                    padding="0.25rem"
                     width="100%"
                 >
                     <SimpleGrid columns={2} spacing={6} width="100%">

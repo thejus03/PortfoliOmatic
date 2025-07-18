@@ -17,57 +17,14 @@ export default function ActivityChart() {
     const [chartData, setChartData] = useState([]);
     const [selectedPeriod, setSelectedPeriod] = useState("1M");
     const [displayData, setDisplayData] = useState([]);
-    // Get data from the API
-    const data = {
-        "total": [
-            { date: "01 Jan 2025", value: 100 },
-            { date: "02 Jan 2025", value: 102 },
-            { date: "03 Jan 2025", value: 99 },
-            { date: "04 Jan 2025", value: 104 },
-            { date: "05 Jan 2025", value: 107 },
-            { date: "06 Jan 2025", value: 103 },
-            { date: "07 Jan 2025", value: 108 },
-            { date: "08 Jan 2025", value: 110 },
-            { date: "09 Jan 2025", value: 106 },
-            { date: "10 Jan 2025", value: 112 },
-            { date: "11 Jan 2025", value: 115 },
-            { date: "12 Jan 2025", value: 117 },
-            { date: "13 Jan 2025", value: 113 },
-            { date: "14 Jan 2025", value: 118 },
-            { date: "15 Jan 2025", value: 121 },
-            { date: "16 Jan 2025", value: 125 },
-            { date: "17 Jan 2025", value: 122 },
-            { date: "18 Jan 2025", value: 127 },
-            { date: "19 Jan 2025", value: 130 }
-        ],
-        "ultra_low": [
-            { date: "01 Jan 2025", value: 100 },
-            { date: "02 Jan 2025", value: 200 },
-            { date: "03 Jan 2025", value: 150 },
-            { date: "04 Jan 2025", value: 300 },
-            { date: "05 Jan 2025", value: 250 },
-            { date: "06 Jan 2025", value: 400 },
-            { date: "07 Jan 2025", value: 500 },
-            { date: "08 Jan 2025", value: 600 },
-            { date: "09 Jan 2025", value: 700 },
-            { date: "10 Jan 2025", value: 800 },
-            { date: "11 Jan 2025", value: 900 },
-            { date: "12 Jan 2025", value: 1000 },
-            { date: "13 Jan 2025", value: 1100 },
-            { date: "14 Jan 2025", value: 1200 },
-            { date: "15 Jan 2025", value: 1300 },
-            { date: "16 Jan 2025", value: 1400 },
-            { date: "17 Jan 2025", value: 1500 },
-            { date: "18 Jan 2025", value: 1600 },
-            { date: "19 Jan 2025", value: 1700 },
-        ]
-    };
+    const [value, setValue] = useState(0);
+    const [percentageChange, setPercentageChange] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await getChartData(localStorage.getItem("token"));
-                setChartData(data["total"]);
+                setChartData(response);
             } catch (error) {
                 console.error("Error fetching chart data:", error);
                 setChartData([]);
@@ -103,10 +60,11 @@ export default function ActivityChart() {
             default:
                 daysToShow = 30;
         }
-
+        setValue(chartData[chartData.length - 1].value);
         const filteredData = chartData.slice(-daysToShow);
+        setPercentageChange((filteredData[filteredData.length - 1].value - filteredData[0].value) / filteredData[0].value);
         setDisplayData(filteredData);
-    }, [selectedPeriod, chartData])
+    }, [selectedPeriod, chartData, value, percentageChange])
 
     const chart = useChart({
         data: displayData,
@@ -140,12 +98,22 @@ export default function ActivityChart() {
                     <Stat.Label textStyle="xs" color="gray.400">Value</Stat.Label>
                     <HStack alignItems="center">
                         <Stat.ValueText>
-                        <FormatNumber value={200000} style="currency" currency="SGD" />
+                        <FormatNumber value={value} style="currency" currency="SGD" />
                         </Stat.ValueText>
-                        <Badge colorPalette="green" gap="0">
-                        <Stat.UpIndicator />
-                        12%
-                        </Badge>
+                        {percentageChange > 0 ? (
+                            <Badge colorPalette="green" gap="0">
+                            <Stat.UpIndicator />
+                            {percentageChange.toFixed(2)}%
+                            </Badge>
+
+                        ) : (
+
+                            <Badge colorPalette="red" gap="0">
+                            <Stat.DownIndicator />
+                            {percentageChange.toFixed(2)}%
+                            </Badge>
+
+                        )}
                     </HStack>
                 </Stat.Root>
                 )}
@@ -189,8 +157,8 @@ export default function ActivityChart() {
                                     <Chart.Gradient
                                     id={`${item.name}-gradient`}
                                     stops={[
-                                        { offset: "0%", color: item.color, opacity: 0.15 },
-                                        { offset: "100%", color: item.color, opacity: 0.01 },
+                                        { offset: "0%", color: item.color, opacity: 0.2 },
+                                        { offset: "100%", color: item.color, opacity: 0 },
                                     ]}
                                     />
                                 </defs>
@@ -204,8 +172,8 @@ export default function ActivityChart() {
                                 stroke={chart.color(item.color)}
                                 strokeWidth={2}
                                 stackId="a"
-                                dot={{ fill: chart.color(item.color), fillOpacity:1, strokeWidth: 0.5}}
-                                activeDot={false}
+                                // dot={{ fill: chart.color(item.color), fillOpacity:1, strokeWidth: 0.5}}
+                                activeDot={true}
                             />
                             ))}
                             </AreaChart> 
@@ -229,6 +197,9 @@ export default function ActivityChart() {
                             <SegmentGroup.Indicator  
                                 bgColor="blue.700/40" 
                                 borderRadius="2xl" 
+                                backdropFilter="blur(10px)"
+                                border="1px solid"
+                                borderColor="blue.700/20"
                             />
                             <SegmentGroup.Items 
                                 color="gray.300" 
@@ -237,6 +208,9 @@ export default function ActivityChart() {
                                     color: "blue.400",
                                     bgColor: "transparent",
                                     borderRadius: "lg"
+                                }}
+                                _checked={{
+                                    color: "blue.400",
                                 }}
                                 transition="all 0.15s ease-in-out"
                                 paddingX="1rem"

@@ -59,7 +59,15 @@ export default function TopPerformingPortfolios() {
                     minWidth="300px"
                 >
 
-                    <Card.Root  width="100%" size="sm" bgColor="gray.900/70" border="1px solid" borderColor="gray.800" >
+                    <Card.Root  width="100%" size="sm" 
+                    backgroundColor="gray.900/40"
+                    backdropFilter="blur(10px)"
+                    border="1px solid" borderColor="gray.800"
+                    _hover={{
+                        transform: "scale(1.01)",
+                        transition: "all 0.2s ease-in-out",
+                    }}
+                    >
                         <Card.Body flexDirection="row" alignItems="center" >
                             <Stack gap="0" flex="1">
                             <Box fontWeight="semibold" textStyle="sm">
@@ -90,6 +98,7 @@ export default function TopPerformingPortfolios() {
                                     fillOpacity={0.2}
                                     stroke={chart.color(item.color)}
                                     strokeWidth={2}
+                                    activeDot={false}
                                 />
                                 ))}
                             </AreaChart>

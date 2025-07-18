@@ -77,7 +77,10 @@ export default function Navbar() {
                         <Menu.ItemGroup>
                             <Menu.Item value="account">Account</Menu.Item>
                             <Menu.Item value="settings">Settings</Menu.Item>
-                            <Menu.Item value="logout">
+                            <Menu.Item value="logout" onClick={() => {
+                                localStorage.removeItem("token");
+                                router.push("/login");
+                            }}>
                                 <LuLogOut />
                                 Logout
                             </Menu.Item>
