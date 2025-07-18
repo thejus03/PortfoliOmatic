@@ -12,6 +12,7 @@ from models.Portfolios import UpdatePortfolioRequest, SetPortfolioRequest, Portf
 from models.Users import LoginRequest
 from scripts.generate_portfolios import generate_portfolios
 from fastapi.responses import JSONResponse
+from collections import defaultdict
 
 app = FastAPI()
 
@@ -245,7 +246,8 @@ def get_portfolio_value(payload: dict = Depends(validate_token)):
         multiple = 0
 
         # Get the name of the Portfolio 
-        response = supabase.table()
+        response = supabase.table("Portfolios").select("name").eq("id", portfolio_id).execute()
+        name = response.data[0]["name"]
 
         # Calculate the changes in real value for that particular portfolio
         for item in list_of_date_and_normalised_value:
@@ -259,7 +261,8 @@ def get_portfolio_value(payload: dict = Depends(validate_token)):
                 values.append({"date": formatted_date, "value": list_of_date_and_capital[pos]["capital_invested"]})
 
                 multiple = list_of_date_and_capital[pos]["capital_invested"] / float(item["normalised_value"])
-                pos += 1
+                if pos < len(list_of_date_and_capital) - 1:
+                    pos += 1
             else:
 
                 # Format the date
@@ -270,9 +273,31 @@ def get_portfolio_value(payload: dict = Depends(validate_token)):
                 values.append({"date": formatted_date, "value": float(item["normalised_value"]) * multiple})
         
         # Add the list of values to the dictionary
-        portfolio_id_to_values[portfolio_id] = values
+        portfolio_id_to_values[name] = values
+
+    # Create the dictionary that maps date to total portfolio value
+    date_to_value_dict = defaultdict(int)
+
+    # Iterate through the portfolio_id_to_values dict
+    for individual_portfolio_value_list in portfolio_id_to_values.values():
+        for date_and_value_dict in individual_portfolio_value_list:
+            curr_date = date_and_value_dict["date"]
+            curr_value = date_and_value_dict["value"]
+            date_to_value_dict[curr_date] += curr_value
+    
+    portfolio_id_to_values["total"] = date_to_value_dict
 
     return JSONResponse(portfolio_id_to_values)
+
+@app.get("/api/all_portfolios")
+def get_all_portfolios(payload: dict = Depends(validate_token)):
+    response = supabase.table
+
+@app.get("/api/current_holdings")
+def get_current_holdings(payload:dict = Depends(validate_token)):
+    user_id = payload["id"]
+
+    response = supabase.table()
 
 
 # Helper functions
