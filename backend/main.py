@@ -285,7 +285,13 @@ def get_portfolio_value(payload: dict = Depends(validate_token)):
             curr_value = date_and_value_dict["value"]
             date_to_value_dict[curr_date] += curr_value
     
-    portfolio_id_to_values["total"] = date_to_value_dict
+    # Create the list of dictionaries to store date and corresponding value
+    total_date_and_value_list = []
+
+    for key, value in date_to_value_dict.items():
+        total_date_and_value_list.append({"date": key, "value": value})
+    
+    portfolio_id_to_values["total"] = total_date_and_value_list
 
     return JSONResponse(portfolio_id_to_values)
 
