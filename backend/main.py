@@ -386,7 +386,6 @@ def get_portfolio_by_risk(request: RiskLevelRequest, payload: dict = Depends(val
     response = supabase.table("Portfolios").select("*").eq("name", risk_level).execute()
     if response.count == 0:
         raise HTTPException(status_code=404, detail="Invalid risk level")
-    print(response.data)
     return response.data
 
 # Helper functions

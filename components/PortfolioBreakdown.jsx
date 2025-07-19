@@ -10,7 +10,6 @@ export default function PortfolioBreakdown({chartData, risk}) {
             const response = await getPortfolioByRisk(risk, localStorage.getItem("token"))
             if (response.success) {
                 setPortfolio(response.data[0])
-                console.log(response.data[0])
             } else {
                 console.error("Error fetching portfolio:", response.error)
             }
@@ -31,7 +30,7 @@ export default function PortfolioBreakdown({chartData, risk}) {
                 marginTop="3rem"
                 maxWidth="1500px"
             >
-
+                {/* Portfolio Breakdown content will go here */}
             
             </Box>
         </Box>
