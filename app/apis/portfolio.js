@@ -14,12 +14,13 @@ export const getChartData = async (token) => {
                 Authorization: token,
             }
         });
-        return response.data["total"] || [];
+        return response.data || {};
     } catch (error) {
         console.error("Error fetching chart data:", error);
         return [];
     }
 };
+
 
 export const getPortfolioSuggestions = async (score, token) => {
     try {
@@ -97,4 +98,44 @@ export const getNews = async () => {
                 error: error.response?.data?.detail || "Failed to fetch news"
             };
         });
+}
+
+export const getTopPerformingETFs = async (token) => {
+    try {
+        const response = await baseClient.get("/top_performing_etfs", {
+            headers: {
+                Authorization: token,
+            }
+        });
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data?.detail || "Failed to fetch top performing ETFs"
+        };
+    }
+}
+
+export const getPortfolioByRisk = async (risk, token) => {
+    try {
+        const response = await baseClient.post("/portfolio_by_risk", {
+            risk_level: risk
+        }, {
+            headers: {
+                Authorization: token,
+            }
+        })
+        return {
+            success: true,
+            data: response.data
+        }
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data?.detail || "Failed to fetch portfolio by risk"
+        };
+    }
 }

@@ -40,7 +40,7 @@ function Login() {
       if (!result.data.profiled) {
         router.push('/account-setup/risk-preference');
       } else {
-        router.push('/');
+        router.push('/home');
       }
     } else {
       toaster.create({

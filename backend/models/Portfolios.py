@@ -10,3 +10,6 @@ class SetPortfolioRequest(BaseModel):
 
 class PortfolioSuggestionsRequest(BaseModel):
     score: float
+
+class RiskLevelRequest(BaseModel):
+    risk_level: str

@@ -13,29 +13,15 @@ import { Box, Center, Text, Stat, HStack, Badge, FormatNumber } from "@chakra-ui
 import { SegmentGroup, VStack, Skeleton} from "@chakra-ui/react"
 import { getChartData } from "@/app/apis/portfolio"
 
-export default function ActivityChart() {
-    const [chartData, setChartData] = useState([]);
+export default function ActivityChart( {chartData} ) {
     const [selectedPeriod, setSelectedPeriod] = useState("1M");
     const [displayData, setDisplayData] = useState([]);
     const [value, setValue] = useState(0);
     const [percentageChange, setPercentageChange] = useState(0);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await getChartData(localStorage.getItem("token"));
-                setChartData(response);
-            } catch (error) {
-                console.error("Error fetching chart data:", error);
-                setChartData([]);
-            }
-        };
-        
-        fetchData();
-    }, [])
 
     useEffect(() => {
-        if (chartData.length === 0) {
+        if (chartData?.length === 0) {
             setDisplayData([]);
             return;
         }
@@ -55,12 +41,12 @@ export default function ActivityChart() {
                 daysToShow = 365;
                 break;
             case "All":
-                daysToShow = chartData.length;
+                daysToShow = chartData?.length;
                 break;
             default:
                 daysToShow = 30;
         }
-        setValue(chartData[chartData.length - 1].value);
+        setValue(chartData[chartData?.length - 1].value);
         const filteredData = chartData.slice(-daysToShow);
         setPercentageChange((filteredData[filteredData.length - 1].value - filteredData[0].value) / filteredData[0].value);
         setDisplayData(filteredData);
@@ -90,7 +76,7 @@ export default function ActivityChart() {
 
             >
             <VStack width="100%">
-                {chartData.length === 0 ? (
+                {chartData?.length === 0 ? (
                     <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="52px" width="250px" />
                 ) : (
                     
@@ -117,7 +103,7 @@ export default function ActivityChart() {
                     </HStack>
                 </Stat.Root>
                 )}
-                {chartData.length === 0 ? (
+                {chartData?.length === 0 ? (
                     <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="279px" width="95%" />
                 ) : (
                     <>

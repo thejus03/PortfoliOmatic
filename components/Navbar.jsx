@@ -24,11 +24,12 @@ export default function Navbar() {
                 color: "blue.400",
                 bgColor: "blue.600/20",
             },
+            transition: "all 0.2s ease-in-out",
         };
     }, [pathname]);
 
     const navigationItems = [
-        { label: "Home", path: "/" },
+        { label: "Home", path: "/home" },
         { label: "Portfolios", path: "/portfolios" },
         { label: "Buy/Sell", path: "/trade" }
     ];

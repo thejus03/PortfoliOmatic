@@ -56,7 +56,7 @@ export default function LatestNews() {
                             >
                                 <Box
                                     borderRadius="md"
-                                    padding="0.75rem"
+                                    padding="1rem"
                                     backgroundColor="transparent"
                                     _hover={{
                                         backgroundColor: "gray.800"
@@ -95,7 +95,7 @@ export default function LatestNews() {
                     </SimpleGrid>
                 </Box>
             ) : (
-                <Skeleton height="400px" width="100%" borderRadius="lg"/>
+                <Skeleton height="471px" width="100%" borderRadius="lg"/>
             )}
         </Box>
     )
