@@ -13,6 +13,7 @@ import { useState, useEffect } from "react";
 import { getAllPortfolios, getHoldingPortfolios, getUserPortfolioValue, updateCapitalInvested } from '@/app/apis/portfolio';
 import Trade from "@/components/TradePage";
 import { toaster } from "@/components/ui/toaster";
+import Navbar from "@/components/Navbar";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -189,19 +190,7 @@ export default function Home() {
         <div className="w-full min-h-screen bg-slate-950">
         
             {/* Navbar */}
-            <div className="w-full h-16 bg-blue-900/90 backdrop-blur-sm border-b border-blue-800/50 flex items-center justify-center shadow-xl shadow-blue-950/50">
-                <div className="w-[95%] flex items-center justify-between">
-                    <Box
-                    textStyle="xl"
-                    fontWeight="semibold"
-                    letterSpacing="wider"
-                    className={spaceGrotesk.className}
-                    color="white"
-                    >
-                    Portfoli-O-matic
-                    </Box>
-                </div>
-            </div>
+            <Navbar />
 
             
             <Tabs.Root defaultValue="buy" variant="plain">
@@ -210,23 +199,21 @@ export default function Home() {
                 bg="gray.700"
                 p="2"
                 display="flex"
-                gap={4} 
+                gap={4}
+                justifyContent="center" 
                 >
-                <Tabs.Trigger value="take our risk assessment" px={4} py={2} minW="160px">
-                    Take Our Risk Assessment
-                </Tabs.Trigger>
-                <Tabs.Trigger value="buy" px={4} py={2} minW="100px">
-                    Buy New Portfolios
-                </Tabs.Trigger>
-                <Tabs.Trigger value="sell" px={4} py={2} minW="100px">
-                    Sell Current Holdings
-                </Tabs.Trigger>
-                <Tabs.Indicator rounded="md" />
+                    <Tabs.Trigger value="take our risk assessment" px={4} py={2} minW="160px" _hover={{ bg: "black" }}>Our Risk Assessment</Tabs.Trigger>
+                    <Tabs.Trigger value="buy" px={4} py={2} minW="100px" _hover={{ bg: "black" }}>Buy New Portfolios</Tabs.Trigger>
+                    <Tabs.Trigger value="sell" px={4} py={2} minW="100px" _hover={{ bg: "black" }}>Sell Current Holdings</Tabs.Trigger>
+                    <Tabs.Indicator rounded="md" />
                 </Tabs.List>
 
                 {/* Risk Assessment */}
                 <Tabs.Content value="take our risk assessment">
-                    <Flex justify="center">
+                    <Flex 
+                    align="center"
+                    justify="center"
+                    flexDirection="column">
                         <VStack gap={10}>
                             <Text fontSize="3xl">Risk Assessment</Text>
                             <Text fontSize="xl">Unsure which Portfolio best matches your Risk Tolerance?</Text>
@@ -242,7 +229,9 @@ export default function Home() {
                             fontSize="md"
                             borderRadius="md"
                             _hover={{ bg: "blue.800" }}
-                            >Click here</Button>
+                            >
+                                Click here to take the Risk Assessment
+                            </Button>
                         </VStack>
                     </Flex>
                 </Tabs.Content>

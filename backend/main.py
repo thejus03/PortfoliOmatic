@@ -473,6 +473,7 @@ def get_top_performing_etfs(payload: dict = Depends(validate_token)):
             "error": f"Error fetching ETF data: {str(e)}",
             "data": []
         }
+    
 @app.post("/api/portfolio_by_risk")
 def get_portfolio_by_risk(request: RiskLevelRequest, payload: dict = Depends(validate_token)):
     risk_level = request.risk_level

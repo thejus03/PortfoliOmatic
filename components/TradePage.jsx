@@ -36,11 +36,10 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                               open, setOpen, tradeAmount, setTradeAmount, typeOfTrade, upperBound, handleTrade}) {
     return (
         <Box display="flex" flexDirection="column" alignItems="center" padding="5">
-            <Text fontWeight="semibold" textStyle="3xl" padding={5}>{typeOfTrade} a Portfolio</Text>
 
             <RadioCard.Root value={tradePortfolioId} onValueChange={(e) => setTradePortfolioId(e.value)}>
                 <RadioCard.Label display="flex" flexDirection="column" alignItems="center">
-                    <Text fontWeight="semibold" textStyle="xl" padding={5}>
+                    <Text fontWeight="semibold" textStyle="3xl" mb={5}>
                         Select a Portfolio to {typeOfTrade}
                     </Text>
                 </RadioCard.Label>
@@ -181,12 +180,14 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                             <Text color="blue.100">{portfolioIdToName[tradePortfolioId]}</Text>
                                         </Text>
 
-                                        <Text>
+                                        <Text fontSize="xl">
                                             You currently hold $
                                                 {portfoliosValue[allPortfolios[allPortfolios.length - 1].id.toString()]
                                                     ? Math.floor(portfoliosValue[allPortfolios[allPortfolios.length - 1].id.toString()] * 100) / 100
                                                     : 0} of this portfolio
                                         </Text>
+
+                                        
                                     </VStack>
                                 </Flex>
                             </Drawer.Body>
@@ -199,8 +200,8 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                 height="50px"
                                 px={6} 
                                 py={5} 
-                                fontSize="lg" 
-                                fontWeight="bold"
+                                fontSize="xs" 
+                                fontWeight="semibold"
                                 borderRadius="lg"
                                 _hover={{ bg: "red.800" }}
                                 onClick={() => setOpen(false)}
@@ -216,13 +217,32 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                             height="50px"
                                             px={6} 
                                             py={5} 
-                                            fontSize="lg" 
-                                            fontWeight="bold"
+                                            fontSize="sm" 
+                                            fontWeight="semibold"
                                             borderRadius="lg"
                                             _hover={{ bg: "blue.800" }}
                                             >
                                             {typeOfTrade}
                                             </Button>
+                                        </Dialog.Trigger>
+                                        <Dialog.Trigger asChild>
+                                            {typeOfTrade == "Sell" && 
+                                                <Button 
+                                                borderWidth="3px"
+                                                color="white" 
+                                                borderColor="white" 
+                                                height="50px"
+                                                px={6} 
+                                                py={5} 
+                                                fontSize="sm" 
+                                                fontWeight="semibold"
+                                                borderRadius="lg"
+                                                _hover={{ bg: "red.800" }}
+                                                onClick={() => setTradeAmount(Number(portfoliosValue[tradePortfolioId]))}
+                                                >
+                                                    Liquidate Entire Portfolio
+                                                </Button>
+                                            }
                                         </Dialog.Trigger>
                                         <Portal>
                                             <Dialog.Backdrop />
@@ -240,10 +260,12 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                                         worth of the 
                                                         <Text color="blue.100"> {portfolioIdToName[tradePortfolioId]} </Text>
                                                         </Text>
-                                                    ) : (
-                                                        <Text fontSize="md">Invalid {typeOfTrade} amount</Text>
-                                                    )}
+                                                    ) : (Number(tradeAmount) != Number(portfoliosValue[tradePortfolioId])) ? (
+                                                        <Text fontSize="md">Invalid {typeOfTrade} amount</Text>)
+                                                    : (<Text fontSize="md">You are going to sell off your entire Portfolio</Text>)
+                                                    }
                                                 </Box>
+
                                                 </Dialog.Body>
                                                 <Dialog.Footer>
                                                     <Dialog.ActionTrigger asChild>
@@ -261,7 +283,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                                             Cancel
                                                         </Button>
                                                     </Dialog.ActionTrigger>
-                                                    {(tradeAmount > 0 && tradeAmount < upperBound) &&
+                                                    {((tradeAmount > 0 && tradeAmount < upperBound) || tradeAmount == Number(portfoliosValue[tradePortfolioId])) &&
                                                         (<Dialog.ActionTrigger asChild>
                                                             <Button 
                                                             borderWidth="1px"
