@@ -81,3 +81,86 @@ export const updatePortfolio = async (riskLevel, tickers, assetClassWeight) => {
         };
     }
 }; 
+
+export const getAllPortfolios = async (token) => {
+    try {
+        const response = await baseClient.get("all_portfolios", {
+            headers: {
+                Authorization: token
+            }
+        });
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data?.detail || "Failed to update portfolio"
+        };
+    }
+}
+
+export const getHoldingPortfolios = async (token) => {
+    try {
+        const response = await baseClient.get("current_holdings", {
+            headers: {
+                Authorization: token
+            }
+        });
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data?.detail || "Failed to update portfolio"
+        };
+    }
+}
+
+export const getUserPortfolioValue = async (token) => {
+    try {
+        const response = await baseClient.get("current_holdings_value", {
+            headers: {
+                Authorization: token
+            }
+        });
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data?.detail || "Failed to update portfolio"
+        };
+    }
+}
+
+export const updateCapitalInvested = async (token, newCapital, buyPortfolioId) => {
+    try {
+        const response = await baseClient.post("update_capital_invested", {
+            capital: newCapital,
+            portfolio_id: buyPortfolioId
+        }, {
+            headers: {
+                Authorization: token
+            }
+        });
+
+        return {
+            success: true,
+            data: response.data
+        };
+    } catch (error) {
+        return {
+            success: false,
+            error: error.response?.data?.detail || "Failed to update portfolio"
+        };
+    }
+}

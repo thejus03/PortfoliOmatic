@@ -10,3 +10,7 @@ class SetPortfolioRequest(BaseModel):
 
 class PortfolioSuggestionsRequest(BaseModel):
     score: float
+
+class UpdateCapitalInvestedRequest(BaseModel):
+    capital: float
+    portfolio_id: int

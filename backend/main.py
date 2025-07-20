@@ -8,7 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import bcrypt
 import jwt
-from models.Portfolios import UpdatePortfolioRequest, SetPortfolioRequest, PortfolioSuggestionsRequest
+from models.Portfolios import UpdatePortfolioRequest, SetPortfolioRequest, PortfolioSuggestionsRequest, UpdateCapitalInvestedRequest
 from models.Users import LoginRequest
 from scripts.generate_portfolios import generate_portfolios
 from fastapi.responses import JSONResponse
@@ -297,13 +297,153 @@ def get_portfolio_value(payload: dict = Depends(validate_token)):
 
 @app.get("/api/all_portfolios")
 def get_all_portfolios(payload: dict = Depends(validate_token)):
-    response = supabase.table
+
+    # Query the database to get all the portfolios available 
+    response = supabase.table("Portfolios").select("*").order("id", desc=False).execute()
+
+    # Check if data was returned
+    if not response.data or len(response.data) == 0:
+        raise HTTPException(status_code=404, detail="Portfolios not found")
+    
+    return JSONResponse(response.data)
 
 @app.get("/api/current_holdings")
 def get_current_holdings(payload:dict = Depends(validate_token)):
     user_id = payload["id"]
 
-    response = supabase.table()
+    # Get User's Portfolio IDs
+    user_response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
+
+    if not user_response.data or not user_response.data[0]["portfolio_ids"]:
+        raise HTTPException(status_code=404, detail="Portfolios not found")
+
+    portfolio_ids = user_response.data[0]["portfolio_ids"]
+
+    # Get Portfolio Details
+    portfolio_response = supabase.table("Portfolios").select("*").in_("id", portfolio_ids).execute()
+
+    if not portfolio_response.data:
+        raise HTTPException(status_code=404, detail="Portfolios not found")
+    
+    portfolios = portfolio_response.data
+
+    return JSONResponse(portfolios)
+
+@app.get("/api/current_holdings_value")
+def get_current_holdings(payload:dict = Depends(validate_token)):
+    user_id = payload["id"]
+
+    # Get User's Portfolio IDs
+    user_response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
+
+    if not user_response.data or not user_response.data[0]["portfolio_ids"]:
+        raise HTTPException(status_code=404, detail="Portfolios not found")
+
+    portfolio_ids = user_response.data[0]["portfolio_ids"]
+
+    # Get Portfolio Details
+    list_of_portfolio_dicts = []
+
+    for portfolio_id in portfolio_ids:
+        portfolio_response = supabase.table("User_Portfolio_Value").select("capital_invested", "portfolio_id", "created_at").eq("user_id", user_id).eq("portfolio_id", portfolio_id).order("created_at", desc=True).limit(1).execute()
+        if not portfolio_response.data:
+            raise HTTPException(status_code=404, detail="Portfolios not found")
+        list_of_portfolio_dicts.append(portfolio_response.data[0])
+    
+    # Convert created_at to just date (YYYY-MM-DD)
+        for portfolio in list_of_portfolio_dicts:
+            portfolio["created_at"] = portfolio["created_at"].split("T")[0]
+
+    portfolio_id_to_current_value_dict = defaultdict(float)
+    
+    for portfolio in list_of_portfolio_dicts:
+        normalised_value_response = supabase.table("Portfolio_Value").select("normalised_value").eq("portfolio_id", portfolio["portfolio_id"]).eq("created_at", portfolio["created_at"]).execute()
+        multiple =  portfolio["capital_invested"] / normalised_value_response.data[0]["normalised_value"]
+        current_value_response = supabase.table("Portfolio_Value").select("normalised_value").eq("portfolio_id", portfolio["portfolio_id"]).order("created_at", desc=True).limit(1).execute()
+        current_value = multiple * current_value_response.data[0]["normalised_value"]
+        portfolio_id_to_current_value_dict[portfolio["portfolio_id"]] = current_value
+    
+    return JSONResponse(portfolio_id_to_current_value_dict)
+
+@app.post("/api/update_capital_invested")
+def update_capital_invested(body: UpdateCapitalInvestedRequest, payload: dict = Depends(validate_token)):
+    capital = body.capital
+    portfolio_id = body.portfolio_id
+    user_id = payload["id"]
+
+    # update the capital invested
+    response = supabase.table("User_Portfolio_Value").insert({
+        "user_id": user_id,
+        "portfolio_id": portfolio_id,
+        "capital_invested": capital
+    }).execute()
+
+    if not response.data:
+        raise HTTPException(status_code=500, detail="Failed to update capital invested")
+    
+    # update the portfolio_ids in "Users" table
+    response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
+
+    if not response.data:
+        raise HTTPException(status_code=500, detail="Failed to retrieve users table")
+    
+    portfolio_ids = response.data[0]["portfolio_ids"]
+
+    if portfolio_id not in portfolio_ids:
+        portfolio_ids.append(portfolio_id)
+        response = supabase.table("Users").update({"portfolio_ids": portfolio_ids}).eq("id", user_id).execute()
+
+    if not response.data:
+        raise HTTPException(status_code=500, detail="Failed to update users table")
+    
+    return {"message": "Portfolio updated successfully"}
+
+# ------------------------------------------------------------Testing--------------------------------------------------------------------
+@app.get("/api/get_user_portfolio_value_table")
+def get_user_portfolio_value_table():
+    response = supabase.table("User_Portfolio_Value").select("*").execute()
+    return JSONResponse(response.data)
+
+@app.delete("/api/delete_user_portfolio_values")
+def delete_user_portfolio_values():
+    response = supabase.table("User_Portfolio_Value").delete().gt("id", 14).execute()
+
+    if not response.data:
+        raise HTTPException(status_code=500, detail="Failed to delete rows")
+
+    return {"message": "Rows deleted successfully"}
+
+@app.get("/api/get_user_info")
+def get_user_info(payload: dict = Depends(validate_token)):
+    user_id = payload["id"]
+    
+    response = supabase.table("Users").select("*").eq("id", user_id).execute()
+
+    if not response.data:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    return JSONResponse(content=response.data[0])
+
+@app.post("/api/edit_the_portfolio_array")
+def delete_user_portfolio_values(payload: dict = Depends(validate_token)):
+    user_id = payload["id"]
+    
+    response = supabase.table("Users").update({"portfolio_ids": [1, 5]}).eq("id", user_id).execute()
+
+    if not response.data:
+        raise HTTPException(status_code=500, detail="Failed to update portfolio array")
+
+    return {"message": "Portfolio Array Updated Successfully"}
+
+@app.get("/api/portfolio_value")
+def get_all_portfolio_values():
+    response = supabase.table("Portfolio_Value").select("*").execute()
+    
+    if not response.data:
+        return JSONResponse(status_code=500, content={"error": response.error.message})
+
+    return JSONResponse(response.data)
+
 
 
 # Helper functions

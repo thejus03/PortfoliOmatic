@@ -16,6 +16,8 @@ import { Space_Grotesk } from "next/font/google"
 import { useAccountSetup } from '../context/AccountSetupContext'
 import Popup from '@/components/ui/portfolio-popup'
 import { getPortfolioSuggestions } from '@/app/apis/portfolio'
+import { useRouter } from 'next/navigation'
+
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],
     weight: ["600"],
@@ -25,6 +27,13 @@ const spaceGrotesk = Space_Grotesk({
 function Page() {
     const { formData } = useAccountSetup();
     const [portfolios, setPortfolios] = useState(null);
+    
+    const router = useRouter();
+    
+    const handleContinue = (pid) => {
+        router.push(`/trade?pid=${pid}`);
+    };
+    
     
     useEffect(() => {
         const fetchPortfolio = async () => {
@@ -81,6 +90,7 @@ function Page() {
             <Box className="mt-10">
                 <Heading textStyle="2xl" color="blue.200" fontWeight="bold" fontFamily={spaceGrotesk.style.fontFamily}>Our Recommended Portfolio: </Heading>
             </Box>
+
             <Card.Root width="600px" height="300px" bg="blue.900">
                 <Card.Body gap="2">
                     <Card.Title mt="2" mb="3" fontSize="xl" fontWeight="bold">{name_and_description[suggestedPortfolio.name].name}</Card.Title>
@@ -90,12 +100,16 @@ function Page() {
                 </Card.Body>
                 <Card.Footer justifyContent="space-between">
                     <Popup portfolio={suggestedPortfolio} title={name_and_description[suggestedPortfolio.name].name}/>
-                    <Button variant="outline" borderWidth="2px" borderColor="white" color="white" px={5} py={2}>Select</Button>
+                    <Button variant="outline" borderWidth="2px" borderColor="white" color="white" px={5} py={2} onClick={() => handleContinue(suggestedPortfolio.id)}>
+                        Select
+                    </Button>
                 </Card.Footer>
             </Card.Root>
+
             <Box className="mt-5">
                 <Heading textStyle="2xl" color="blue.200" fontWeight="bold" fontFamily={spaceGrotesk.style.fontFamily}>Or, select another Portfolio that better suits your needs: </Heading>
             </Box>
+
             <Box padding="4">
                 <SimpleGrid columns={2} gap="40px">
                     <For each={otherPortfolios}>
@@ -109,13 +123,16 @@ function Page() {
                                 </Card.Body>
                                 <Card.Footer justifyContent="space-between">
                                     <Popup portfolio={otherPortfolio} title={name_and_description[otherPortfolio.name].name}/>
-                                    <Button variant="outline" borderWidth="2px" borderColor="white" color="white" px={5} py={2}>Select</Button>
+                                    <Button variant="outline" borderWidth="2px" borderColor="white" color="white" px={5} py={2} onClick={() => handleContinue(otherPortfolio.id)}>
+                                        Select
+                                    </Button>
                                 </Card.Footer>
                             </Card.Root>
                         )}
                     </For>
                 </SimpleGrid>
             </Box>
+
         </Stack>
     )
 }
