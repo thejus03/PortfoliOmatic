@@ -12,11 +12,11 @@ import {    Stack,
             HStack,
             SimpleGrid
         } from "@chakra-ui/react"
-import { Space_Grotesk } from "next/font/google"
 import { useAccountSetup } from '../context/AccountSetupContext'
 import Popup from '@/components/ui/portfolio-popup'
 import { getPortfolioSuggestions } from '@/app/apis/portfolio'
 import { useRouter } from 'next/navigation'
+import { Space_Grotesk } from "next/font/google";
 
 const spaceGrotesk = Space_Grotesk({
     subsets: ["latin"],

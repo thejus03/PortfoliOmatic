@@ -9,76 +9,19 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { Box, Center, Text } from "@chakra-ui/react"
-import { SegmentGroup, VStack} from "@chakra-ui/react"
+import { Box, Center, Text, Stat, HStack, Badge, FormatNumber } from "@chakra-ui/react"
+import { SegmentGroup, VStack, Skeleton} from "@chakra-ui/react"
 import { getChartData } from "@/app/apis/portfolio"
 
-export default function ActivityChart({ data }) {
-    const [chartData, setChartData] = useState([]);
+export default function ActivityChart( {chartData} ) {
     const [selectedPeriod, setSelectedPeriod] = useState("1M");
     const [displayData, setDisplayData] = useState([]);
-    // Get data from the API
-    data = {
-        "total": [
-            { date: "01 Jan 2025", value: 100 },
-            { date: "02 Jan 2025", value: 102 },
-            { date: "03 Jan 2025", value: 99 },
-            { date: "04 Jan 2025", value: 104 },
-            { date: "05 Jan 2025", value: 107 },
-            { date: "06 Jan 2025", value: 103 },
-            { date: "07 Jan 2025", value: 108 },
-            { date: "08 Jan 2025", value: 110 },
-            { date: "09 Jan 2025", value: 106 },
-            { date: "10 Jan 2025", value: 112 },
-            { date: "11 Jan 2025", value: 115 },
-            { date: "12 Jan 2025", value: 117 },
-            { date: "13 Jan 2025", value: 113 },
-            { date: "14 Jan 2025", value: 118 },
-            { date: "15 Jan 2025", value: 121 },
-            { date: "16 Jan 2025", value: 125 },
-            { date: "17 Jan 2025", value: 122 },
-            { date: "18 Jan 2025", value: 127 },
-            { date: "19 Jan 2025", value: 130 }
-        ],
-        "ultra_low": [
-            { date: "01 Jan 2025", value: 100 },
-            { date: "02 Jan 2025", value: 200 },
-            { date: "03 Jan 2025", value: 150 },
-            { date: "04 Jan 2025", value: 300 },
-            { date: "05 Jan 2025", value: 250 },
-            { date: "06 Jan 2025", value: 400 },
-            { date: "07 Jan 2025", value: 500 },
-            { date: "08 Jan 2025", value: 600 },
-            { date: "09 Jan 2025", value: 700 },
-            { date: "10 Jan 2025", value: 800 },
-            { date: "11 Jan 2025", value: 900 },
-            { date: "12 Jan 2025", value: 1000 },
-            { date: "13 Jan 2025", value: 1100 },
-            { date: "14 Jan 2025", value: 1200 },
-            { date: "15 Jan 2025", value: 1300 },
-            { date: "16 Jan 2025", value: 1400 },
-            { date: "17 Jan 2025", value: 1500 },
-            { date: "18 Jan 2025", value: 1600 },
-            { date: "19 Jan 2025", value: 1700 },
-        ]
-    };
+    const [value, setValue] = useState(0);
+    const [percentageChange, setPercentageChange] = useState(0);
+
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await getChartData(localStorage.getItem("token"));
-                setChartData(data["total"]);
-            } catch (error) {
-                console.error("Error fetching chart data:", error);
-                setChartData([]);
-            }
-        };
-        
-        fetchData();
-    }, [])
-
-    useEffect(() => {
-        if (chartData.length === 0) {
+        if (chartData?.length === 0) {
             setDisplayData([]);
             return;
         }
@@ -97,23 +40,24 @@ export default function ActivityChart({ data }) {
             case "1Y":
                 daysToShow = 365;
                 break;
-            case "ALL":
-                daysToShow = chartData.length;
+            case "All":
+                daysToShow = chartData?.length;
                 break;
             default:
                 daysToShow = 30;
         }
-
+        setValue(chartData[chartData?.length - 1].value);
         const filteredData = chartData.slice(-daysToShow);
+        setPercentageChange((filteredData[filteredData.length - 1].value - filteredData[0].value) / filteredData[0].value);
         setDisplayData(filteredData);
-    }, [selectedPeriod, chartData])
+    }, [selectedPeriod, chartData, value, percentageChange])
 
     const chart = useChart({
         data: displayData,
         series: [
             {
                 name: "value",
-                color: "blue.500",
+                color: "blue.400",
             }
         ],
     });
@@ -132,101 +76,136 @@ export default function ActivityChart({ data }) {
 
             >
             <VStack width="100%">
-                <Text 
-                    alignSelf="flex-start" 
-                    marginLeft="2rem" 
-                    marginTop="2rem"
-                    fontSize="xs"
-                    color="gray.500"
-                    fontWeight="semibold"
-                >
-                    Value (SGD)
-                </Text>
-                <Text 
-                    alignSelf="flex-start" 
-                    marginLeft="2rem" 
-                    fontSize="2xl"
-                    fontWeight="bold"
-                    color="blue.100"
-                    letterSpacing="wide"
-                    marginBottom="1rem"
-                    marginTop="-0.5rem"
-                >
-                    $200,000.00
-                </Text>
-                <Chart.Root chart={chart} height="300px" width="100%">
-                    <AreaChart data={chart.data} margin={{ left: 0, bottom: 0, right: 0, top: 0 }}>
-                    <CartesianGrid 
-                        stroke="gray" 
-                        vertical={false} 
-                        opacity={0.2}
-                        strokeDasharray="2 2"
-                        />
+                {chartData?.length === 0 ? (
+                    <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="52px" width="250px" />
+                ) : (
                     
-                    <XAxis 
-                        dataKey="date"
-                        axisLine={false}
-                        tickLine={false}
-                        tickMargin={0}
-                        display="none"
-                        stroke={chart.color("border")}
-                        />
-                    <YAxis
-                        axisLine={false}
-                        tickLine={false}
-                        tickMargin={10}
-                        yAxisId="right"
-                        orientation="right"
-                        dataKey={chart.key("value")}
-                        stroke={chart.color("border")}
-                        />
-                    <Tooltip
-                        animationDuration={100}
-                        cursor={{ stroke: chart.color("border") }}
-                        content={<Chart.Tooltip />}
-                        />
-                    {chart.series.map((item) => (
-                        <defs key={item.name}>
-                            <Chart.Gradient
-                            id={`${item.name}-gradient`}
-                            stops={[
-                                { offset: "0%", color: item.color, opacity: 0.3 },
-                                { offset: "100%", color: item.color, opacity: 0.05 },
-                            ]}
-                            />
-                        </defs>
-                        ))}
-                    {chart.series.map((item) => (
-                    <Area
-                        key={item.name}
-                        isAnimationActive={true}
-                        dataKey={chart.key(item.name)}
-                        fill={`url(#${item.name}-gradient)`}
-                        stroke={chart.color(item.color)}
-                        strokeWidth={2}
-                        stackId="a"
-                    />
-                    ))}
-                    </AreaChart> 
-                </Chart.Root>
+                <Stat.Root justifyContent="flex-start" alignSelf="flex-start" margin="2rem">
+                    <Stat.Label textStyle="xs" color="gray.400">Value</Stat.Label>
+                    <HStack alignItems="center">
+                        <Stat.ValueText>
+                        <FormatNumber value={value} style="currency" currency="SGD" />
+                        </Stat.ValueText>
+                        {percentageChange > 0 ? (
+                            <Badge colorPalette="green" gap="0">
+                            <Stat.UpIndicator />
+                            {percentageChange.toFixed(2)}%
+                            </Badge>
 
-                <SegmentGroup.Root 
-                    size="sm" 
-                    defaultValue={selectedPeriod} 
-                    marginBottom="1rem"
-                    bg="transparent"
-                    border="1px solid"
-                    borderColor="blue.800"
-                    borderRadius="md"
-                    letterSpacing="wide"
-                    fontWeight="bold"
-                    fontSize="sm"
-                    value={selectedPeriod}
-                    onChange={(e) => setSelectedPeriod(e.target.value)}
-                >
-                    <SegmentGroup.Indicator  bg="blue.700" opacity="0.5"/>
-                    <SegmentGroup.Items color="gray.400" items={["7D", "1M", "6M", "1Y", "ALL"]} />
-                </SegmentGroup.Root>
+                        ) : (
+
+                            <Badge colorPalette="red" gap="0">
+                            <Stat.DownIndicator />
+                            {percentageChange.toFixed(2)}%
+                            </Badge>
+
+                        )}
+                    </HStack>
+                </Stat.Root>
+                )}
+                {chartData?.length === 0 ? (
+                    <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="279px" width="95%" />
+                ) : (
+                    <>
+                        <Chart.Root chart={chart} height="300px" width="100%">
+                            <AreaChart data={chart.data} margin={{ left: 0, bottom: 0, right: 0, top: 0 }}>
+                            <CartesianGrid 
+                                stroke="gray" 
+                                vertical={false} 
+                                opacity={0.2}
+                                strokeDasharray="2 2"
+                                />
+                            
+                            <XAxis 
+                                dataKey="date"
+                                axisLine={false}
+                                tickLine={false}
+                                tickMargin={0}
+                                display="none"
+                                stroke={chart.color("border")}
+                                />
+                            <YAxis
+                                axisLine={false}
+                                tickLine={false}
+                                tickMargin={10}
+                                yAxisId="right"
+                                orientation="right"
+                                dataKey={chart.key("value")}
+                                stroke={chart.color("border")}
+                                />
+                            <Tooltip
+                                animationDuration={100}
+                                cursor={{ stroke: chart.color("border") }}
+                                content={<Chart.Tooltip />}
+                                />
+                            {chart.series.map((item) => (
+                                <defs key={item.name}>
+                                    <Chart.Gradient
+                                    id={`${item.name}-gradient`}
+                                    stops={[
+                                        { offset: "0%", color: item.color, opacity: 0.2 },
+                                        { offset: "100%", color: item.color, opacity: 0 },
+                                    ]}
+                                    />
+                                </defs>
+                                ))}
+                            {chart.series.map((item) => (
+                            <Area
+                                key={item.name}
+                                isAnimationActive={true}
+                                dataKey={chart.key(item.name)}
+                                fill={`url(#${item.name}-gradient)`}
+                                stroke={chart.color(item.color)}
+                                strokeWidth={2}
+                                stackId="a"
+                                // dot={{ fill: chart.color(item.color), fillOpacity:1, strokeWidth: 0.5}}
+                                activeDot={true}
+                            />
+                            ))}
+                            </AreaChart> 
+                        </Chart.Root>
+                        <SegmentGroup.Root 
+                            size="sm" 
+                            defaultValue={selectedPeriod} 
+                            marginBottom="1rem"
+                            marginTop="-1rem"
+                            border="none"
+                            borderColor="transparent"
+                            bgColor="transparent"
+                            borderRadius="2xl"
+                            letterSpacing="wide"
+                            fontWeight="bold"
+                            fontSize="sm"
+                            value={selectedPeriod}
+                            onChange={(e) => setSelectedPeriod(e.target.value)}
+                            padding="0.1rem"
+                        >
+                            <SegmentGroup.Indicator  
+                                bgColor="blue.700/40" 
+                                borderRadius="2xl" 
+                                backdropFilter="blur(10px)"
+                                border="1px solid"
+                                borderColor="blue.700/20"
+                            />
+                            <SegmentGroup.Items 
+                                color="gray.300" 
+                                items={["7D", "1M", "6M", "1Y", "All"]} 
+                                _hover={{
+                                    color: "blue.400",
+                                    bgColor: "transparent",
+                                    borderRadius: "lg"
+                                }}
+                                _checked={{
+                                    color: "blue.400",
+                                }}
+                                transition="all 0.15s ease-in-out"
+                                paddingX="1rem"
+                                paddingY="0.5rem"
+                            />
+                        </SegmentGroup.Root>
+                    </>
+                )}
+
             </VStack>
 
             </Box>

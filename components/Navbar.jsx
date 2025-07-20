@@ -1,0 +1,96 @@
+"use client";
+import { Box, HStack, Button, Avatar, Menu, Portal } from "@chakra-ui/react";
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
+import { useCallback } from "react";
+import { LuLogOut } from "react-icons/lu";
+
+export default function Navbar() {
+    const router = useRouter();
+    const pathname = usePathname();
+
+    const getButtonStyles = useCallback((path) => {
+        const isActive = pathname === path;
+        
+        return {
+            color: isActive ? "blue.400" : "inherit",
+            bgColor: isActive ? "blue.600/20" : "transparent",
+            size: "xs",
+            borderRadius: "xs",
+            paddingX: "1rem",
+            fontWeight: isActive ? "bold" : "semibold",
+            textStyle: "sm",
+            _hover: {
+                color: "blue.400",
+                bgColor: "blue.600/20",
+            },
+            transition: "all 0.2s ease-in-out",
+        };
+    }, [pathname]);
+
+    const navigationItems = [
+        { label: "Home", path: "/home" },
+        { label: "Portfolios", path: "/portfolios" },
+        { label: "Buy/Sell", path: "/trade" }
+    ];
+
+
+
+    return (
+        <div className="w-full h-16 bg-blue-900/90 backdrop-blur-sm border-b border-blue-800/50 flex items-center justify-center shadow-xl shadow-blue-950/50">
+            <div className="w-[95%] flex items-center justify-between">
+                <Box
+                textStyle="xl"
+                fontWeight="semibold"
+                letterSpacing="wider"
+                className="font-space-grotesk"
+                color="white"
+                >
+                Portfoli-O-matic
+                </Box>
+                <HStack gap="2rem" justifySelf="flex-start" width="80%"  paddingX="2rem" className="font-sans">
+                    {navigationItems.map((item) => (
+                        <Button
+                            key={item.path}
+                            onClick={() => router.push(item.path)}
+                            {...getButtonStyles(item.path)}
+                        >
+                            {item.label}
+                        </Button>
+                    ))}
+                </HStack>
+                <Menu.Root positioning={{ placement: "bottom-start" }}>
+                <Menu.Trigger rounded="full" focusRing="none">
+                    <Avatar.Root size="sm">
+                    <Avatar.Fallback name="Segun Adebayo" />
+                    <Avatar.Image src="https://bit.ly/sage-adebayo" />
+                    </Avatar.Root>
+                </Menu.Trigger>
+                <Portal>
+                    <Menu.Positioner>
+                    <Menu.Content
+                        bgColor="blue.900/40"
+                        backdropFilter="blur(10px)"
+                        border="1px solid"
+                        borderColor="blue.800/50"
+                        borderRadius="sm"
+                    >
+                        <Menu.ItemGroup>
+                            <Menu.Item value="account">Account</Menu.Item>
+                            <Menu.Item value="settings">Settings</Menu.Item>
+                            <Menu.Item value="logout" onClick={() => {
+                                localStorage.removeItem("token");
+                                router.push("/login");
+                            }}>
+                                <LuLogOut />
+                                Logout
+                            </Menu.Item>
+                        </Menu.ItemGroup>
+                    </Menu.Content>
+                    </Menu.Positioner>
+                </Portal>
+                </Menu.Root>
+            </div>
+        </div>
+    )
+}

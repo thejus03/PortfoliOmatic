@@ -14,3 +14,6 @@ class PortfolioSuggestionsRequest(BaseModel):
 class UpdateCapitalInvestedRequest(BaseModel):
     capital: float
     portfolio_id: int
+    
+class RiskLevelRequest(BaseModel):
+    risk_level: str

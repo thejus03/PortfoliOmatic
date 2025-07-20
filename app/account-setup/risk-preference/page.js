@@ -19,12 +19,12 @@ import {
 } from "@chakra-ui/react"
 import { RiArrowRightCircleLine } from 'react-icons/ri'
 import { useState } from "react";
-import { Space_Grotesk } from 'next/font/google'
+import { Space_Grotesk } from "next/font/google";
 
 const spaceGrotesk = Space_Grotesk({
-    subsets: ['latin'],
-    weight: ['400', '500', '600', '700'],
-})
+    subsets: ["latin"],
+    weight: ["600"],
+  });
 
 function page() {
   const { formData, setFormData } = useAccountSetup();

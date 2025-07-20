@@ -8,11 +8,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import bcrypt
 import jwt
-from models.Portfolios import UpdatePortfolioRequest, SetPortfolioRequest, PortfolioSuggestionsRequest, UpdateCapitalInvestedRequest
+from models.Portfolios import UpdatePortfolioRequest, SetPortfolioRequest, PortfolioSuggestionsRequest, UpdateCapitalInvestedRequest, RiskLevelRequest
 from models.Users import LoginRequest
 from scripts.generate_portfolios import generate_portfolios
 from fastapi.responses import JSONResponse
 from collections import defaultdict
+import requests
+import yfinance as yf
+from dateutil.parser import parse
 
 app = FastAPI()
 
@@ -398,6 +401,87 @@ def update_capital_invested(body: UpdateCapitalInvestedRequest, payload: dict = 
     
     return {"message": "Portfolio updated successfully"}
 
+
+@app.get("/api/top_performing_etfs")
+def get_top_performing_etfs(payload: dict = Depends(validate_token)):
+    try:
+        response = requests.post("https://etfdb.com/api/screener/", json={
+            "tab": "returns",
+            "sort_by": "one_week_return",
+            "sort_direction": "desc",
+            "only": [
+                "data",
+                None
+            ]
+        })
+        
+        if response.status_code == 200:
+            data = response.json()["data"][:5]
+            top_performing_etfs = []
+            
+            for ticker_info in data:
+                try:
+                    ticker_symbol = ticker_info["symbol"]["text"]
+                    ticker_name = ticker_info["name"]["text"]
+                    
+                    # Get 7-day historical data from yfinance
+                    ticker = yf.Ticker(ticker_symbol)
+                    hist_data = ticker.history(period="7d")
+                    
+                    
+                    close_prices = hist_data["Close"]
+                    
+                    first_price = close_prices.iloc[0]
+                    last_price = close_prices.iloc[-1]
+                    one_week_return = round((last_price / first_price - 1) * 100, 2)
+                    
+                    one_week_return_data = []
+                    for date, value in close_prices.items():
+                        formatted_date = date.strftime("%d %b %Y")
+                        one_week_return_data.append({
+                            "date": formatted_date, 
+                            "value": round(float(value), 2)
+                        })
+                    
+                    top_performing_etfs.append({
+                        "ticker_symbol": ticker_symbol,
+                        "ticker_name": ticker_name,
+                        "one_week_return": one_week_return,
+                        "one_week_return_data": one_week_return_data
+                    })
+                    
+                except Exception as e:
+                    print(f"Error processing {ticker_symbol}: {str(e)}")
+                    continue
+            
+            top_performing_etfs.sort(key=lambda x: x["one_week_return"], reverse=True)
+            return {
+                "success": True,
+                "data": top_performing_etfs
+            }
+
+        else:
+            return {
+                "success": False,
+                "error": f"ETFdb API error: {response.text}",
+                "data": []
+            }
+            
+    except Exception as e:
+        return {
+            "success": False,
+            "error": f"Error fetching ETF data: {str(e)}",
+            "data": []
+        }
+@app.post("/api/portfolio_by_risk")
+def get_portfolio_by_risk(request: RiskLevelRequest, payload: dict = Depends(validate_token)):
+    risk_level = request.risk_level
+    response = supabase.table("Portfolios").select("*").eq("name", risk_level).execute()
+    if response.count == 0:
+        raise HTTPException(status_code=404, detail="Invalid risk level")
+    return response.data
+
+
 # ------------------------------------------------------------Testing--------------------------------------------------------------------
 @app.get("/api/get_user_portfolio_value_table")
 def get_user_portfolio_value_table():
@@ -443,7 +527,6 @@ def get_all_portfolio_values():
         return JSONResponse(status_code=500, content={"error": response.error.message})
 
     return JSONResponse(response.data)
-
 
 
 # Helper functions
