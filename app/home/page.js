@@ -26,8 +26,11 @@ export default function Home() {
   return (
       <div className="w-full min-h-screen bg-slate-950 pb-16">
           <Navbar />
-          
-          <ActivityChart chartData={chartData} />
+          <Box
+            marginTop="4rem"
+          >
+            <ActivityChart chartData={chartData} />
+          </Box>
           <Box
             display="flex"
             flexDirection="row"

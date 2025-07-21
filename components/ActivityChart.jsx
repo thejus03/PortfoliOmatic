@@ -9,16 +9,113 @@ import {
   XAxis,
   YAxis,
 } from "recharts"
-import { Box, Center, Text, Stat, HStack, Badge, FormatNumber } from "@chakra-ui/react"
+import { Box, Center, Text, Stat, HStack, Badge } from "@chakra-ui/react"
 import { SegmentGroup, VStack, Skeleton} from "@chakra-ui/react"
-import { getChartData } from "@/app/apis/portfolio"
+
+const formatCurrency = (value) => {
+    const formatted = value.toLocaleString(undefined, { 
+        minimumFractionDigits: 2, 
+        maximumFractionDigits: 2 
+    });
+    const [integerPart, decimalPart] = formatted.split('.');
+    
+    return (
+        <Text fontSize="4xl"  whiteSpace="nowrap" className="tracking-wider font-space-grotesk">
+            {integerPart}
+            <Text as="span" fontSize="2xl" className="tracking-wider font-space-grotesk">.{decimalPart}</Text>
+        </Text>
+    );
+};
+
+const formatChangeValue = (change) => {
+    const isPositive = change > 0;
+    const color = isPositive ? "green.400" : "red.400";
+    const prefix = isPositive ? "+" : "";
+    
+    return (
+        <Text 
+            color={color} 
+            fontSize="xl" 
+            fontWeight="bold" 
+            className="tracking-wide font-sans"
+        >
+            {prefix}{change.toFixed(2)}
+        </Text>
+    );
+};
+
+const NetLiquidityDisplay = ({ value }) => (
+    <Stat.Root justifyContent="flex-start" alignSelf="center" margin="2rem">
+        <Stat.Label textStyle="xs" color="gray.400" className="font-sans tracking-wide">
+            Net Liquidity (SGD)
+        </Stat.Label>
+        <HStack alignItems="center">
+            <Stat.ValueText>
+                {formatCurrency(value)}
+            </Stat.ValueText>
+        </HStack>
+    </Stat.Root>
+);
+
+// Component for the change display
+const NavChangeDisplay = ({ valueChange, percentageChange, selectedPeriod }) => (
+    <Stat.Root justifyContent="flex-start" alignSelf="flex-start" margin="2rem">
+        <Stat.Label textStyle="xs" color="gray.400" className="font-sans tracking-wide">
+            NAV Change ({selectedPeriod})
+        </Stat.Label>
+        <HStack className="font-sans">
+            <Stat.ValueText>
+                {formatChangeValue(valueChange)}
+            </Stat.ValueText>
+            {percentageChange > 0 ? (
+                <Badge colorPalette="green" gap="0" className="font-sans" fontSize="10px" fontWeight="bold">
+                    <Stat.UpIndicator />
+                    {percentageChange.toFixed(2)}%
+                </Badge>
+            ) : (
+                <Badge colorPalette="red" gap="0" fontFamily="body" fontSize="10px" fontWeight="bold">
+                    <Stat.DownIndicator />
+                    {percentageChange.toFixed(2)}%
+                </Badge>
+            )}
+        </HStack>
+    </Stat.Root>
+);
+
+const DailyChangeDisplay = ({ valueChange, percentageChange }   ) => {
+    return (
+        <Stat.Root justifyContent="flex-start" alignSelf="flex-start" margin="2rem">
+        <Stat.Label textStyle="xs" color="gray.400" className="font-sans tracking-wide">
+            Daily P&L
+        </Stat.Label>
+        <HStack className="font-sans">
+            <Stat.ValueText>
+                {formatChangeValue(valueChange)}
+            </Stat.ValueText>
+            {percentageChange > 0 ? (
+                <Badge colorPalette="green" gap="0" className="font-sans" fontSize="10px" fontWeight="bold">
+                    <Stat.UpIndicator />
+                    {percentageChange.toFixed(2)}%
+                </Badge>
+            ) : (
+                <Badge colorPalette="red" gap="0" fontFamily="body" fontSize="10px" fontWeight="bold">
+                    <Stat.DownIndicator />
+                    {percentageChange.toFixed(2)}%
+                </Badge>
+            )}
+        </HStack>
+    </Stat.Root>
+    )
+}
 
 export default function ActivityChart( {chartData} ) {
     const [selectedPeriod, setSelectedPeriod] = useState("1M");
     const [displayData, setDisplayData] = useState([]);
     const [value, setValue] = useState(0);
     const [percentageChange, setPercentageChange] = useState(0);
-
+    const [valueChange, setValueChange] = useState(0);
+    const [dailyValueChange, setDailyValueChange] = useState(0);
+    const [dailyPercentageChange, setDailyPercentageChange] = useState(0);
 
     useEffect(() => {
         if (chartData?.length === 0) {
@@ -48,8 +145,11 @@ export default function ActivityChart( {chartData} ) {
         }
         setValue(chartData[chartData?.length - 1].value);
         const filteredData = chartData.slice(-daysToShow);
+        setValueChange(filteredData[filteredData.length - 1].value - filteredData[0].value);
         setPercentageChange((filteredData[filteredData.length - 1].value - filteredData[0].value) / filteredData[0].value);
         setDisplayData(filteredData);
+        setDailyValueChange(filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value);
+        setDailyPercentageChange((filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value) / filteredData[filteredData.length - 2].value);
     }, [selectedPeriod, chartData, value, percentageChange])
 
     const chart = useChart({
@@ -63,7 +163,7 @@ export default function ActivityChart( {chartData} ) {
     });
 
     return (
-        <Center marginX="2rem" marginTop="5rem">
+        <Center marginX="2rem" marginTop="1rem">
             <Box 
                 width="95%"
                 border="1px solid"
@@ -73,140 +173,129 @@ export default function ActivityChart( {chartData} ) {
                 flexDirection="column"
                 alignItems="center"
                 justifyContent="space-between"
-
             >
-            <VStack width="100%">
-                {chartData?.length === 0 ? (
-                    <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="52px" width="250px" />
-                ) : (
-                    
-                <Stat.Root justifyContent="flex-start" alignSelf="flex-start" margin="2rem">
-                    <Stat.Label textStyle="xs" color="gray.400">Value</Stat.Label>
-                    <HStack alignItems="center">
-                        <Stat.ValueText>
-                        <FormatNumber value={value} style="currency" currency="SGD" />
-                        </Stat.ValueText>
-                        {percentageChange > 0 ? (
-                            <Badge colorPalette="green" gap="0">
-                            <Stat.UpIndicator />
-                            {percentageChange.toFixed(2)}%
-                            </Badge>
-
-                        ) : (
-
-                            <Badge colorPalette="red" gap="0">
-                            <Stat.DownIndicator />
-                            {percentageChange.toFixed(2)}%
-                            </Badge>
-
-                        )}
-                    </HStack>
-                </Stat.Root>
-                )}
-                {chartData?.length === 0 ? (
-                    <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="279px" width="95%" />
-                ) : (
-                    <>
-                        <Chart.Root chart={chart} height="300px" width="100%">
-                            <AreaChart data={chart.data} margin={{ left: 0, bottom: 0, right: 0, top: 0 }}>
-                            <CartesianGrid 
-                                stroke="gray" 
-                                vertical={false} 
-                                opacity={0.2}
-                                strokeDasharray="2 2"
-                                />
-                            
-                            <XAxis 
-                                dataKey="date"
-                                axisLine={false}
-                                tickLine={false}
-                                tickMargin={0}
-                                display="none"
-                                stroke={chart.color("border")}
-                                />
-                            <YAxis
-                                axisLine={false}
-                                tickLine={false}
-                                tickMargin={10}
-                                yAxisId="right"
-                                orientation="right"
-                                dataKey={chart.key("value")}
-                                stroke={chart.color("border")}
-                                />
-                            <Tooltip
-                                animationDuration={100}
-                                cursor={{ stroke: chart.color("border") }}
-                                content={<Chart.Tooltip />}
-                                />
-                            {chart.series.map((item) => (
-                                <defs key={item.name}>
-                                    <Chart.Gradient
-                                    id={`${item.name}-gradient`}
-                                    stops={[
-                                        { offset: "0%", color: item.color, opacity: 0.2 },
-                                        { offset: "100%", color: item.color, opacity: 0 },
-                                    ]}
+                <VStack width="100%">
+                    {chartData?.length === 0 ? (
+                        <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="52px" width="250px" />
+                    ) : (
+                        <Box display="flex" flexDirection="row" gap="2rem" alignSelf="flex-start">
+                            <NetLiquidityDisplay value={value} />
+                            <NavChangeDisplay 
+                                valueChange={valueChange} 
+                                percentageChange={percentageChange} 
+                                selectedPeriod={selectedPeriod} 
+                            />
+                            <DailyChangeDisplay 
+                                valueChange={dailyValueChange} 
+                                percentageChange={dailyPercentageChange} 
+                            />
+                        </Box> 
+                    )}
+                    {chartData?.length === 0 ? (
+                        <Skeleton justifyContent="flex-start" alignSelf="flex-start" margin="2rem" height="279px" width="95%" />
+                    ) : (
+                        <>
+                            <Chart.Root chart={chart} height="300px" width="100%" className="font-sans" fontSize="10px" fontWeight="bold">
+                                <AreaChart data={chart.data} margin={{ left: 0, bottom: 0, right: 0, top: 0 }}>
+                                <CartesianGrid 
+                                    stroke="gray" 
+                                    vertical={false} 
+                                    opacity={0.2}
+                                    strokeDasharray="2 2"
                                     />
-                                </defs>
+                                
+                                <XAxis 
+                                    dataKey="date"
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tickMargin={0}
+                                    display="none"
+                                    stroke={chart.color("border")}
+                                    />
+                                <YAxis
+                                    axisLine={false}
+                                    tickLine={false}
+                                    tickMargin={10}
+                                    yAxisId="right"
+                                    orientation="right"
+                                    tick={{ fontSize: "10px" }}
+                                    tickFormatter={(value) => `${value.toLocaleString()}`}
+                                    dataKey={chart.key("value")}
+                                    stroke={chart.color("border")}
+                                    />
+                                <Tooltip
+                                    animationDuration={100}
+                                    cursor={{ stroke: chart.color("border") }}
+                                    content={<Chart.Tooltip />}
+                                    />
+                                {chart.series.map((item) => (
+                                    <defs key={item.name}>
+                                        <Chart.Gradient
+                                        id={`${item.name}-gradient`}
+                                        stops={[
+                                            { offset: "0%", color: item.color, opacity: 0.2 },
+                                            { offset: "100%", color: item.color, opacity: 0 },
+                                        ]}
+                                        />
+                                    </defs>
+                                    ))}
+                                {chart.series.map((item) => (
+                                <Area
+                                    key={item.name}
+                                    isAnimationActive={false}
+                                    dataKey={chart.key(item.name)}
+                                    fill={`url(#${item.name}-gradient)`}
+                                    stroke={chart.color(item.color)}
+                                    strokeWidth={2}
+                                    stackId="a"
+                                    activeDot={true}
+                                />
                                 ))}
-                            {chart.series.map((item) => (
-                            <Area
-                                key={item.name}
-                                isAnimationActive={true}
-                                dataKey={chart.key(item.name)}
-                                fill={`url(#${item.name}-gradient)`}
-                                stroke={chart.color(item.color)}
-                                strokeWidth={2}
-                                stackId="a"
-                                // dot={{ fill: chart.color(item.color), fillOpacity:1, strokeWidth: 0.5}}
-                                activeDot={true}
-                            />
-                            ))}
-                            </AreaChart> 
-                        </Chart.Root>
-                        <SegmentGroup.Root 
-                            size="sm" 
-                            defaultValue={selectedPeriod} 
-                            marginBottom="1rem"
-                            marginTop="-1rem"
-                            border="none"
-                            borderColor="transparent"
-                            bgColor="transparent"
-                            borderRadius="2xl"
-                            letterSpacing="wide"
-                            fontWeight="bold"
-                            fontSize="sm"
-                            value={selectedPeriod}
-                            onChange={(e) => setSelectedPeriod(e.target.value)}
-                            padding="0.1rem"
-                        >
-                            <SegmentGroup.Indicator  
-                                bgColor="blue.700/40" 
-                                borderRadius="2xl" 
-                                backdropFilter="blur(10px)"
-                                border="1px solid"
-                                borderColor="blue.700/20"
-                            />
-                            <SegmentGroup.Items 
-                                color="gray.300" 
-                                items={["7D", "1M", "6M", "1Y", "All"]} 
-                                _hover={{
-                                    color: "blue.400",
-                                    bgColor: "transparent",
-                                    borderRadius: "lg"
-                                }}
-                                _checked={{
-                                    color: "blue.400",
-                                }}
-                                transition="all 0.15s ease-in-out"
-                                paddingX="1rem"
-                                paddingY="0.5rem"
-                            />
-                        </SegmentGroup.Root>
-                    </>
-                )}
+                                </AreaChart> 
+                            </Chart.Root>
+                            <SegmentGroup.Root 
+                                size="sm" 
+                                defaultValue={selectedPeriod} 
+                                marginBottom="1rem"
+                                marginTop="-1rem"
+                                border="none"
+                                borderColor="transparent"
+                                bgColor="transparent"
+                                borderRadius="2xl"
+                                letterSpacing="wide"
+                                fontWeight="bold"
+                                fontSize="sm"
+                                value={selectedPeriod}
+                                onChange={(e) => setSelectedPeriod(e.target.value)}
+                                padding="0.1rem"
+                            >
+                                <SegmentGroup.Indicator  
+                                    bgColor="blue.700/30" 
+                                    borderRadius="2xl" 
+                                    backdropFilter="blur(10px)"
+                                    border="1px solid"
+                                    borderColor="blue.700/20"
+                                />
+                                <SegmentGroup.Items 
+                                    color="gray.300" 
+                                    items={["7D", "1M", "6M", "1Y", "All"]} 
+                                    _hover={{
+                                        color: "blue.400",
+                                        bgColor: "transparent",
+                                        borderRadius: "lg"
+                                    }}
+                                    _checked={{
+                                        color: "blue.400",
+                                    }}
+                                    transition="all 0.15s ease-in-out"
+                                    paddingX="1rem"
+                                    paddingY="0.5rem"
+                                />
+                            </SegmentGroup.Root>
+                        </>
+                    )}
 
-            </VStack>
+                </VStack>
 
             </Box>
         </Center>
