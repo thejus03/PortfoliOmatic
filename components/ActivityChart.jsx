@@ -146,10 +146,10 @@ export default function ActivityChart( {chartData} ) {
         setValue(chartData[chartData?.length - 1].value);
         const filteredData = chartData.slice(-daysToShow);
         setValueChange(filteredData[filteredData.length - 1].value - filteredData[0].value);
-        setPercentageChange((filteredData[filteredData.length - 1].value - filteredData[0].value) / filteredData[0].value);
+        setPercentageChange(((filteredData[filteredData.length - 1].value - filteredData[0].value) / filteredData[0].value) * 100);
         setDisplayData(filteredData);
         setDailyValueChange(filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value);
-        setDailyPercentageChange((filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value) / filteredData[filteredData.length - 2].value);
+        setDailyPercentageChange(((filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value) / filteredData[filteredData.length - 2].value) * 100);
     }, [selectedPeriod, chartData, value, percentageChange])
 
     const chart = useChart({
