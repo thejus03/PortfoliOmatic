@@ -16,18 +16,7 @@ import {    Stack,
 import { useAccountSetup } from '../context/AccountSetupContext'
 import Popup from '@/components/ui/portfolio-popup'
 import { getPortfolioSuggestions } from '@/app/apis/portfolio'
-<<<<<<< HEAD
-import { useRouter } from 'next/navigation'
-import { Space_Grotesk } from "next/font/google";
-
-const spaceGrotesk = Space_Grotesk({
-    subsets: ["latin"],
-    weight: ["600"],
-  });
-
-=======
 import { name_and_description } from '@/utils/constants'
->>>>>>> thejus_dev
 
 function Page() {
     const { formData } = useAccountSetup();
@@ -35,20 +24,6 @@ function Page() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
     
-<<<<<<< HEAD
-    const router = useRouter();
-    
-    const handleContinue = (pid) => {
-        router.push(`/trade?pid=${pid}`);
-    };
-    
-    
-    useEffect(() => {
-        const fetchPortfolio = async () => {
-            const totalScore = Object.values(formData)
-                .flatMap(Object.values)
-                .reduce((sum, val) => sum + val, 0);
-=======
     // Memoize the total score to prevent unnecessary recalculations
     const totalScore = useMemo(() => {
         if (!formData || Object.keys(formData).length === 0) return 0;
@@ -64,7 +39,6 @@ function Page() {
         try {
             setIsLoading(true);
             setError(null);
->>>>>>> thejus_dev
             
             const token = localStorage.getItem('token');
             if (!token) {
