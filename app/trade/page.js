@@ -33,6 +33,7 @@ export default function Home() {
     const [changeMade, setChangeMade] = useState(true)
     const [buyDrawerOpen, setBuyDrawerOpen] = useState(false)
     const [sellDrawerOpen, setSellDrawerOpen] = useState(false)
+    const [liquidatePortfolio, setLiquidatePortfolio] = useState(false)
 
     const searchParams = useSearchParams();
     const pid = searchParams.get('pid');
@@ -103,8 +104,14 @@ export default function Home() {
         });
 
         const token = localStorage.getItem('token')
-        result = await updateCapitalInvested(token, Number(portfoliosValue[sellPortfolioId.toString()]) - Number(sellAmount), Number(sellPortfolioId))
+        let result;
 
+        if (!liquidatePortfolio) {
+            result = await updateCapitalInvested(token, Number(portfoliosValue[sellPortfolioId.toString()]) - Number(sellAmount), Number(sellPortfolioId))
+        } else {
+            result = await updateCapitalInvested(token, 0, Number(sellPortfolioId))
+        }
+        
         if (result.success) {
             toaster.create({
                 title: "Successful",
@@ -243,7 +250,7 @@ export default function Home() {
                     (buyPortfolioId !== 0 && allPortfolios.length > 0 && (
                     <Trade tradePortfolioId={buyPortfolioId} setTradePortfolioId={setBuyPortfolioId} allPortfolios={allPortfolios} name_and_description={name_and_description} 
                     portfoliosValue={portfoliosValue} portfolioIdToName={portfolioIdToName} open={buyDrawerOpen} setOpen={setBuyDrawerOpen} tradeAmount={buyAmount} setTradeAmount={setBuyAmount}
-                    typeOfTrade={"Buy"} upperBound={Infinity} handleTrade={handleBuy}/>
+                    typeOfTrade={"Buy"} upperBound={Infinity} handleTrade={handleBuy} liquidatePortfolio={liquidatePortfolio} setLiquidatePortfolio={setLiquidatePortfolio}/>
                     )) 
                     }
 
@@ -254,7 +261,8 @@ export default function Home() {
                     { sellPortfolioId !== 0 && holdingPortfolios.length > 0 && (
                     <Trade tradePortfolioId={sellPortfolioId} setTradePortfolioId={setSellPortfolioId} allPortfolios={holdingPortfolios} name_and_description={name_and_description} 
                     portfoliosValue={portfoliosValue} portfolioIdToName={portfolioIdToName} open={sellDrawerOpen} setOpen={setSellDrawerOpen} tradeAmount={sellAmount} setTradeAmount={setSellAmount}
-                    typeOfTrade={"Sell"} upperBound={Number(portfoliosValue[sellPortfolioId.toString()])} handleTrade={handleSell}/>
+                    typeOfTrade={"Sell"} upperBound={Number(portfoliosValue[sellPortfolioId.toString()])} handleTrade={handleSell} 
+                    liquidatePortfolio={liquidatePortfolio} setLiquidatePortfolio={setLiquidatePortfolio}/>
                     )}
                 </Tabs.Content>
             </Tabs.Root>
