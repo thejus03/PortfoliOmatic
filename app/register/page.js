@@ -15,6 +15,7 @@ import {
     Alert
 } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
+import { LuMail, LuLock, LuArrowRight } from "react-icons/lu";
 import {
     PasswordInput, PasswordStrengthMeter
   } from "@/components/ui/password-input"
@@ -22,6 +23,7 @@ import { LuShieldAlert } from "react-icons/lu";
 import { Highlight } from "@chakra-ui/react"
 import { toaster } from "@/components/ui/toaster"
 import { register } from "@/app/apis/auth";
+import Navbar from "@/components/Navbar";
 
 function Register() {
   const router = useRouter();
@@ -36,7 +38,7 @@ function Register() {
     special: false,
     all: false,
   });
-  
+
   const handleCreateAccount = async () => {
     
     if (email === '') {
@@ -45,7 +47,7 @@ function Register() {
         description: "Please enter a valid email address."
       });
       setEmail('');
-      setPassword('');
+      handleCriteria('');
       setConfirmPassword('');
       return 
     }
@@ -56,8 +58,7 @@ function Register() {
         title: "Password Mismatch",
         description: "Passwords do not match. Please try again."
       });
-      setEmail('');
-      setPassword('');
+      handleCriteria('');
       setConfirmPassword('');
       return 
     }
@@ -93,7 +94,7 @@ function Register() {
           description: result.error 
         });
         setEmail('');
-        setPassword('');
+        handleCriteria('');
         setConfirmPassword('');
       }
     }
@@ -121,63 +122,64 @@ function Register() {
   }
   return (
     <div className="min-h-screen flex flex-col bg-slate-900 text-white">
+      <Navbar />
 
-      <VStack>
-        {/* Navbar */}
-        <div className="w-full h-16 bg-slate-800 flex items-center justify-center shadow-md">
-          <div className="w-[95%] flex items-center justify-between">
-            <Box
-              textStyle="xl"
-              fontWeight="semibold"
-
-              letterSpacing="wider"
-              className="font-space-grotesk"
-            >
-              Portfoli-O-matic
-            </Box>
-            <Button onClick={() => router.push("/login")} borderWidth="2px" borderColor="blue.700" color="white" px={5} py={2}>
-              Log In 
-            </Button>
-          </div>
-        </div>
+      <VStack marginTop="14" textAlign="center">
+          <Heading textStyle="sm" color="blue.300" fontFamily="Space Grotesk" letterSpacing="wider" fontWeight="medium">INTELLIGENT INVESTING</Heading>
+                     <Heading textStyle="4xl" color="white" fontFamily="Space Grotesk" fontWeight="bold">
+             Build Wealth Smarter with <Highlight query="Algorithm-Driven" styles={{ px: "2", py: "0.5", bg: "blue.emphasized", borderRadius: "md" }}>Algorithm-Driven</Highlight> Portfolios
+           </Heading>
+          <Heading textStyle="md" color="gray.300" fontWeight="normal" maxW="2xl" marginTop="4">
+            Join thousands of smart investors growing their wealth with personalised, algorithm-driven portfolio management
+          </Heading>
       </VStack>
-
-      <VStack marginTop="14">
-          <Heading textStyle="xl" color="gray.200" fontFamily="Space Grotesk">Join the Future of Investing</Heading>
-          <Heading textStyle="3xl" color="gray.200"><Highlight query="Optimised" styles={{ px: "1", bg: "teal.emphasized" }}>Your Portfolio, Optimised by Intelligence</Highlight></Heading>
-      </VStack>
-      <VStack marginTop="20" maxW="lg" mx="auto" alignItems="center" width="100%">
+      <VStack marginTop="12" maxW="lg" mx="auto" alignItems="center" width="100%" className="font-space-grotesk">
         <Field.Root required>
           <Field.Label>
             Email <Field.RequiredIndicator />
           </Field.Label>
-          <Input placeholder="me@example.com" variant="outline" value={email} onChange={(e) => setEmail(e.target.value)} rounded="lg" borderWidth="2px" minW="300px" borderColor="teal.800" _focus={{ borderColor: "teal.600" , outline: "none"}}/>
+          <InputGroup startElement={<LuMail />}>
+
+            <Input 
+              placeholder="me@example.com" 
+              variant="outline" 
+              value={email} 
+              onChange={(e) => setEmail(e.target.value)} 
+              rounded="lg" 
+              borderWidth="2px" 
+              minW="300px" 
+              borderColor="blue.800" 
+              _focus={{ borderColor: "blue.600" , outline: "none"}}
+            />
+          </InputGroup>
+
+
         </Field.Root>
         <Field.Root required>
           <Field.Label>
             Password<Field.RequiredIndicator />
           </Field.Label>
-          <Stack width="100%">
+          <InputGroup startElement={<LuLock />}>
             <PasswordInput 
               placeholder="Choose a password" 
               variant="outline"  
               rounded="lg" 
               borderWidth="2px" 
               minW="300px" 
-              borderColor="teal.800"
-              _focus={{ borderColor: "teal.600" , outline: "none"}}
+              borderColor="blue.800"
+              _focus={{ borderColor: "blue.600" , outline: "none"}}
               value={password}
               onChange={(e) => handleCriteria(e.target.value)}
             />
-          </Stack>
+          </InputGroup>
         </Field.Root>
         <Box 
-          bg={criteria.all ? "green.50" : "red.50"} 
-          width="80%" 
+          bg={criteria.all ? "green.700/50" : "red.800/50"} 
+          width="100%" 
           rounded="xl" 
           p="4" 
-          borderWidth="3px" 
-          borderColor={criteria.all? "green.400" : "red.300"} 
+          borderWidth="1px" 
+          borderColor={criteria.all? "green.700" : "red.700"} 
           shadow="sm" 
           padding="5" 
           opacity="0.8" 
@@ -214,22 +216,44 @@ function Register() {
           <Field.Label>
             Confirm Password<Field.RequiredIndicator />
           </Field.Label>
-          <PasswordInput placeholder="Choose a password" variant="outline"  value={confirmPassword}  onChange={(e) => setConfirmPassword(e.target.value)} rounded="lg" borderWidth="2px" minW="300px" borderColor="teal.800" _focus={{ borderColor: "teal.600" , outline: "none"}}/>
+          <InputGroup startElement={<LuLock />}>
+            <PasswordInput 
+              placeholder="Confirm Password" 
+              variant="outline"  
+              value={confirmPassword}  
+              onChange={(e) => setConfirmPassword(e.target.value)} 
+              rounded="lg" 
+              borderWidth="2px" 
+              minW="300px" borderColor="blue.800" _focus={{ borderColor: "blue.600" , outline: "none"}}/>
+          </InputGroup>
         </Field.Root>
         
         <Button 
-          mt="5" 
-          colorPalette="teal" 
+          mt="16" 
           variant="solid" 
           size="md" 
-          rounded="lg" 
-          width="100%" 
-          fontFamily="Space Grotesk"
+          rounded="full" 
+          width="75%" 
+          className="font-space-grotesk"
           onClick={() => handleCreateAccount()}
+          _disabled={{
+            bgColor: "gray.700/60",
+            borderColor: "gray.700",
+            color: "gray.400",
+            cursor: "not-allowed",
+          }}
           disabled={!criteria.all}
-          borderWidth="2px" borderColor="blue.700" color="white" px={5} py={2}
+          bgColor="blue.700/50"
+          color="blue.400"
+          borderWidth="2px" 
+          borderColor="blue.700"  px={5} py={2}
+          _hover={{
+            bgColor: "blue.700",
+            transform: "scale(1.01)"
+          }}
         >
           Create Account
+          <LuArrowRight />
         </Button>
       </VStack>
     </div>
