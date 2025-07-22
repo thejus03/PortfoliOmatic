@@ -2,6 +2,7 @@ import { Geist, Geist_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 import { Provider } from "@/components/ui/provider";
 import { Toaster } from "@/components/ui/toaster";
+import ProtectedRoutes from "@/utils/ProtectedRoutes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +32,9 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} antialiased`}
       >
         <Provider>
-          {children}
+          <ProtectedRoutes>
+            {children}
+          </ProtectedRoutes>
           <Toaster />
         </Provider>
       </body>
