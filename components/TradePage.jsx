@@ -5,8 +5,7 @@ import {
     Button, 
     Text, 
     SimpleGrid, 
-    For, 
-    Card, 
+    For,
     HStack, 
     RadioCard, 
     InputGroup, 
@@ -17,12 +16,8 @@ import {
     Dialog,
     Drawer,
     Portal,
-    Center
 } from "@chakra-ui/react";
 import { Space_Grotesk } from "next/font/google";
-import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-import { getAllPortfolios, getHoldingPortfolios, getUserPortfolioValue, updateCapitalInvested } from '@/app/apis/portfolio';
 import { LuDollarSign } from "react-icons/lu";
 import Popup from "@/components/ui/portfolio-popup";
 
@@ -33,14 +28,13 @@ const spaceGrotesk = Space_Grotesk({
 
 
 export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfolios, name_and_description, portfoliosValue, portfolioIdToName,
-                              open, setOpen, tradeAmount, setTradeAmount, typeOfTrade, upperBound, handleTrade}) {
+                              open, setOpen, tradeAmount, setTradeAmount, typeOfTrade, upperBound, handleTrade, liquidatePortfolio, setLiquidatePortfolio}) {
     return (
         <Box display="flex" flexDirection="column" alignItems="center" padding="5">
-            <Text fontWeight="semibold" textStyle="3xl" padding={5}>{typeOfTrade} a Portfolio</Text>
 
             <RadioCard.Root value={tradePortfolioId} onValueChange={(e) => setTradePortfolioId(e.value)}>
                 <RadioCard.Label display="flex" flexDirection="column" alignItems="center">
-                    <Text fontWeight="semibold" textStyle="xl" padding={5}>
+                    <Text fontWeight="semibold" textStyle="3xl" mb={5}>
                         Select a Portfolio to {typeOfTrade}
                     </Text>
                 </RadioCard.Label>
@@ -181,12 +175,14 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                             <Text color="blue.100">{portfolioIdToName[tradePortfolioId]}</Text>
                                         </Text>
 
-                                        <Text>
+                                        <Text fontSize="xl">
                                             You currently hold $
                                                 {portfoliosValue[allPortfolios[allPortfolios.length - 1].id.toString()]
                                                     ? Math.floor(portfoliosValue[allPortfolios[allPortfolios.length - 1].id.toString()] * 100) / 100
                                                     : 0} of this portfolio
                                         </Text>
+
+                                        
                                     </VStack>
                                 </Flex>
                             </Drawer.Body>
@@ -199,8 +195,8 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                 height="50px"
                                 px={6} 
                                 py={5} 
-                                fontSize="lg" 
-                                fontWeight="bold"
+                                fontSize="xs" 
+                                fontWeight="semibold"
                                 borderRadius="lg"
                                 _hover={{ bg: "red.800" }}
                                 onClick={() => setOpen(false)}
@@ -216,13 +212,34 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                             height="50px"
                                             px={6} 
                                             py={5} 
-                                            fontSize="lg" 
-                                            fontWeight="bold"
+                                            fontSize="sm" 
+                                            fontWeight="semibold"
                                             borderRadius="lg"
                                             _hover={{ bg: "blue.800" }}
+                                            onClick={() => {setLiquidatePortfolio(false); console.log(liquidatePortfolio)}}
                                             >
                                             {typeOfTrade}
                                             </Button>
+                                        </Dialog.Trigger>
+                                        <Dialog.Trigger asChild>
+                                            {typeOfTrade == "Sell" ? 
+                                                (<Button 
+                                                borderWidth="3px"
+                                                color="white" 
+                                                borderColor="white" 
+                                                height="50px"
+                                                px={6} 
+                                                py={5} 
+                                                fontSize="sm" 
+                                                fontWeight="semibold"
+                                                borderRadius="lg"
+                                                _hover={{ bg: "red.800" }}
+                                                onClick={() => {setLiquidatePortfolio(true); console.log(liquidatePortfolio)}}
+                                                >
+                                                    Liquidate Entire Portfolio
+                                                </Button>)
+                                                : (<Button></Button>)
+                                            }
                                         </Dialog.Trigger>
                                         <Portal>
                                             <Dialog.Backdrop />
@@ -240,10 +257,12 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                                         worth of the 
                                                         <Text color="blue.100"> {portfolioIdToName[tradePortfolioId]} </Text>
                                                         </Text>
-                                                    ) : (
-                                                        <Text fontSize="md">Invalid {typeOfTrade} amount</Text>
-                                                    )}
+                                                    ) : (!liquidatePortfolio) ? (
+                                                        <Text fontSize="md">Invalid {typeOfTrade} amount</Text>)
+                                                    : (<Text fontSize="md">You are going to sell off your entire Portfolio</Text>)
+                                                    }
                                                 </Box>
+
                                                 </Dialog.Body>
                                                 <Dialog.Footer>
                                                     <Dialog.ActionTrigger asChild>
@@ -261,7 +280,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                                             Cancel
                                                         </Button>
                                                     </Dialog.ActionTrigger>
-                                                    {(tradeAmount > 0 && tradeAmount < upperBound) &&
+                                                    {((tradeAmount > 0 && tradeAmount < upperBound) || liquidatePortfolio) &&
                                                         (<Dialog.ActionTrigger asChild>
                                                             <Button 
                                                             borderWidth="1px"

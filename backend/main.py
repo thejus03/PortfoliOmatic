@@ -16,6 +16,64 @@ from collections import defaultdict
 import requests
 import yfinance as yf
 from dateutil.parser import parse
+from datetime import date
+import yfinance as yf
+from datetime import datetime
+import pandas as pd
+
+def get_sp500_daily_percentage_changes(start_date, end_date=None):
+    """
+    Returns a list of daily cumulative percentage changes in the S&P 500 from the given start date.
+    Format: [{"date": "1 July 2024", "percentage_change": 0}, ...]
+    """
+    if end_date is None:
+        end_date = datetime.today().strftime('%Y-%m-%d')
+
+    # Download S&P 500 data
+    sp500 = yf.download("^GSPC", start=start_date, end=end_date, progress=False, group_by=None)
+
+    if sp500.empty:
+        raise ValueError("No data found. Check your date range or ticker.")
+    
+    # Try different ways to access close prices
+    if 'Close' in sp500.columns:
+        close_prices = sp500['Close']
+    elif ('Close', '^GSPC') in sp500.columns:
+        close_prices = sp500[('Close', '^GSPC')]
+    else:
+        # Look for any column containing 'close'
+        close_cols = [col for col in sp500.columns if 'close' in str(col).lower()]
+        if close_cols:
+            close_prices = sp500[close_cols[0]]
+            print(f"Using column: {close_cols[0]}")
+        else:
+            raise ValueError(f"No Close price column found. Available columns: {sp500.columns.tolist()}")
+    
+    base_price = close_prices.iloc[0]
+    percentage_changes = ((close_prices - base_price) / base_price) * 100
+
+    result = []
+    for date, pct_change in percentage_changes.items():
+        # Handle both datetime objects and strings
+        if isinstance(date, str):
+            # If it's already a string, try to parse and reformat it
+            try:
+                date_obj = datetime.strptime(date, '%Y-%m-%d')
+                formatted_date = date_obj.strftime("%#d %B %Y")
+            except:
+                # If parsing fails, use the string as-is
+                formatted_date = date
+        else:
+            # If it's a datetime object, format it
+            formatted_date = date.strftime("%#d %B %Y")
+        
+        result.append({
+            "date": formatted_date,
+            "percentage_change": round(pct_change, 2)
+        })
+
+    return result
+
 
 app = FastAPI()
 
@@ -374,32 +432,93 @@ def update_capital_invested(body: UpdateCapitalInvestedRequest, payload: dict = 
     portfolio_id = body.portfolio_id
     user_id = payload["id"]
 
-    # update the capital invested
-    response = supabase.table("User_Portfolio_Value").insert({
-        "user_id": user_id,
-        "portfolio_id": portfolio_id,
-        "capital_invested": capital
-    }).execute()
+    if capital != 0:
+        
+        # Check if the user already holds that portfolio from before
+        response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
 
-    if not response.data:
-        raise HTTPException(status_code=500, detail="Failed to update capital invested")
+        if not response.data:
+            raise HTTPException(status_code=500, detail="Failed to retrieve users table")
+        
+        portfolio_ids = response.data[0]["portfolio_ids"]
+
+        # Handle the case where a completely new portfolio is bought
+        if portfolio_id not in portfolio_ids:
+            portfolio_ids.append(portfolio_id)
+            response = supabase.table("Users").update({"portfolio_ids": portfolio_ids}).eq("id", user_id).execute()
+            if not response.data:
+                raise HTTPException(status_code=500, detail="Failed to update portfolio ids")
+            
+            # update the capital invested
+            response = supabase.table("User_Portfolio_Value").insert({
+                "user_id": user_id,
+                "portfolio_id": portfolio_id,
+                "capital_invested": capital
+            }).execute()
+
+            if not response.data:
+                raise HTTPException(status_code=500, detail="Failed to update capital invested for a completely new portfolio")
+
+        # Handle the case where the user is buying the same portfolio again or is selling some portion of one of his portfolios    
+        else:
+
+            # Get the date of the latest investment
+            response = supabase.table("User_Portfolio_Value").select("created_at", "capital_invested").eq("user_id", user_id).eq("portfolio_id", portfolio_id).order("created_at", desc=True).limit(1).execute()
+            if not response.data:
+                raise HTTPException(status_code=500, detail="Failed to retrieve date of latest transaction")
+            
+            latest_transaction_date = response.data[0]["created_at"].split("T")[0]
+            latest_transaction_value = response.data[0]["capital_invested"]
+
+            today = date.today()
+            formatted_today_date = today.strftime('%Y-%m-%d')
+
+            # Handle the case where the latest transaction was carried out on a different date
+            if formatted_today_date != latest_transaction_date:
+                # create a new row in User Portfolio Value table for the capital invested
+                response = supabase.table("User_Portfolio_Value").insert({
+                    "user_id": user_id,
+                    "portfolio_id": portfolio_id,
+                    "capital_invested": capital
+                }).execute()
+
+                if not response.data:
+                    raise HTTPException(status_code=500, detail="Failed to create new row for capital invested")
+            
+            # Handle the case where the latest transaction was carried out on the same date
+            else:
+                # Update the same row in User Portfolio Value table for the capital invested
+                response = supabase.table("User_Portfolio_Value").update({"capital_invested": capital}).eq("user_id", user_id).eq("portfolio_id", portfolio_id).execute()
+
+                if not response.data:
+                    raise HTTPException(status_code=500, detail="Failed to update the same row for capital invested")
+        
+        
+        return {"message": "Portfolio updated successfully"}
     
-    # update the portfolio_ids in "Users" table
-    response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
+    # Handle the case where the user wants to liquidate the entire portfolio
+    else:
+        # update the portfolio_ids in "Users" table
+        response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
 
-    if not response.data:
-        raise HTTPException(status_code=500, detail="Failed to retrieve users table")
-    
-    portfolio_ids = response.data[0]["portfolio_ids"]
+        if not response.data:
+            raise HTTPException(status_code=500, detail="Failed to retrieve users table")
+        
+        portfolio_ids = response.data[0]["portfolio_ids"]
 
-    if portfolio_id not in portfolio_ids:
-        portfolio_ids.append(portfolio_id)
-        response = supabase.table("Users").update({"portfolio_ids": portfolio_ids}).eq("id", user_id).execute()
+        if portfolio_id in portfolio_ids:
+            portfolio_ids.remove(portfolio_id)
+            response = supabase.table("Users").update({"portfolio_ids": portfolio_ids}).eq("id", user_id).execute()
+            if not response.data:
+                raise HTTPException(status_code=500, detail="Failed to delete portfolio id from portfolio ids")
+        
+        # Then delete all rows in the User Portfolio Value table
+        response = supabase.table("User_Portfolio_Value").delete().eq("user_id", user_id).eq("portfolio_id", portfolio_id).execute()
 
-    if not response.data:
-        raise HTTPException(status_code=500, detail="Failed to update users table")
-    
-    return {"message": "Portfolio updated successfully"}
+        if not response.data:
+            raise HTTPException(status_code=500, detail="Failed to delete portfolio id from portfolio ids")
+        
+        return {"message": "Portfolio updated successfully"}
 
 
 @app.get("/api/top_performing_etfs")
@@ -473,6 +592,7 @@ def get_top_performing_etfs(payload: dict = Depends(validate_token)):
             "error": f"Error fetching ETF data: {str(e)}",
             "data": []
         }
+    
 @app.post("/api/portfolio_by_risk")
 def get_portfolio_by_risk(request: RiskLevelRequest, payload: dict = Depends(validate_token)):
     risk_level = request.risk_level
@@ -480,6 +600,150 @@ def get_portfolio_by_risk(request: RiskLevelRequest, payload: dict = Depends(val
     if response.count == 0:
         raise HTTPException(status_code=404, detail="Invalid risk level")
     return response.data
+
+@app.get("/api/portfolio_performace_comparison")
+def get_portfolio_performance_comparison(payload: dict = Depends(validate_token)):
+    user_id = payload["id"]
+
+    # Query the "Users" table where id == user_id
+    response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
+
+    # Check if the user exists and if data was returned
+    if not response.data or len(response.data) == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Get the user's portfolio_ids
+    portfolio_ids = response.data[0]["portfolio_ids"]
+
+    # Create a dictionary to store the portfolio_id to change in real value of that portfolio for the user 
+    portfolio_name_to_values = dict()
+
+    # Create a dictionary for storing percentage changes for that particular portfolio
+    portfolio_name_to_percentage_change = dict()
+
+    # Create a variable to track the name of the earliest portfolio
+    first_portfolio_name = None
+
+    # Create a variable to track the date of the earliest portfolio
+    first_portfolio_date = None
+
+    for portfolio_id in portfolio_ids:
+
+        # Get the name of the Portfolio 
+        response = supabase.table("Portfolios").select("name").eq("id", portfolio_id).execute()
+        name = response.data[0]["name"]
+
+        # Get the date and amount that the user has invested
+        response = supabase.table("User_Portfolio_Value").select("created_at", "capital_invested").eq("user_id", user_id).eq("portfolio_id", portfolio_id).order("created_at", desc=False).execute()
+        list_of_date_and_capital = response.data
+
+        # Convert created_at to just date (YYYY-MM-DD)
+        for item in list_of_date_and_capital:
+            item["created_at"] = item["created_at"].split("T")[0]
+
+        # Get the earliest date the user invested
+        first_date = list_of_date_and_capital[0]["created_at"]
+
+        # Update the first portfolio name and date variable
+        if first_portfolio_date == None or first_date < first_portfolio_date:
+            first_portfolio_date = first_date
+            first_portfolio_name = name
+
+        # Get all the normalised values of the portfolio after and including the date the user has invested
+        portfolio_response = supabase.table("Portfolio_Value").select("normalised_value", "created_at").eq("portfolio_id", portfolio_id).gte("created_at", first_date).order("created_at", desc=False).execute()
+        list_of_date_and_normalised_value = portfolio_response.data
+
+        # Convert created_at to just date (YYYY-MM-DD)
+        for item in list_of_date_and_normalised_value:
+            item["created_at"] = item["created_at"].split("T")[0]
+
+        # Create a values dict to track the changes in real portfolio value for the user
+        values = defaultdict(int)
+
+        # Create a pointer to track the date at which the user has bought/sold 
+        pos = 0
+
+        # Create a variable to track the amount the normalised value must be multiplied by
+        multiple = 0
+
+        # Calculate the changes in real value for that particular portfolio
+        for item in list_of_date_and_normalised_value:
+            if item["created_at"] == list_of_date_and_capital[pos]["created_at"]:
+
+                # Format the date
+                date_str = item["created_at"]
+                date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                formatted_date = date_obj.strftime("%d %b %Y")
+
+                values[formatted_date] = list_of_date_and_capital[pos]["capital_invested"]
+
+                multiple = list_of_date_and_capital[pos]["capital_invested"] / float(item["normalised_value"])
+                if pos < len(list_of_date_and_capital) - 1:
+                    pos += 1
+            else:
+
+                # Format the date
+                date_str = item["created_at"]
+                date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+                formatted_date = date_obj.strftime("%d %b %Y")
+
+                values[formatted_date] = float(item["normalised_value"]) * multiple
+        
+        # Add the list of values to the dictionary
+        portfolio_name_to_values[name] = values
+
+        # Get the percentage change for that particular portfolio
+        list_of_date_and_percentage_change_dicts = []
+
+        base_value = list_of_date_and_normalised_value[0]["normalised_value"]
+
+        for date_and_value in list_of_date_and_normalised_value:
+            date_str = date_and_value["created_at"]
+            date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+            formatted_date = date_obj.strftime("%d %b %Y")
+            list_of_date_and_percentage_change_dicts.append({"date": formatted_date, "percentage_change": ((date_and_value["normalised_value"] - base_value) / base_value) * 100})
+        
+        portfolio_name_to_percentage_change[name] = list_of_date_and_percentage_change_dicts
+
+    # instead of a list of dictionaries, combine all the lists into one dictionary
+    portfolio_name_to_percentage_change_dict = dict()
+
+    for portfolio_name in portfolio_name_to_percentage_change:    
+        portfolio_name_to_percentage_change_dict[portfolio_name] = {item["date"]: item["percentage_change"] for item in portfolio_name_to_percentage_change[portfolio_name]}
+
+    # create a dictionary that maps each day to another dictionary that gives the breakdown of the holdings
+    daily_percentage_breakdown = dict()
+    
+    for date in portfolio_name_to_values[first_portfolio_name].keys():
+        sum = 0
+
+        for portfolio_name in portfolio_name_to_values.keys():
+            if date in portfolio_name_to_values[portfolio_name]:
+                sum += portfolio_name_to_values[portfolio_name][date]
+        
+        name_to_breakdown = dict()
+        
+        for portfolio_name in portfolio_name_to_values.keys():
+            if date in portfolio_name_to_values[portfolio_name]:
+                name_to_breakdown[portfolio_name] = portfolio_name_to_values[portfolio_name][date] / sum
+        
+        daily_percentage_breakdown[date] = name_to_breakdown
+
+    total_performance = []
+
+    for date in daily_percentage_breakdown.keys():
+        daily_performance = 0
+
+        for portfolio_name in daily_percentage_breakdown[date].keys():
+            daily_performance += portfolio_name_to_percentage_change_dict[portfolio_name][date] * daily_percentage_breakdown[date][portfolio_name]
+
+        total_performance.append({"date": date, "percentage_change": daily_performance})
+    
+    portfolio_name_to_percentage_change["total"] = total_performance
+
+    portfolio_name_to_percentage_change["SP500"] = get_sp500_daily_percentage_changes(first_portfolio_date)
+
+    return JSONResponse(portfolio_name_to_percentage_change)
 
 
 # ------------------------------------------------------------Testing--------------------------------------------------------------------
