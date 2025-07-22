@@ -178,7 +178,7 @@ export default function PortfolioBreakdown({chartData, risk, index}) {
             >
                 {/* Asset Class Breakdown */}
                 <AssetBreakdownChart 
-                    title="Asset Class" 
+                    title="Asset Class"  
                     data={assetClassData} 
                 />
 
