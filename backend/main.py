@@ -601,7 +601,7 @@ def get_portfolio_by_risk(request: RiskLevelRequest, payload: dict = Depends(val
         raise HTTPException(status_code=404, detail="Invalid risk level")
     return response.data
 
-@app.get("/api/portfolio_performace_comparison")
+@app.get("/api/portfolio_performance_comparison")
 def get_portfolio_performance_comparison(payload: dict = Depends(validate_token)):
     user_id = payload["id"]
 
