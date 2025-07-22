@@ -68,7 +68,7 @@ const Popup = ({ portfolio, title }) => {
   return (
     <Dialog.Root size="xl" placement="center">
       <Dialog.Trigger asChild>
-        <Button variant="outline" borderWidth="2px" borderColor="white" color="white" px={5} py={2}>View Details</Button>
+        <Button variant="outline" borderWidth="2px" borderColor="teal.600" bgColor="teal.600/70" color="white" px={5} py={2} justifySelf="flex-start">View Details</Button>
       </Dialog.Trigger>
       <Portal>
         <Dialog.Backdrop />

@@ -9,11 +9,14 @@ import {    Stack,
             For,
             VStack,
             Spinner,
-            SimpleGrid
+            SimpleGrid,
+            Container,
+            Flex
         } from "@chakra-ui/react"
 import { useAccountSetup } from '../context/AccountSetupContext'
 import Popup from '@/components/ui/portfolio-popup'
 import { getPortfolioSuggestions } from '@/app/apis/portfolio'
+import { name_and_description } from '@/utils/constants'
 
 function Page() {
     const { formData } = useAccountSetup();
@@ -61,155 +64,326 @@ function Page() {
         fetchPortfolio();
     }, [fetchPortfolio]);
 
-    // Show loading only when actively loading
     if (isLoading) {
         return (
-            <VStack colorPalette="teal" spacing={4} py={8} minH="50vh" justify="center">
-                <Spinner size="xl" color="blue.400" />
-                <Text color="blue.200" textStyle="xl">Loading Portfolio Recommendations...</Text>
-            </VStack>
+            <Container maxW="1200px" py={8}>
+                <VStack spacing={6} py={16} minH="60vh" justify="center">
+                    <Box 
+                        bg="blue.900/20" 
+                        backdropFilter="blur(10px)" 
+                        rounded="2xl" 
+                        p={8}
+                        border="1px solid"
+                        borderColor="blue.700/50"
+                        shadow="xl"
+                    >
+                        <VStack spacing={4}>
+                            <Spinner size="xl" color="blue.400" thickness="4px" />
+                            <Text color="blue.200" textStyle="xl" className="font-space-grotesk" fontWeight="medium">
+                                Loading Portfolio Recommendations...
+                            </Text>
+                        </VStack>
+                    </Box>
+                </VStack>
+            </Container>
         );
     }
 
-    // Show error state
     if (error) {
         return (
-            <VStack spacing={4} py={8} minH="50vh" justify="center">
-                <Text color="red.400" textStyle="lg" textAlign="center">{error}</Text>
-                <Button 
-                    onClick={fetchPortfolio}
-                    colorPalette="blue"
-                    variant="outline"
-                >
-                    Try Again
-                </Button>
-            </VStack>
+            <Container maxW="1200px" py={8}>
+                <VStack spacing={6} py={16} minH="60vh" justify="center">
+                    <Box 
+                        bg="red.900/20" 
+                        backdropFilter="blur(10px)" 
+                        rounded="2xl" 
+                        p={8}
+                        border="1px solid"
+                        borderColor="red.700/50"
+                        shadow="xl"
+                    >
+                        <VStack spacing={4}>
+                            <Text color="red.300" textStyle="lg" textAlign="center" className="font-space-grotesk">
+                                {error}
+                            </Text>
+                            <Button 
+                                onClick={fetchPortfolio}
+                                variant="outline"
+                                borderWidth="2px"
+                                borderColor="blue.600"
+                                color="blue.300"
+                                rounded="xl"
+                                px={8}
+                                py={6}
+                                _hover={{
+                                    bg: "blue.900/50",
+                                    borderColor: "blue.500",
+                                    transform: "translateY(-2px)",
+                                    shadow: "lg"
+                                }}
+                                transition="all 0.2s"
+                            >
+                                Try Again
+                            </Button>
+                        </VStack>
+                    </Box>
+                </VStack>
+            </Container>
         );
     }
 
-    // Show message if no portfolios available
     if (!portfolios || !portfolios.suggested || portfolios.suggested.length === 0) {
         return (
-            <VStack spacing={4} py={8} minH="50vh" justify="center">
-                <Text color="blue.200" textStyle="lg">No portfolio suggestions available</Text>
-                <Button 
-                    onClick={fetchPortfolio}
-                    colorPalette="blue"
-                    variant="outline"
-                >
-                    Refresh
-                </Button>
-            </VStack>
+            <Container maxW="1200px" py={8}>
+                <VStack spacing={6} py={16} minH="60vh" justify="center">
+                    <Box 
+                        bg="blue.900/20" 
+                        backdropFilter="blur(10px)" 
+                        rounded="2xl" 
+                        p={8}
+                        border="1px solid"
+                        borderColor="blue.700/50"
+                        shadow="xl"
+                    >
+                        <VStack spacing={4}>
+                            <Text color="blue.200" textStyle="lg" className="font-space-grotesk">
+                                No portfolio suggestions available
+                            </Text>
+                            <Button 
+                                onClick={fetchPortfolio}
+                                variant="outline"
+                                borderWidth="2px"
+                                borderColor="blue.600"
+                                color="blue.300"
+                                rounded="xl"
+                                px={8}
+                                py={6}
+                                _hover={{
+                                    bg: "blue.900/50",
+                                    borderColor: "blue.500",
+                                    transform: "translateY(-2px)",
+                                    shadow: "lg"
+                                }}
+                                transition="all 0.2s"
+                            >
+                                Refresh
+                            </Button>
+                        </VStack>
+                    </Box>
+                </VStack>
+            </Container>
         );
     }
 
-    const name_and_description = {
-        "ultra_low": {
-            "name": "Capital Preservation Portfolio", 
-            "description": "This portfolio prioritizes minimal risk and steady returns by focusing heavily on government bonds and inflation-protected securities. Ideal for conservative investors or those with short investment horizons."
-        },
-        "low": {
-            "name": "Conservative Income Portfolio",
-            "description": "Designed to provide slightly higher returns than ultra-safe assets while still preserving safety, this portfolio mixes high-quality bonds with a modest allocation to defensive stocks and gold."
-        },
-        "moderate": {
-            "name": "Balanced Growth Portfolio",
-            "description": "Perfect for medium-term investors, this diversified portfolio blends equities, bonds, and alternative assets like gold to achieve stable growth without taking on excessive risk."
-        },
-        "high": {
-            "name": "Growth-Oriented Portfolio",
-            "description": "This portfolio leans heavily on equities, especially from growth sectors, to maximize long-term gains, with a small cushion in fixed-income assets to manage volatility."
-        },
-        "very_high": {
-            "name": "Aggressive Growth Portfolio",
-            "description": "Built for those who can stomach market swings, this aggressive portfolio is packed with high-growth equities and minimal defensive allocation. Big risks, but potentially big rewards."
-        }
-    }
 
     const suggestedPortfolio = portfolios.suggested[0]
     const otherPortfolios = portfolios.others || []
 
     return (
-        <Stack direction="column" align="center" justify="center" gap="5" py={8}>
-            <Box className="mt-10">
-                <Heading textStyle="2xl" color="blue.200" fontWeight="bold" className="font-space-grotesk">
-                    Our Recommended Portfolio:
-                </Heading>
-            </Box>
-            
-            {/* Suggested Portfolio */}
-            <Card.Root width="600px" height="300px" bg="blue.900">
-                <Card.Body gap="2">
-                    <Card.Title mt="2" mb="3" fontSize="xl" fontWeight="bold">
-                        {name_and_description[suggestedPortfolio.name]?.name || 'Portfolio'}
-                    </Card.Title>
-                    <Card.Description fontSize="md">
-                        {name_and_description[suggestedPortfolio.name]?.description || 'No description available'}
-                    </Card.Description>
-                </Card.Body>
-                <Card.Footer justifyContent="space-between">
-                    <Popup 
-                        portfolio={suggestedPortfolio} 
-                        title={name_and_description[suggestedPortfolio.name]?.name || 'Portfolio'}
-                    />
-                    <Button 
-                        variant="outline" 
-                        borderWidth="2px" 
-                        borderColor="white" 
-                        color="white" 
-                        px={5} 
-                        py={2}
-                    >
-                        Select
-                    </Button>
-                </Card.Footer>
-            </Card.Root>
-            
-            {/* Other Portfolios */}
-            {otherPortfolios.length > 0 && (
-                <>
-                    <Box className="mt-5">
-                        <Heading textStyle="2xl" color="blue.200" fontWeight="bold" className="font-space-grotesk">
-                            Or, select another Portfolio that better suits your needs:
+        <Container maxW="1400px" py={8}>
+            <Stack direction="column" align="center" justify="center" gap="12" py={8}>
+                {/* Recommended Portfolio Section */}
+                <VStack spacing={8}>
+                    <Box textAlign="center">
+                        <Heading 
+                            textStyle="3xl" 
+                            color="blue.300" 
+                            fontWeight="bold" 
+                            className="font-space-grotesk"
+                            mb={2}
+                        >
+                            Our Recommended Portfolio
                         </Heading>
+                        <Text color="blue.400/70" textStyle="lg">
+                            Based on your risk assessment and preferences
+                        </Text>
                     </Box>
-                    <Box padding="4">
-                        <SimpleGrid columns={2} gap="40px">
-                            <For each={otherPortfolios}>
-                                {(otherPortfolio, index) => (
-                                    <Card.Root height="300px" width="500px" key={`${otherPortfolio.name}-${index}`} bg="blue.900">
-                                        <Card.Body gap="2">
-                                            <Card.Title mt="2" mb="3" fontSize="xl" fontWeight="bold">
-                                                {name_and_description[otherPortfolio.name]?.name || 'Portfolio'}
-                                            </Card.Title>
-                                            <Card.Description fontSize="md">
-                                                {name_and_description[otherPortfolio.name]?.description || 'No description available'}
-                                            </Card.Description>
-                                        </Card.Body>
-                                        <Card.Footer justifyContent="space-between">
-                                            <Popup 
-                                                portfolio={otherPortfolio} 
-                                                title={name_and_description[otherPortfolio.name]?.name || 'Portfolio'}
-                                            />
-                                            <Button 
-                                                variant="outline" 
-                                                borderWidth="2px" 
-                                                borderColor="white" 
-                                                color="white" 
-                                                px={5} 
-                                                py={2}
+                    
+                    {/* Suggested Portfolio Card */}
+                    <Box
+                        bg="gradient-to-br from-blue.900/80 to-blue.800/60"
+                        backdropFilter="blur(20px)"
+                        rounded="2xl"
+                        p={1}
+                        shadow="2xl"
+                        border="1px solid"
+                        borderColor="blue.600/30"
+                        position="relative"
+                        _before={{
+                            content: '""',
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            rounded: "2xl",
+                            bg: "linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.05))",
+                            zIndex: -1
+                        }}
+                    >
+                        <Card.Root 
+                            width="700px" 
+                            minH="350px" 
+                            bg="transparent"
+                            border="none"
+                            shadow="none"
+                        >
+                            <Card.Body gap="4" p={8}>
+                                <Box textAlign="center" mb={4}>
+                                    <Text 
+                                        fontSize="sm" 
+                                        color="blue.400" 
+                                        fontWeight="semibold"
+                                        textTransform="uppercase"
+                                        letterSpacing="wider"
+                                        mb={2}
+                                    >
+                                        Recommended
+                                    </Text>
+                                    <Card.Title 
+                                        fontSize="2xl" 
+                                        fontWeight="bold"
+                                        color="white"
+                                        className="font-space-grotesk"
+                                        mb={4}
+                                    >
+                                        {name_and_description[suggestedPortfolio.name]?.name || 'Portfolio'}
+                                    </Card.Title>
+                                    <Card.Description 
+                                        fontSize="md"
+                                        color="blue.100/80"
+                                        lineHeight="relaxed"
+                                        textAlign="center"
+                                    >
+                                        {name_and_description[suggestedPortfolio.name]?.description || 'No description available'}
+                                    </Card.Description>
+                                </Box>
+                            </Card.Body>
+                            <Card.Footer justifyContent="space-between" p={8} pt={0}>
+                                <Popup 
+                                    portfolio={suggestedPortfolio} 
+                                    title={name_and_description[suggestedPortfolio.name]?.name || 'Portfolio'}
+                                />
+                                <Button 
+                                    variant="solid"
+                                    bg="blue.600"
+                                    color="white" 
+                                    rounded="xl"
+                                    px={8}
+                                    py={6}
+                                    fontWeight="semibold"
+                                    fontSize="md"
+                                    _hover={{
+                                        bg: "blue.500",
+                                        transform: "translateY(-2px)",
+                                        shadow: "lg"
+                                    }}
+                                    transition="all 0.2s"
+                                >
+                                    Select Portfolio
+                                </Button>
+                            </Card.Footer>
+                        </Card.Root>
+                    </Box>
+                </VStack>
+                
+                {/* Other Portfolios Section */}
+                {otherPortfolios.length > 0 && (
+                    <VStack spacing={8} width="100%">
+                        <Box textAlign="center">
+                            <Heading 
+                                textStyle="2xl" 
+                                color="blue.300" 
+                                fontWeight="bold" 
+                                className="font-space-grotesk"
+                                mb={2}
+                            >
+                                Alternative Portfolios
+                            </Heading>
+                            <Text color="blue.400/70" textStyle="md">
+                                Explore other options that might better suit your needs
+                            </Text>
+                        </Box>
+                        
+                        <Box width="100%" maxW="1200px">
+                            <SimpleGrid columns={{ base: 1, lg: 2 }} gap={8}>
+                                <For each={otherPortfolios}>
+                                    {(otherPortfolio, index) => (
+                                        <Box
+                                            key={`${otherPortfolio.name}-${index}`}
+                                            bg="blue.900/40"
+                                            backdropFilter="blur(10px)"
+                                            rounded="xl"
+                                            p={1}
+                                            border="1px solid"
+                                            borderColor="blue.700/50"
+                                            shadow="lg"
+                                            transition="all 0.3s"
+                                            _hover={{
+                                                transform: "translateY(-4px)",
+                                                shadow: "xl",
+                                                borderColor: "blue.600/70"
+                                            }}
+                                        >
+                                            <Card.Root 
+                                                minH="320px" 
+                                                bg="transparent"
+                                                border="none"
+                                                shadow="none"
                                             >
-                                                Select
-                                            </Button>
-                                        </Card.Footer>
-                                    </Card.Root>
-                                )}
-                            </For>
-                        </SimpleGrid>
-                    </Box>
-                </>
-            )}
-        </Stack>
+                                                <Card.Body gap="3" p={6}>
+                                                    <Card.Title 
+                                                        fontSize="xl" 
+                                                        fontWeight="bold"
+                                                        color="white"
+                                                        className="font-space-grotesk"
+                                                        mb={3}
+                                                    >
+                                                        {name_and_description[otherPortfolio.name]?.name || 'Portfolio'}
+                                                    </Card.Title>
+                                                    <Card.Description 
+                                                        fontSize="sm"
+                                                        color="blue.200/80"
+                                                        lineHeight="relaxed"
+                                                    >
+                                                        {name_and_description[otherPortfolio.name]?.description || 'No description available'}
+                                                    </Card.Description>
+                                                </Card.Body>
+                                                <Card.Footer justifyContent="space-between" p={6} pt={0}>
+                                                    <Popup 
+                                                        portfolio={otherPortfolio} 
+                                                        title={name_and_description[otherPortfolio.name]?.name || 'Portfolio'}
+                                                    />
+                                                    <Button 
+                                                        variant="outline" 
+                                                        borderWidth="2px" 
+                                                        borderColor="blue.500/60" 
+                                                        color="blue.300" 
+                                                        rounded="lg"
+                                                        px={6}
+                                                        py={4}
+                                                        fontSize="sm"
+                                                        fontWeight="medium"
+                                                        _hover={{
+                                                            bg: "blue.700/30",
+                                                            borderColor: "blue.400",
+                                                            color: "white"
+                                                        }}
+                                                        transition="all 0.2s"
+                                                    >
+                                                        Select
+                                                    </Button>
+                                                </Card.Footer>
+                                            </Card.Root>
+                                        </Box>
+                                    )}
+                                </For>
+                            </SimpleGrid>
+                        </Box>
+                    </VStack>
+                )}
+            </Stack>
+        </Container>
     )
 }
 
