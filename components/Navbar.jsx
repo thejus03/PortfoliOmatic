@@ -53,91 +53,93 @@ export default function Navbar() {
                 >
                 PortfoliOmatic
                 </Box>
-                {isAuthenticated ? (
-                <div className="flex items-center justify-between w-[80%] px-8">
-                    <HStack gap="2rem" className="font-sans">
-                        {navigationItems.map((item) => (
-                            <Button
-                                key={item.path}
-                                onClick={() => router.push(item.path)}
-                                {...getButtonStyles(item.path)}
-                            >
-                                {item.label}
-                            </Button>
-                        ))}
-                    </HStack>
-                    <Menu.Root positioning={{ placement: "bottom-start" }}>
-                        <Menu.Trigger rounded="full" focusRing="none">
-                            <Avatar.Root size="sm">
-                            <Avatar.Fallback name="Segun Adebayo" />
-                            <Avatar.Image src="https://bit.ly/sage-adebayo" />
-                            </Avatar.Root>
-                        </Menu.Trigger>
-                        <Portal>
-                            <Menu.Positioner>
-                            <Menu.Content
-                                bgColor="blue.900/40"
-                                backdropFilter="blur(10px)"
-                                border="1px solid"
-                                borderColor="blue.800/50"
-                                borderRadius="sm"
-                            >
-                                <Menu.ItemGroup>
-                                    <Menu.Item value="account">Account</Menu.Item>
-                                    <Menu.Item value="settings">Settings</Menu.Item>
-                                    <Menu.Item value="logout" onClick={() => {
-                                        localStorage.removeItem("token");
-                                        router.push("/login");
-                                    }}>
-                                        <LuLogOut />
-                                        Logout
-                                    </Menu.Item>
-                                </Menu.ItemGroup>
-                            </Menu.Content>
-                            </Menu.Positioner>
-                        </Portal>
-                    </Menu.Root>
-                </div>
+                {pathname.includes("/login") ? (
+                   <HStack gap="2rem" width="80%" paddingX="2rem" className="font-sans" justifyContent="flex-end">
+                   <Button 
+                       onClick={() => router.push("/register")}
+                       variant="outline"
+                       size="sm"
+                       color="blue.300"
+                       bgColor="blue.500/20"
+                       paddingX="1.5rem"
+                       paddingY="1.25rem"
+                       _hover={{
+                           borderRadius: "full",
+                       }}
+                       className="font-space-grotesk tracking-wide"
+                       fontWeight="medium"
+                   >
+                       Sign Up
+                   </Button>
+               </HStack>  
                 ) : (
-                    !pathname.includes("/login") ? (
+                    pathname.includes("/register") ? (
                         <HStack gap="2rem" width="80%" paddingX="2rem" className="font-sans" justifyContent="flex-end">
-                            <Button 
-                                onClick={() => router.push("/login")}
-                                variant="outline"
-                                size="sm"
-                                color="blue.300"
-                                bgColor="blue.500/20"
-                                paddingX="1.5rem"
-                                paddingY="1.25rem"
-                                _hover={{
-                                    borderRadius: "full",
-                                }}
-                                className="font-space-grotesk tracking-wide"
-                                fontWeight="medium"
-                            >
-                                Login
-                            </Button>
-                        </HStack>
+                        <Button 
+                            onClick={() => router.push("/login")}
+                            variant="outline"
+                            size="sm"
+                            color="blue.300"
+                            bgColor="blue.500/20"
+                            paddingX="1.5rem"
+                            paddingY="1.25rem"
+                            _hover={{
+                                borderRadius: "full",
+                            }}
+                            className="font-space-grotesk tracking-wide"
+                            fontWeight="medium"
+                        >
+                            Login
+                        </Button>
+                    </HStack> 
                     ) : (
-                    <HStack gap="2rem" width="80%" paddingX="2rem" className="font-sans" justifyContent="flex-end">
-                    <Button 
-                        onClick={() => router.push("/register")}
-                        variant="outline"
-                        size="sm"
-                        color="blue.300"
-                        bgColor="blue.500/20"
-                        paddingX="1.5rem"
-                        paddingY="1.25rem"
-                        _hover={{
-                            borderRadius: "full",
-                        }}
-                        className="font-space-grotesk tracking-wide"
-                        fontWeight="medium"
-                    >
-                        Sign Up
-                    </Button>
-                </HStack> 
-                ))}
+                        <div className="flex items-center justify-between w-[80%] px-8">
+                        <HStack gap="2rem" className="font-sans">
+                            {navigationItems.map((item) => (
+                                <Button
+                                    key={item.path}
+                                    onClick={() => router.push(item.path)}
+                                    {...getButtonStyles(item.path)}
+                                >
+                                    {item.label}
+                                </Button>
+                            ))}
+                        </HStack>
+                        <Menu.Root positioning={{ placement: "bottom-start" }}>
+                            <Menu.Trigger rounded="full" focusRing="none">
+                                <Avatar.Root size="sm">
+                                <Avatar.Fallback name="Segun Adebayo" />
+                                <Avatar.Image src="https://bit.ly/sage-adebayo" />
+                                </Avatar.Root>
+                            </Menu.Trigger>
+                            <Portal>
+                                <Menu.Positioner>
+                                <Menu.Content
+                                    bgColor="blue.900/40"
+                                    backdropFilter="blur(10px)"
+                                    border="1px solid"
+                                    borderColor="blue.800/50"
+                                    borderRadius="sm"
+                                >
+                                    <Menu.ItemGroup>
+                                        <Menu.Item value="account">Account</Menu.Item>
+                                        <Menu.Item value="settings">Settings</Menu.Item>
+                                        <Menu.Item value="logout" onClick={() => {
+                                            localStorage.removeItem("token");
+                                            router.push("/login");
+                                        }}>
+                                            <LuLogOut />
+                                            Logout
+                                        </Menu.Item>
+                                    </Menu.ItemGroup>
+                                </Menu.Content>
+                                </Menu.Positioner>
+                            </Portal>
+                        </Menu.Root>
+                    </div> 
+                    ))}
+                
+                
             </div>
         </div>
     )
