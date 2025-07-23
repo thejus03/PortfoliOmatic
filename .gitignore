@@ -42,3 +42,9 @@ logs/
 backend/venv/
 backend/_pycache__/
 *.pyc
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

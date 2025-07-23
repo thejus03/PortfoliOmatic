@@ -17,12 +17,14 @@ import { useAccountSetup } from '../context/AccountSetupContext'
 import Popup from '@/components/ui/portfolio-popup'
 import { getPortfolioSuggestions } from '@/app/apis/portfolio'
 import { name_and_description } from '@/utils/constants'
+import { useRouter } from 'next/navigation'
 
 function Page() {
     const { formData } = useAccountSetup();
     const [portfolios, setPortfolios] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(null);
+    const router = useRouter();
     
     // Memoize the total score to prevent unnecessary recalculations
     const totalScore = useMemo(() => {
@@ -34,8 +36,6 @@ function Page() {
     
     // Memoized fetch function to prevent unnecessary re-creates
     const fetchPortfolio = useCallback(async () => {
-        if (totalScore === 0) return;
-        
         try {
             setIsLoading(true);
             setError(null);
@@ -279,6 +279,7 @@ function Page() {
                                         shadow: "lg"
                                     }}
                                     transition="all 0.2s"
+                                    onClick={() => router.push(`/trade?pid=${suggestedPortfolio.id}`)}
                                 >
                                     Select Portfolio
                                 </Button>
@@ -370,6 +371,7 @@ function Page() {
                                                             color: "white"
                                                         }}
                                                         transition="all 0.2s"
+                                                        onClick={() => router.push(`/trade?pid=${otherPortfolio.id}`)}
                                                     >
                                                         Select
                                                     </Button>
