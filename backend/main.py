@@ -78,10 +78,7 @@ def get_sp500_daily_percentage_changes(start_date, end_date=None):
 app = FastAPI()
 
 # Allow requests from frontend
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000"
-]
+origins = ["*"]
 
 app.add_middleware(
     CORSMiddleware,
