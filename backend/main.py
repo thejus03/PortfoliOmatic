@@ -749,6 +749,16 @@ def get_portfolio_performance_comparison(payload: dict = Depends(validate_token)
 
     return JSONResponse(portfolio_name_to_percentage_change)
 
+@app.post('/api/delete_account')
+def delete_account(payload: dict = Depends(validate_token)):
+    user_id = payload["id"]
+
+    response = supabase.table("Users").delete().eq("id", user_id).execute()
+    if not response.data:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "Portfolio updated successfully"}
+
 
 # ------------------------------------------------------------Testing--------------------------------------------------------------------
 @app.get("/api/get_user_portfolio_value_table")
