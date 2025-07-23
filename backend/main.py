@@ -601,7 +601,7 @@ def get_portfolio_by_risk(request: RiskLevelRequest, payload: dict = Depends(val
         raise HTTPException(status_code=404, detail="Invalid risk level")
     return response.data
 
-@app.get("/api/portfolio_performace_comparison")
+@app.get("/api/portfolio_performance_comparison")
 def get_portfolio_performance_comparison(payload: dict = Depends(validate_token)):
     user_id = payload["id"]
 
@@ -741,7 +741,7 @@ def get_portfolio_performance_comparison(payload: dict = Depends(validate_token)
     
     portfolio_name_to_percentage_change["total"] = total_performance
 
-    portfolio_name_to_percentage_change["SP500"] = get_sp500_daily_percentage_changes(first_portfolio_date)
+    # portfolio_name_to_percentage_change["SP500"] = get_sp500_daily_percentage_changes(first_portfolio_date)
 
     return JSONResponse(portfolio_name_to_percentage_change)
 

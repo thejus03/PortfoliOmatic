@@ -5,6 +5,7 @@ import { getPortfolioByRisk } from "@/app/apis/portfolio";
 import { Chart, useChart } from "@chakra-ui/charts";
 import { Pie, PieChart, Cell, Tooltip, Legend, Label } from "recharts";
 import { LuArrowUpRight } from "react-icons/lu";
+import { name_and_description } from "@/utils/constants";
 
 
 const AssetBreakdownChart = ({ title, data }) => {
@@ -74,7 +75,7 @@ const AssetBreakdownChart = ({ title, data }) => {
 };
 
 
-export default function PortfolioBreakdown({chartData, risk, index}) {
+export default function PortfolioBreakdown({chartData, risk, index, performanceData}) {
     const asset_class_to_colour = {
         equity: "blue.600",
         bond: "teal.600",
@@ -145,7 +146,7 @@ export default function PortfolioBreakdown({chartData, risk, index}) {
         <Box>
             <HStack alignItems="center" gap="1rem" marginTop="5rem" marginLeft="4rem">
                 <Text fontSize="3xl" fontWeight="bold" className="font-space-grotesk">
-                    Portfolio {index + 1}
+                    {name_and_description[risk].name}
                 </Text>
                 <Tag.Root 
                     size="md" 
@@ -163,7 +164,7 @@ export default function PortfolioBreakdown({chartData, risk, index}) {
                     </Tag.Label>
                 </Tag.Root>
             </HStack>
-            <ActivityChart chartData={chartData} />
+            <ActivityChart chartData={chartData} performanceData={performanceData} />
             <Box
                 display="flex"
                 flexDirection="row"

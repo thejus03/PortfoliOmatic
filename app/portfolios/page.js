@@ -1,14 +1,14 @@
 "use client";
 import Navbar from "@/components/Navbar";
 import { useState, useEffect } from "react";
-import { getChartData } from "@/app/apis/portfolio"
+import { getChartData, getPerformanceData } from "@/app/apis/portfolio"
 import { Skeleton, Box, Text, Heading } from "@chakra-ui/react";
 import PortfolioBreakdown from "@/components/PortfolioBreakdown";
 
 export default function Portfolios() {
     const [chartDatas, setChartDatas] = useState({});
     const [isLoading, setIsLoading] = useState(true);
-    
+    const [performanceDatas, setPerformanceDatas] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -22,7 +22,17 @@ export default function Portfolios() {
                 setIsLoading(false);
             }
         }
+        const fetchPerformanceData = async () => {
+            try {
+                const response = await getPerformanceData(localStorage.getItem("token"));
+                setPerformanceDatas(response);
+            } catch (error) {
+                console.error("Error fetching performance data:", error);
+                setPerformanceDatas([]);
+            }
+        }
         fetchData();
+        fetchPerformanceData();
     }, [])
 
     if (isLoading) {
@@ -62,6 +72,7 @@ export default function Portfolios() {
                     <PortfolioBreakdown 
                         key={risk} 
                         chartData={chartData} 
+                        performanceData={performanceDatas[risk]}
                         risk={risk}
                         index={index}
                     />
