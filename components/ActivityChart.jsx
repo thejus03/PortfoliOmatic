@@ -115,12 +115,12 @@ function TabDisplay( {tab, setTab} ) {
         return {
             color: isActive ? "blue.400" : "gray.400",
             bgColor: isActive ? "blue.600/20" : "transparent",
-            borderRadius: "sm",
+            borderRadius: "xs",
             fontSize:"13px",
             fontWeight: isActive ? "bold" : "semibold",
             paddingX: "1rem",
             paddingY: "0.5rem",
-            size: "sm",
+            size: "xs",
             _hover: {
                 bgColor: "blue.600/20",
                 color: "blue.400",
@@ -147,7 +147,7 @@ function TabDisplay( {tab, setTab} ) {
     
 }
 
-export default function ActivityChart( {chartData} ) {
+export default function ActivityChart( {chartData, performanceData} ) {
     const [selectedPeriod, setSelectedPeriod] = useState("1M");
     const [displayData, setDisplayData] = useState([]);
     const [value, setValue] = useState(0);
@@ -156,24 +156,18 @@ export default function ActivityChart( {chartData} ) {
     const [dailyValueChange, setDailyValueChange] = useState(0);
     const [dailyPercentageChange, setDailyPercentageChange] = useState(0);
     const [tab, setTab] = useState("value") // value or performance
-
+    const [displayPerformanceData, setDisplayPerformanceData] = useState([]);
     // Remove later
     // Calculate gradient offset for performance chart (positive/negative areas)
     const gradientOffset = () => {
-        if (!displayData || displayData.length === 0) return 0.5;
-        
-        // Convert portfolio values to performance values (difference from first value)
-        const firstValue = displayData[0]?.value || 0;
-        const performanceData = displayData.map(item => item.value - firstValue);
-        
-        const max = Math.max(...performanceData);
-        const min = Math.min(...performanceData);
-        
+        if (!displayPerformanceData?.length) return 0.5;
+        const data = displayPerformanceData.map(item => item.percentage_change);
+        const max = Math.max(...data);
+        const min = Math.min(...data);
         if (max <= 0) return 0;
         if (min >= 0) return 1;
         return max / (max - min);
     }
-
     const offset = gradientOffset();
 
     useEffect(() => {
@@ -207,6 +201,7 @@ export default function ActivityChart( {chartData} ) {
         setValueChange(filteredData[filteredData.length - 1].value - filteredData[0].value);
         setPercentageChange(((filteredData[filteredData.length - 1].value - filteredData[0].value) / filteredData[0].value) * 100);
         setDisplayData(filteredData);
+        setDisplayPerformanceData(performanceData.slice(-daysToShow));
         setDailyValueChange(filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value);
         setDailyPercentageChange(((filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value) / filteredData[filteredData.length - 2].value) * 100);
     }, [selectedPeriod, chartData, value, percentageChange])
@@ -223,10 +218,7 @@ export default function ActivityChart( {chartData} ) {
 
     // Create performance data (difference from first value) for the performance chart
     const performanceChart = useChart({
-        data: displayData.map((item, index) => ({
-            ...item,
-            performance: displayData.length > 0 ? item.value - displayData[0].value : 0
-        })),
+        data: displayPerformanceData,
         series: [
             {
                 name: "performance",
@@ -356,8 +348,8 @@ export default function ActivityChart( {chartData} ) {
                                     orientation="right"
                                     tick={{ fontSize: "10px" }}
                                     tickFormatter={(value) => `${value.toLocaleString()}`}
-                                    dataKey={chart.key("value")}
-                                    stroke={chart.color("border")}
+                                    dataKey={performanceChart.key("percentage_change")}
+                                    stroke={performanceChart.color("border")}
                                     />
                                 <Tooltip
                                     animationDuration={100}
@@ -369,14 +361,14 @@ export default function ActivityChart( {chartData} ) {
                                         id="performance-gradient"
                                         stops={[
                                             { offset, color: "teal.solid", opacity: 1 },
-                                            { offset, color: "red.solid", opacity: 1 },
+                                            { offset,  color: "red.solid", opacity: 1 },
                                         ]}
                                     />
                                 </defs>
                                 <Area
                                     type="monotone"
                                     isAnimationActive={false}
-                                    dataKey={performanceChart.key("performance")}
+                                    dataKey={performanceChart.key("percentage_change")}
                                     fill="url(#performance-gradient)"
                                     fillOpacity={0.2}
                                     stroke={performanceChart.color("gray")}

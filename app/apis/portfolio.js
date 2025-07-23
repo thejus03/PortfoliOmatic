@@ -21,6 +21,19 @@ export const getChartData = async (token) => {
     }
 };
 
+export const getPerformanceData = async (token) => {
+    try {
+        const response = await baseClient.get("/portfolio_performance_comparison", {
+            headers: {
+                Authorization: token,
+            }
+        });
+        return response.data || {};
+    } catch (error) {
+        console.error("Error fetching performance data:", error);
+        return [];
+    }
+}
 
 export const getPortfolioSuggestions = async (score, token) => {
     try {

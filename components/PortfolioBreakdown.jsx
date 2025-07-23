@@ -75,7 +75,7 @@ const AssetBreakdownChart = ({ title, data }) => {
 };
 
 
-export default function PortfolioBreakdown({chartData, risk, index}) {
+export default function PortfolioBreakdown({chartData, risk, index, performanceData}) {
     const asset_class_to_colour = {
         equity: "blue.600",
         bond: "teal.600",
@@ -164,7 +164,7 @@ export default function PortfolioBreakdown({chartData, risk, index}) {
                     </Tag.Label>
                 </Tag.Root>
             </HStack>
-            <ActivityChart chartData={chartData} />
+            <ActivityChart chartData={chartData} performanceData={performanceData} />
             <Box
                 display="flex"
                 flexDirection="row"
