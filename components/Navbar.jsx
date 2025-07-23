@@ -40,7 +40,20 @@ export default function Navbar() {
 
     useEffect(() => {
         const token = localStorage.getItem("token");
-        setIsAuthenticated(!!token);
+        
+        if (token) {
+            const fetchUserPortfolioExists = async () => {
+                try {
+                    const response = await userPortfolioExists(token);
+                    setIsAuthenticated(response);
+                } catch (error) {
+                    console.error("Error checking user portfolio:", error);
+                    setIsAuthenticated(false);
+                }
+            }
+            fetchUserPortfolioExists();
+        }
+        
     }, []);
 
     return (

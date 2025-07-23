@@ -42,3 +42,16 @@ export const register = async (email, password) => {
         };
     }
 }; 
+
+export const userPortfolioExists = async (token) => {
+    try {
+        const response = await baseClient.get("/user/portfolio/exists", {
+            headers: {
+                "Authorization": token
+            }
+        });
+        return response.data;
+    } catch (error) {
+        return false;
+    }
+}
