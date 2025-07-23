@@ -69,7 +69,7 @@ def get_sp500_daily_percentage_changes(start_date, end_date=None):
         
         result.append({
             "date": formatted_date,
-            "percentage_change": round(pct_change, 2)
+            "performance": round(pct_change, 2)
         })
 
     return result
@@ -319,7 +319,7 @@ def get_portfolio_value(payload: dict = Depends(validate_token)):
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d")
                 formatted_date = date_obj.strftime("%d %b %Y")
 
-                values.append({"date": formatted_date, "value": list_of_date_and_capital[pos]["capital_invested"]})
+                values.append({"date": formatted_date, "value": round(list_of_date_and_capital[pos]["capital_invested"], 2)})
 
                 multiple = list_of_date_and_capital[pos]["capital_invested"] / float(item["normalised_value"])
                 if pos < len(list_of_date_and_capital) - 1:
@@ -331,7 +331,7 @@ def get_portfolio_value(payload: dict = Depends(validate_token)):
                 date_obj = datetime.strptime(date_str, "%Y-%m-%d")
                 formatted_date = date_obj.strftime("%d %b %Y")
 
-                values.append({"date": formatted_date, "value": float(item["normalised_value"]) * multiple})
+                values.append({"date": formatted_date, "value": round(float(item["normalised_value"]) * multiple, 2)})
         
         # Add the list of values to the dictionary
         portfolio_id_to_values[name] = values
@@ -420,7 +420,11 @@ def get_current_holdings(payload:dict = Depends(validate_token)):
     for portfolio in list_of_portfolio_dicts:
         normalised_value_response = supabase.table("Portfolio_Value").select("normalised_value").eq("portfolio_id", portfolio["portfolio_id"]).eq("created_at", portfolio["created_at"]).execute()
         multiple =  portfolio["capital_invested"] / normalised_value_response.data[0]["normalised_value"]
-        current_value_response = supabase.table("Portfolio_Value").select("normalised_value").eq("portfolio_id", portfolio["portfolio_id"]).order("created_at", desc=True).limit(1).execute()
+
+        today = date.today()
+        formatted_today_date = today.strftime('%Y-%m-%d')
+
+        current_value_response = supabase.table("Portfolio_Value").select("normalised_value").eq("portfolio_id", portfolio["portfolio_id"]).eq("created_at", formatted_today_date).execute()
         current_value = multiple * current_value_response.data[0]["normalised_value"]
         portfolio_id_to_current_value_dict[portfolio["portfolio_id"]] = current_value
     
@@ -701,7 +705,7 @@ def get_portfolio_performance_comparison(payload: dict = Depends(validate_token)
             date_str = date_and_value["created_at"]
             date_obj = datetime.strptime(date_str, "%Y-%m-%d")
             formatted_date = date_obj.strftime("%d %b %Y")
-            list_of_date_and_percentage_change_dicts.append({"date": formatted_date, "percentage_change": ((date_and_value["normalised_value"] - base_value) / base_value) * 100})
+            list_of_date_and_percentage_change_dicts.append({"date": formatted_date, "performance": ((date_and_value["normalised_value"] - base_value) / base_value) * 100})
         
         portfolio_name_to_percentage_change[name] = list_of_date_and_percentage_change_dicts
 
@@ -709,7 +713,7 @@ def get_portfolio_performance_comparison(payload: dict = Depends(validate_token)
     portfolio_name_to_percentage_change_dict = dict()
 
     for portfolio_name in portfolio_name_to_percentage_change:    
-        portfolio_name_to_percentage_change_dict[portfolio_name] = {item["date"]: item["percentage_change"] for item in portfolio_name_to_percentage_change[portfolio_name]}
+        portfolio_name_to_percentage_change_dict[portfolio_name] = {item["date"]: item["performance"] for item in portfolio_name_to_percentage_change[portfolio_name]}
 
     # create a dictionary that maps each day to another dictionary that gives the breakdown of the holdings
     daily_percentage_breakdown = dict()
@@ -737,7 +741,7 @@ def get_portfolio_performance_comparison(payload: dict = Depends(validate_token)
         for portfolio_name in daily_percentage_breakdown[date].keys():
             daily_performance += portfolio_name_to_percentage_change_dict[portfolio_name][date] * daily_percentage_breakdown[date][portfolio_name]
 
-        total_performance.append({"date": date, "percentage_change": daily_performance})
+        total_performance.append({"date": date, "performance": daily_performance})
     
     portfolio_name_to_percentage_change["total"] = total_performance
 
