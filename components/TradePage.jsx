@@ -16,6 +16,7 @@ import {
     Dialog,
     Drawer,
     Portal,
+    Card
 } from "@chakra-ui/react";
 import { Space_Grotesk } from "next/font/google";
 import { LuDollarSign } from "react-icons/lu";
@@ -30,100 +31,16 @@ const spaceGrotesk = Space_Grotesk({
 export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfolios, name_and_description, portfoliosValue, portfolioIdToName,
                               open, setOpen, tradeAmount, setTradeAmount, typeOfTrade, upperBound, handleTrade, liquidatePortfolio, setLiquidatePortfolio}) {
     return (
-        <Box display="flex" flexDirection="column" alignItems="center" padding="5">
+        <Box display="flex" flexDirection="column" alignItems="center" padding="5" width="95%" border="1px solid" borderColor="red.400" justifySelf="center" maxWidth="1500px">
 
-            <RadioCard.Root value={tradePortfolioId} onValueChange={(e) => setTradePortfolioId(e.value)}>
-                <RadioCard.Label display="flex" flexDirection="column" alignItems="center">
-                    <Text fontWeight="semibold" textStyle="3xl" mb={5}>
-                        Select a Portfolio to {typeOfTrade}
-                    </Text>
-                </RadioCard.Label>
-
-                {/* render only a even number of portfolios */}
-                <SimpleGrid columns={2} gap="40px">
-                    <For each={allPortfolios.slice(0, allPortfolios.length % 2 === 0 ? allPortfolios.length : allPortfolios.length - 1)}>
-                        {(portfolio, index) => (
-                        <RadioCard.Item 
-                            key={portfolio.id} 
-                            value={portfolio.id} 
-                            bg="blue.900" 
-                            height="300px" 
-                            width="500px"
-                            rounded="xl"
-                            onClick={() => setOpen(true)}>
-                            <RadioCard.ItemHiddenInput />
-                            <RadioCard.ItemControl>
-                            <RadioCard.ItemContent>
-                                <RadioCard.ItemText fontSize="lg">{name_and_description[portfolio.name].name}</RadioCard.ItemText>
-                                <RadioCard.ItemDescription fontSize="md">
-                                    <Text>{name_and_description[portfolio.name].description}</Text>
-                                </RadioCard.ItemDescription>
-                                <Button borderWidth="2px" bgColor="blue.900" borderColor="white" color="white" px={2} py={2} mt={10}>
-                                    <Text fontSize="xl" fontWeight="bold" color="white">
-                                    Current Holding: $
-                                    {portfoliosValue[portfolio.id.toString()]
-                                        ? Math.floor(portfoliosValue[portfolio.id.toString()] * 100) / 100
-                                        : 0}
-                                    </Text>
-                                </Button>
-                            </RadioCard.ItemContent>
-                            <RadioCard.ItemIndicator />
-                            </RadioCard.ItemControl>
-                            <RadioCard.ItemAddon>
-                                <HStack spacing={4} align="center">
-                                    <Box onClick={(e) => e.stopPropagation()}>
-                                        <Popup portfolio={portfolio} title={name_and_description[portfolio.name].name} />
-                                    </Box>
-                                </HStack>
-                            </RadioCard.ItemAddon>
-                        </RadioCard.Item>
-                        )}
-                    </For>
-
-                    {/* If there's an odd number of portfolios, centre the last one */}
-                    {allPortfolios.length % 2 !== 0 && (
-                        <Flex justify="center" align="center" gridColumn="1 / -1">
-                            <Box width="500px">
-                                <RadioCard.Item
-                                    key={allPortfolios[allPortfolios.length - 1].id}
-                                    value={allPortfolios[allPortfolios.length - 1].id}
-                                    bg="blue.900"
-                                    height="300px"
-                                    width="500px"
-                                    rounded="xl"
-                                    onClick={() => setOpen(true)}
-                                >
-                                    <RadioCard.ItemHiddenInput />
-                                    <RadioCard.ItemControl>
-                                    <RadioCard.ItemContent>
-                                        <RadioCard.ItemText fontSize="lg">{name_and_description[allPortfolios[allPortfolios.length - 1].name].name}</RadioCard.ItemText>
-                                        <RadioCard.ItemDescription fontSize="md">
-                                        {name_and_description[allPortfolios[allPortfolios.length - 1].name].description}
-                                        </RadioCard.ItemDescription>
-                                        <Button borderWidth="2px" bgColor="blue.900" borderColor="white" color="white" px={2} py={2} mt={10}>
-                                            <Text fontSize="xl" fontWeight="bold" color="white">
-                                            Current Holding: $
-                                            {portfoliosValue[allPortfolios[allPortfolios.length - 1].id.toString()]
-                                                ? Math.floor(portfoliosValue[allPortfolios[allPortfolios.length - 1].id.toString()] * 100) / 100
-                                                : 0}
-                                            </Text>
-                                        </Button>
-                                    </RadioCard.ItemContent>
-                                    <RadioCard.ItemIndicator />
-                                    </RadioCard.ItemControl>
-                                    <RadioCard.ItemAddon>
-                                        <HStack spacing={4} align="center">
-                                            <Box onClick={(e) => e.stopPropagation()}>
-                                                <Popup portfolio={allPortfolios[allPortfolios.length - 1]} title={name_and_description[allPortfolios[allPortfolios.length - 1].name].name} />
-                                            </Box>
-                                        </HStack>
-                                    </RadioCard.ItemAddon>
-                                </RadioCard.Item>
-                            </Box>
-                        </Flex>
+            <Box display="flex" flexWrap="wrap">
+                <For each={allPortfolios}>
+                    {(portfolio, index) => (
+                            <Card></Card>
                     )}
-                </SimpleGrid>
-            </RadioCard.Root>
+                </For>
+            </Box>
+            
 
             {open && (
                 <Drawer.Root open={open} onOpenChange={(e) => setOpen(e.open)} size="sm">
