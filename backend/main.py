@@ -375,18 +375,17 @@ def get_current_holdings(payload:dict = Depends(validate_token)):
     # Get User's Portfolio IDs
     user_response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
 
-    if not user_response.data or not user_response.data[0]["portfolio_ids"]:
-        raise HTTPException(status_code=404, detail="Portfolios not found")
-
     portfolio_ids = user_response.data[0]["portfolio_ids"]
+    portfolios = []
 
-    # Get Portfolio Details
-    portfolio_response = supabase.table("Portfolios").select("*").in_("id", portfolio_ids).execute()
+    if portfolio_ids:
+        # Get Portfolio Details
+        portfolio_response = supabase.table("Portfolios").select("*").in_("id", portfolio_ids).execute()
 
-    if not portfolio_response.data:
-        raise HTTPException(status_code=404, detail="Portfolios not found")
-    
-    portfolios = portfolio_response.data
+        if not portfolio_response.data:
+            raise HTTPException(status_code=404, detail="Portfolios not found")    
+        
+        portfolios = portfolio_response.data
 
     return JSONResponse(portfolios)
 
@@ -397,10 +396,10 @@ def get_current_holdings(payload:dict = Depends(validate_token)):
     # Get User's Portfolio IDs
     user_response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
 
-    if not user_response.data or not user_response.data[0]["portfolio_ids"]:
-        raise HTTPException(status_code=404, detail="Portfolios not found")
-
     portfolio_ids = user_response.data[0]["portfolio_ids"]
+
+    if portfolio_ids == None:
+        portfolio_ids = []
 
     # Get Portfolio Details
     list_of_portfolio_dicts = []
@@ -445,6 +444,9 @@ def update_capital_invested(body: UpdateCapitalInvestedRequest, payload: dict = 
             raise HTTPException(status_code=500, detail="Failed to retrieve users table")
         
         portfolio_ids = response.data[0]["portfolio_ids"]
+
+        if portfolio_ids == None:
+            portfolio_ids = []
 
         # Handle the case where a completely new portfolio is bought
         if portfolio_id not in portfolio_ids:
@@ -758,6 +760,14 @@ def delete_account(payload: dict = Depends(validate_token)):
         raise HTTPException(status_code=404, detail="User not found")
     
     return {"message": "Portfolio updated successfully"}
+
+@app.get('/api/user/portfolio/exists')
+def user_portfolio_exists(payload: dict = Depends(validate_token)):
+    user_id = payload["id"]
+
+    response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
+    
+    return not response.data
 
 
 # ------------------------------------------------------------Testing--------------------------------------------------------------------

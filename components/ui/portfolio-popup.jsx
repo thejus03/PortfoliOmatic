@@ -24,11 +24,13 @@ const asset_class_to_colour = {
 
 const formatDate = (date) => {
   if (date == undefined) {
-    return new Date().toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    const today = new Date();
+    const firstOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+    const formatted = firstOfMonth.toLocaleDateString('en-GB', options);
+
+    return formatted;
   }
   
   else {

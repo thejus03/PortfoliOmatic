@@ -110,7 +110,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                 _hover={{ bg: "blue.600" }}
                                 onClick={() => {setTradePortfolioId(portfolio.id); setOpen(true)}}
                             >
-                                Buy
+                                {typeOfTrade}
                             </Button>
                             </Card.Footer>
                         </Card.Root>
@@ -169,12 +169,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                             <Text color="blue.100">{portfolioIdToName[tradePortfolioId]}</Text>
                                         </Text>
 
-                                        <Text fontSize="xl">
-                                            You currently hold $
-                                                {portfoliosValue[allPortfolios[allPortfolios.length - 1].id.toString()]
-                                                    ? Math.floor(portfoliosValue[allPortfolios[allPortfolios.length - 1].id.toString()] * 100) / 100
-                                                    : 0} of this portfolio
-                                        </Text>
+                                
 
                                         
                                     </VStack>
@@ -183,16 +178,15 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                             
                             <Drawer.Footer>
                                 <Button 
-                                borderWidth="3px"
-                                color="white" 
-                                borderColor="white" 
-                                height="50px"
+                                color="teal.200" 
+                                bgColor="teal.600/50"
+                                size="sm"
                                 px={6} 
-                                py={5} 
+                                py={4} 
                                 fontSize="xs" 
                                 fontWeight="semibold"
                                 borderRadius="lg"
-                                _hover={{ bg: "red.800" }}
+                                _hover={{ bg: "teal.800" }}
                                 onClick={() => setOpen(false)}
                                 >
                                 Cancel
@@ -200,12 +194,11 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                 <Dialog.Root>
                                         <Dialog.Trigger asChild>
                                             <Button 
-                                            borderWidth="3px"
-                                            color="white" 
-                                            borderColor="white" 
-                                            height="50px"
+                                            color="blue.200" 
+                                            size="xl"
+                                            bgColor="blue.600/50"
                                             px={6} 
-                                            py={5} 
+                                            py={4} 
                                             fontSize="sm" 
                                             fontWeight="semibold"
                                             borderRadius="lg"

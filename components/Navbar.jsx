@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useCallback, useState, useEffect } from "react";
 import { LuLogOut } from "react-icons/lu";
 import { deleteUserAccount } from "@/app/apis/portfolio";
+import { userPortfolioExists } from "@/app/apis/auth";
 
 export default function Navbar() {
     const router = useRouter();

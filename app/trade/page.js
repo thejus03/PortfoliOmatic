@@ -13,6 +13,7 @@ import Trade from "@/components/TradePage";
 import { toaster } from "@/components/ui/toaster";
 import Navbar from "@/components/Navbar";
 import { name_and_description } from "@/utils/constants";
+import { LuExternalLink } from "react-icons/lu";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -235,8 +236,8 @@ export default function Home() {
         {/* Risk Assessment */}
         <Tabs.Content value="take our risk assessment">
           <Flex align="center" justify="center" flexDirection="column">
-            <VStack gap={10}>
-              <Text fontSize="3xl">Risk Assessment</Text>
+            <VStack gap={10} className="font-sans">
+              <Text fontSize="3xl" className="font-space-grotesk" fontWeight="bold" color="blue.600">Risk Assessment</Text>
               <Text fontSize="xl">
                 Unsure which Portfolio best matches your Risk Tolerance?
               </Text>
@@ -246,17 +247,20 @@ export default function Home() {
               </Text>
               <Button
                 onClick={() => router.push("/account-setup/risk-preference")}
-                borderWidth="1px"
-                color="white"
-                borderColor="white"
+                color="blue.200"
+                bgColor="blue.500/30"
+                className="font-space-grotesk"
                 height="20px"
                 px={6}
-                py={5}
+                py={6}
                 fontSize="md"
-                borderRadius="md"
-                _hover={{ bg: "blue.800" }}
+                borderRadius="full"
+                _hover={{ bg: "blue.800",
+                  transform: "translateY(-2px)"
+                }}
               >
                 Click here to take the Risk Assessment
+                <LuExternalLink size="25px"/>
               </Button>
             </VStack>
           </Flex>
@@ -313,7 +317,13 @@ export default function Home() {
               liquidatePortfolio={liquidatePortfolio}
               setLiquidatePortfolio={setLiquidatePortfolio}
             />
-          ): (
+          ): (holdingPortfolios.length == 0) ? 
+          (
+            <Box justifyContent="center">
+              <Text>You do not have any portfolios</Text>
+            </Box>
+          )
+          :(
             <Box display="flex" flexDirection="row" gap={4} flexWrap="wrap" justifyContent="center" maxWidth="1500px" padding="5">
                 <Skeleton height="300px" width="500px" borderRadius="lg" />
                 <Skeleton height="300px" width="500px" borderRadius="lg" />
