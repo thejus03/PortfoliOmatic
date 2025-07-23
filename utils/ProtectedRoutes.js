@@ -1,16 +1,37 @@
 'use client';
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function ProtectedRoutes({ children }) {
     const router = useRouter();
+    const pathname = usePathname();
+    const [authState, setAuthState] = useState('unauthenticated');  
+    
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                router.push('/login');
-            }
+        // unprotected routes
+        const publicRoutes = ['/', '/login', '/register'];
+        
+        if (publicRoutes.includes(pathname)) {
+            setAuthState('authenticated');
+            return;
         }
-    }, [router]);
+        
+        // Check authentication for protected routes
+        const token = localStorage.getItem('token');
+        
+        if (token) {
+            setAuthState('authenticated');
+        } else {
+            setAuthState('unauthenticated');
+            router.push('/login');
+        }
+    }, [pathname, router]);
+    
+    
+    
+    if (authState === 'unauthenticated') {
+        return null;
+    }
+    
     return children;
 }
