@@ -16,10 +16,12 @@ import {
     Dialog,
     Drawer,
     Portal,
-    Card
+    Card,
+    Tag
 } from "@chakra-ui/react";
 import { Space_Grotesk } from "next/font/google";
-import { LuDollarSign } from "react-icons/lu";
+import { LuDollarSign, LuBadgeDollarSign } from "react-icons/lu";
+import { name_and_description } from "@/utils/constants";
 import Popup from "@/components/ui/portfolio-popup";
 
 const spaceGrotesk = Space_Grotesk({
@@ -28,15 +30,90 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 
-export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfolios, name_and_description, portfoliosValue, portfolioIdToName,
+export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfolios, portfoliosValue, portfolioIdToName,
                               open, setOpen, tradeAmount, setTradeAmount, typeOfTrade, upperBound, handleTrade, liquidatePortfolio, setLiquidatePortfolio}) {
     return (
-        <Box display="flex" flexDirection="column" alignItems="center" padding="5" width="95%" border="1px solid" borderColor="red.400" justifySelf="center" maxWidth="1500px">
+        <Box 
+            display="flex" 
+            flexDirection="column" 
+            alignItems="center" 
+            padding="5" 
+            width="95%" 
+            justifySelf="center" 
+            maxWidth="1500px"
+        >
 
-            <Box display="flex" flexWrap="wrap">
+            <Box display="flex" flexWrap="wrap" gap={4} justifyContent="center" >
                 <For each={allPortfolios}>
                     {(portfolio, index) => (
-                            <Card></Card>
+                        <Card.Root 
+                            size="lg" 
+                            key={index} 
+                            width="500px" 
+                            borderRadius="xl"
+                            bgColor="blue.900/40" 
+                            backdropFilter="blur(10px)"
+                            border="1px solid" 
+                            borderColor="blue.800"
+                            
+                        >
+                            {/* // portfolio.asset_class_weight.volatility */}
+                            <Card.Body gap="2">
+                            <Card.Title mt="2" fontSize="2xl" className="font-sans" color="blue.200" fontWeight="bold">{name_and_description[portfolio.name].name}</Card.Title>
+                            <Tag.Root 
+                                size="md" 
+                                variant="subtle"
+                                colorPalette="gray"
+                                className="font-sans tracking-wide"
+                                borderColor="teal.700"
+                                bgColor="teal.800/60"
+                                backdropFilter="blur(10px)"
+                                borderRadius="md"
+                                paddingX="0.5rem"
+                                width="fit-content"
+                            >
+                                <Tag.Label color="teal.100" fontSize="xs" fontWeight="medium">
+                                    {portfolio.name.charAt(0).toUpperCase() + portfolio.name.slice(1).replace('_', ' ')}
+                                </Tag.Label>
+                            </Tag.Root>
+                            <Card.Description className="font-sans mt-3">
+                                {name_and_description[portfolio.name].description}
+                            </Card.Description>
+                            {/* portfoliosValue[portfolio.id.toString()] */}
+                            {portfoliosValue[portfolio.id.toString()] > 0 && (
+                                <Box 
+                                    fontSize="sm"
+                                    color="green.600"
+                                    fontWeight="semibold"
+                                    fontFamily="mono"
+                                    display="flex"
+                                    alignItems="center"
+                                    gap={1}
+                                    bgColor="green.800/50"
+                                    width="fit-content"
+                                    padding="0.25rem 0.5rem"
+                                    borderRadius="md"
+                                >
+                                    <LuDollarSign color="green.400" size={15} />
+                                    {portfoliosValue[portfolio.id.toString()].toFixed(2)}
+                                </Box>
+                            )}
+                            </Card.Body>
+                            <Card.Footer justifyContent="space-between" alignItems="flex-end">
+                            <Popup portfolio={portfolio} title={name_and_description[portfolio.name].name}/>
+                            <Button
+                                fontWeight="semibold"
+                                borderRadius="sm"
+                                bgColor="blue.500/30"
+                                color="blue.200"
+                                padding="1.5rem"
+                                _hover={{ bg: "blue.600" }}
+                                onClick={() => {setTradePortfolioId(portfolio.id); setOpen(true)}}
+                            >
+                                Buy
+                            </Button>
+                            </Card.Footer>
+                        </Card.Root>
                     )}
                 </For>
             </Box>

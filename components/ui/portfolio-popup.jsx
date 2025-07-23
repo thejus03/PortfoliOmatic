@@ -68,7 +68,17 @@ const Popup = ({ portfolio, title }) => {
   return (
     <Dialog.Root size="xl" placement="center">
       <Dialog.Trigger asChild>
-        <Button variant="outline" borderWidth="2px" borderColor="white" color="white" px={5} py={2} _hover={{ bg: "blue.700"}}>View Details</Button>
+        <Button 
+          size="md"
+          color="gray.400"
+          px={3}
+          _hover={{ 
+            bg: "blue.800/30",
+            color: "blue.500"
+          }}
+        >
+          View Details
+        </Button>
       </Dialog.Trigger>
       <Portal>
         <Dialog.Backdrop />

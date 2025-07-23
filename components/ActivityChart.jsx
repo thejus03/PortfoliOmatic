@@ -161,7 +161,7 @@ export default function ActivityChart( {chartData, performanceData} ) {
     // Calculate gradient offset for performance chart (positive/negative areas)
     const gradientOffset = () => {
         if (!displayPerformanceData?.length) return 0.5;
-        const data = displayPerformanceData.map(item => item.percentage_change);
+        const data = displayPerformanceData.map(item => item.performance);
         const max = Math.max(...data);
         const min = Math.min(...data);
         if (max <= 0) return 0;
@@ -313,7 +313,7 @@ export default function ActivityChart( {chartData, performanceData} ) {
                                     dataKey={chart.key(item.name)}
                                     fill={`url(#${item.name}-gradient)`}
                                     stroke={chart.color(item.color)}
-                                    strokeWidth={2}
+                                    strokeWidth={1}
                                     stackId="a"
                                     activeDot={true}
                                 />
@@ -348,7 +348,7 @@ export default function ActivityChart( {chartData, performanceData} ) {
                                     orientation="right"
                                     tick={{ fontSize: "10px" }}
                                     tickFormatter={(value) => `${value.toLocaleString()}`}
-                                    dataKey={performanceChart.key("percentage_change")}
+                                    dataKey={performanceChart.key("performance")}
                                     stroke={performanceChart.color("border")}
                                     />
                                 <Tooltip
@@ -368,11 +368,11 @@ export default function ActivityChart( {chartData, performanceData} ) {
                                 <Area
                                     type="monotone"
                                     isAnimationActive={false}
-                                    dataKey={performanceChart.key("percentage_change")}
+                                    dataKey={performanceChart.key("performance")}
                                     fill="url(#performance-gradient)"
                                     fillOpacity={0.2}
-                                    stroke={performanceChart.color("gray")}
-                                    strokeWidth={2}
+                                    stroke={performanceChart.color("gray.600")}
+                                    strokeWidth={1}
                                 />
                                 </AreaChart> 
                                 </Chart.Root>
