@@ -1,9 +1,10 @@
 "use client";
-import { Box, HStack, Button, Avatar, Menu, Portal } from "@chakra-ui/react";
+import { Box, HStack, Button, Avatar, Menu, Portal, Dialog, CloseButton } from "@chakra-ui/react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 import { useCallback, useState, useEffect } from "react";
 import { LuLogOut } from "react-icons/lu";
+import { deleteUserAccount } from "@/app/apis/portfolio";
 
 export default function Navbar() {
     const router = useRouter();
@@ -35,6 +36,7 @@ export default function Navbar() {
     ];
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [open, setOpen] = useState(false);
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -108,8 +110,7 @@ export default function Navbar() {
                         <Menu.Root positioning={{ placement: "bottom-start" }}>
                             <Menu.Trigger rounded="full" focusRing="none">
                                 <Avatar.Root size="sm">
-                                <Avatar.Fallback name="Segun Adebayo" />
-                                <Avatar.Image src="https://bit.ly/sage-adebayo" />
+                                <Avatar.Fallback name="" />
                                 </Avatar.Root>
                             </Menu.Trigger>
                             <Portal>
@@ -122,8 +123,9 @@ export default function Navbar() {
                                     borderRadius="sm"
                                 >
                                     <Menu.ItemGroup>
-                                        <Menu.Item value="account">Account</Menu.Item>
-                                        <Menu.Item value="settings">Settings</Menu.Item>
+                                        <Menu.Item value="delete" onClick={() => setOpen(true)}>
+                                            Delete Account
+                                        </Menu.Item>
                                         <Menu.Item value="logout" onClick={() => {
                                             localStorage.removeItem("token");
                                             router.push("/login");
@@ -139,7 +141,50 @@ export default function Navbar() {
                     </div> 
                     ))}
                 
-                
+                <Dialog.Root open={open} onOpenChange={setOpen}>
+                    <Portal>
+                        <Dialog.Backdrop />
+                        <Dialog.Positioner>
+                        <Dialog.Content>
+                            <Dialog.Header>
+                            <Dialog.Title>Delete Account</Dialog.Title>
+                            </Dialog.Header>
+                            <Dialog.Body>
+                                Are you sure you want to delete your account? This action is irreversible.
+                            </Dialog.Body>
+
+                            <Dialog.Footer>
+                                <Button 
+                                padding={2} 
+                                _hover={{bg:"blue.800"}}
+                                onClick={() => setOpen(false)}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    padding={2}
+                                    _hover={{bg:"red.800"}}
+                                    onClick={async () => {
+                                    await deleteUserAccount();
+                                    localStorage.removeItem("token");
+                                    router.push("/register");
+                                    }}
+                                >
+                                    Confirm Delete
+                                </Button>
+                            </Dialog.Footer>
+
+                            <CloseButton
+                            size="sm"
+                            position="absolute"
+                            top={2}
+                            right={2}
+                            onClick={() => setOpen(false)}
+                            />
+
+                        </Dialog.Content>
+                        </Dialog.Positioner>
+                    </Portal>
+                </Dialog.Root>
             </div>
         </div>
     )
