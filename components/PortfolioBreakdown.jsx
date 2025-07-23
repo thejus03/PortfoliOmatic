@@ -1,6 +1,6 @@
 import { Box, Text, HStack, Tag} from "@chakra-ui/react";
 import ActivityChart from "@/components/ActivityChart";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { getPortfolioByRisk } from "@/app/apis/portfolio";
 import { Chart, useChart } from "@chakra-ui/charts";
 import { Pie, PieChart, Cell, Tooltip, Legend, Label } from "recharts";
@@ -108,7 +108,6 @@ export default function PortfolioBreakdown({chartData, risk, index, performanceD
             if (response.success) {
                 setAssetClassWeight(response.data[0].asset_class_weight);
                 setTickersWeight(response.data[0].tickers_weight);
-                console.log(response.data[0]);
             } else {
                 console.error("Error fetching portfolio:", response.error);
             }
@@ -126,22 +125,24 @@ export default function PortfolioBreakdown({chartData, risk, index, performanceD
         }));
 
     // Helper function to create breakdown data for specific asset class
-    const createAssetClassBreakdown = (assetClass, colors) => {
-        const assets = Object.entries(tickers_weight)
+    const createAssetClassBreakdown = useCallback((assetClass, colors) => {
+        return Object.entries(tickers_weight)
             .filter(([ticker, data]) => data.asset_class === assetClass)
             .map(([ticker, data], index) => ({
                 name: data.asset_name,
-                value: Number((data.weightage * 100).toFixed(2)),
+                value: Number(((data.weightage * 100) / asset_class_weight[assetClass]).toFixed(2)),
                 color: colors[index % colors.length],
             }));
-        return assets;
-    };
+    }, [asset_class_weight, tickers_weight]);
 
     // mapping asset class to colors
-    const equityData = createAssetClassBreakdown("equity", equity_colors);
-    const bondData = createAssetClassBreakdown("bond", bond_colors);
-    const goldData = createAssetClassBreakdown("gold", gold_colors);
-
+    const equityData = useMemo(() => createAssetClassBreakdown("equity", equity_colors), [createAssetClassBreakdown]);
+    const bondData = useMemo(() => createAssetClassBreakdown("bond", bond_colors), [createAssetClassBreakdown]);
+    const goldData = useMemo(() => createAssetClassBreakdown("gold", gold_colors), [createAssetClassBreakdown]);
+    console.log("assetClassData", assetClassData);
+    console.log("equityData", equityData);
+    console.log("bondData", bondData);
+    console.log("goldData", goldData);
     return (
         <Box>
             <HStack alignItems="center" gap="1rem" marginTop="5rem" marginLeft="4rem">

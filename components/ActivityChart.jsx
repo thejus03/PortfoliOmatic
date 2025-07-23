@@ -201,7 +201,7 @@ export default function ActivityChart( {chartData, performanceData} ) {
         setValueChange(filteredData[filteredData.length - 1].value - filteredData[0].value);
         setPercentageChange(((filteredData[filteredData.length - 1].value - filteredData[0].value) / filteredData[0].value) * 100);
         setDisplayData(filteredData);
-        setDisplayPerformanceData(performanceData.slice(-daysToShow));
+        setDisplayPerformanceData(performanceData?.slice(-daysToShow));
         setDailyValueChange(filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value);
         setDailyPercentageChange(((filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value) / filteredData[filteredData.length - 2].value) * 100);
     }, [selectedPeriod, chartData, value, percentageChange])
