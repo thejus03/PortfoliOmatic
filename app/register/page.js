@@ -133,7 +133,7 @@ function Register() {
             Join thousands of smart investors growing their wealth with personalised, algorithm-driven portfolio management
           </Heading>
       </VStack>
-      <VStack marginTop="12" maxW="lg" mx="auto" alignItems="center" width="100%" className="font-space-grotesk">
+      <VStack marginTop="12" maxW="lg" mx="auto" alignItems="center" width="100%" className="font-space-grotesk" mb={10}>
         <Field.Root required>
           <Field.Label>
             Email <Field.RequiredIndicator />

@@ -245,6 +245,7 @@ function page() {
                         </Button>
 
                         <Button 
+                            data-testid="risk-next"
                             onClick={handleNext} 
                             borderRadius="lg" 
                             width="300px" 

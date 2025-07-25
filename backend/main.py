@@ -17,7 +17,6 @@ import requests
 import yfinance as yf
 from dateutil.parser import parse
 from datetime import date, datetime
-import yfinance as yf
 import pandas as pd
 import asyncio
 import sys
@@ -25,58 +24,58 @@ import sys
 if sys.platform.startswith("win"):
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-def get_sp500_daily_percentage_changes(start_date, end_date=None):
-    """
-    Returns a list of daily cumulative percentage changes in the S&P 500 from the given start date.
-    Format: [{"date": "1 July 2024", "percentage_change": 0}, ...]
-    """
-    if end_date is None:
-        end_date = datetime.today().strftime('%Y-%m-%d')
+# def get_sp500_daily_percentage_changes(start_date, end_date=None):
+#     """
+#     Returns a list of daily cumulative percentage changes in the S&P 500 from the given start date.
+#     Format: [{"date": "1 July 2024", "percentage_change": 0}, ...]
+#     """
+#     if end_date is None:
+#         end_date = datetime.today().strftime('%Y-%m-%d')
 
-    # Download S&P 500 data
-    sp500 = yf.download("^GSPC", start=start_date, end=end_date, progress=False, group_by=None)
+#     # Download S&P 500 data
+#     sp500 = yf.download("^GSPC", start=start_date, end=end_date, progress=False, group_by=None)
 
-    if sp500.empty:
-        raise ValueError("No data found. Check your date range or ticker.")
+#     if sp500.empty:
+#         raise ValueError("No data found. Check your date range or ticker.")
     
-    # Try different ways to access close prices
-    if 'Close' in sp500.columns:
-        close_prices = sp500['Close']
-    elif ('Close', '^GSPC') in sp500.columns:
-        close_prices = sp500[('Close', '^GSPC')]
-    else:
-        # Look for any column containing 'close'
-        close_cols = [col for col in sp500.columns if 'close' in str(col).lower()]
-        if close_cols:
-            close_prices = sp500[close_cols[0]]
-            print(f"Using column: {close_cols[0]}")
-        else:
-            raise ValueError(f"No Close price column found. Available columns: {sp500.columns.tolist()}")
+#     # Try different ways to access close prices
+#     if 'Close' in sp500.columns:
+#         close_prices = sp500['Close']
+#     elif ('Close', '^GSPC') in sp500.columns:
+#         close_prices = sp500[('Close', '^GSPC')]
+#     else:
+#         # Look for any column containing 'close'
+#         close_cols = [col for col in sp500.columns if 'close' in str(col).lower()]
+#         if close_cols:
+#             close_prices = sp500[close_cols[0]]
+#             print(f"Using column: {close_cols[0]}")
+#         else:
+#             raise ValueError(f"No Close price column found. Available columns: {sp500.columns.tolist()}")
     
-    base_price = close_prices.iloc[0]
-    percentage_changes = ((close_prices - base_price) / base_price) * 100
+#     base_price = close_prices.iloc[0]
+#     percentage_changes = ((close_prices - base_price) / base_price) * 100
 
-    result = []
-    for date, pct_change in percentage_changes.items():
-        # Handle both datetime objects and strings
-        if isinstance(date, str):
-            # If it's already a string, try to parse and reformat it
-            try:
-                date_obj = datetime.strptime(date, '%Y-%m-%d')
-                formatted_date = date_obj.strftime("%#d %B %Y")
-            except:
-                # If parsing fails, use the string as-is
-                formatted_date = date
-        else:
-            # If it's a datetime object, format it
-            formatted_date = date.strftime("%#d %B %Y")
+#     result = []
+#     for date, pct_change in percentage_changes.items():
+#         # Handle both datetime objects and strings
+#         if isinstance(date, str):
+#             # If it's already a string, try to parse and reformat it
+#             try:
+#                 date_obj = datetime.strptime(date, '%Y-%m-%d')
+#                 formatted_date = date_obj.strftime("%#d %B %Y")
+#             except:
+#                 # If parsing fails, use the string as-is
+#                 formatted_date = date
+#         else:
+#             # If it's a datetime object, format it
+#             formatted_date = date.strftime("%#d %B %Y")
         
-        result.append({
-            "date": formatted_date,
-            "performance": round(pct_change, 2)
-        })
+#         result.append({
+#             "date": formatted_date,
+#             "performance": round(pct_change, 2)
+#         })
 
-    return result
+#     return result
 
 
 app = FastAPI()

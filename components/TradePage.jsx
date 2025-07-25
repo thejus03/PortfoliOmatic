@@ -125,16 +125,13 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                     <Portal>
                         <Drawer.Backdrop />
                         <Drawer.Positioner>
-                        <Drawer.Content>
+                        <Drawer.Content bg="black" color="white">
                             <Drawer.Header>
-                                <Drawer.Title>
-                                    <Text
-                                        fontSize="2xl" 
-                                        color="white" 
-                                        mb={6}
-                                    >
-                                        Order Ticket
-                                    </Text>
+                                <Drawer.Title
+                                fontSize="2xl" 
+                                color="white" 
+                                mb={6}>
+                                    Order Ticket
                                 </Drawer.Title>
                             </Drawer.Header>
 
@@ -232,7 +229,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                         <Portal>
                                             <Dialog.Backdrop />
                                             <Dialog.Positioner>
-                                            <Dialog.Content>
+                                            <Dialog.Content bg="black" color="white">
                                                 <Dialog.Header>
                                                 <Dialog.Title fontSize="xl" color="grey.900">{typeOfTrade} Order Confirmation</Dialog.Title>
                                                 </Dialog.Header>

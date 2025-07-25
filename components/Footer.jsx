@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <Box
       as="footer"
-      position="fixed"
+      position="sticky"
       bottom="0"
       left="0"
       width="100%"
