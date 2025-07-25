@@ -6,6 +6,7 @@ import { useCallback, useState, useEffect } from "react";
 import { LuLogOut } from "react-icons/lu";
 import { deleteUserAccount } from "@/app/apis/portfolio";
 import { userPortfolioExists } from "@/app/apis/auth";
+import { MdDeleteForever } from "react-icons/md";
 
 export default function Navbar() {
     const router = useRouter();
@@ -15,7 +16,7 @@ export default function Navbar() {
         const isActive = pathname === path;
         
         return {
-            color: isActive ? "blue.400" : "inherit",
+            color: isActive ? "blue.400" : "white",
             bgColor: isActive ? "blue.600/20" : "transparent",
             size: "xs",
             borderRadius: "xs",
@@ -137,10 +138,11 @@ export default function Navbar() {
                                     borderRadius="sm"
                                 >
                                     <Menu.ItemGroup>
-                                        <Menu.Item value="delete" onClick={() => setOpen(true)}>
+                                        <Menu.Item value="delete" color="white" onClick={() => setOpen(true)}>
+                                            <MdDeleteForever />
                                             Delete Account
                                         </Menu.Item>
-                                        <Menu.Item value="logout" onClick={() => {
+                                        <Menu.Item value="logout" color="white" onClick={() => {
                                             localStorage.removeItem("token");
                                             router.push("/login");
                                         }}>

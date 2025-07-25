@@ -146,7 +146,7 @@ export default function PortfolioBreakdown({chartData, risk, index, performanceD
     return (
         <Box>
             <HStack alignItems="center" gap="1rem" marginTop="5rem" marginLeft="4rem">
-                <Text fontSize="3xl" fontWeight="bold" className="font-space-grotesk">
+                <Text fontSize="3xl" fontWeight="bold" className="font-space-grotesk" color="white">
                     {name_and_description[risk].name}
                 </Text>
                 <Tag.Root 

@@ -191,7 +191,7 @@ export default function Home() {
       {/* Navbar */}
       <Navbar />
 
-      <Tabs.Root defaultValue="buy" variant="line">
+      <Tabs.Root defaultValue="buy" variant="line" _selected={{ color: "white" }}>
         {/* Tabs Headers*/}
         <Tabs.List
         //   bg="gray.700/40"
@@ -208,6 +208,7 @@ export default function Home() {
             px={4}
             py={2}
             borderRadius="md"
+            color="white"
             _hover={{ bg: "gray.700/30" }}
           >
             Our Risk Assessment
@@ -217,6 +218,7 @@ export default function Home() {
             px={4}
             py={2}
             borderRadius="md"
+            color="white"
             _hover={{ bg: "gray.700/30" }}
           >
             Buy New Portfolios
@@ -226,7 +228,7 @@ export default function Home() {
             px={4}
             py={2}
             borderRadius="md"
-
+            color="white"
             _hover={{ bg: "gray.700/30",}}
           >
             Sell Current Holdings
@@ -238,10 +240,10 @@ export default function Home() {
           <Flex align="center" justify="center" flexDirection="column">
             <VStack gap={10} className="font-sans">
               <Text fontSize="3xl" className="font-space-grotesk" fontWeight="bold" color="blue.600">Risk Assessment</Text>
-              <Text fontSize="xl">
+              <Text fontSize="xl" color="white">
                 Unsure which Portfolio best matches your Risk Tolerance?
               </Text>
-              <Text fontSize="xl">
+              <Text fontSize="xl" color="white">
                 Take our Risk Assessment to algorithmically determine your best
                 match.
               </Text>

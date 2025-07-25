@@ -77,7 +77,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                     {portfolio.name.charAt(0).toUpperCase() + portfolio.name.slice(1).replace('_', ' ')}
                                 </Tag.Label>
                             </Tag.Root>
-                            <Card.Description className="font-sans mt-3">
+                            <Card.Description className="font-sans mt-3" color="gray.400">
                                 {name_and_description[portfolio.name].description}
                             </Card.Description>
                             {/* portfoliosValue[portfolio.id.toString()] */}
@@ -181,10 +181,10 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                 <Button 
                                 color="teal.200" 
                                 bgColor="teal.600/50"
-                                size="sm"
+                                size="xl"
                                 px={6} 
                                 py={4} 
-                                fontSize="xs" 
+                                fontSize="sm" 
                                 fontWeight="semibold"
                                 borderRadius="lg"
                                 _hover={{ bg: "teal.800" }}

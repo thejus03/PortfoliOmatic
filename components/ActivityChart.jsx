@@ -50,7 +50,7 @@ const NetLiquidityDisplay = ({ value }) => (
             Net Liquidity (SGD)
         </Stat.Label>
         <HStack alignItems="center">
-            <Stat.ValueText>
+            <Stat.ValueText color="white">
                 {formatCurrency(value)}
             </Stat.ValueText>
         </HStack>

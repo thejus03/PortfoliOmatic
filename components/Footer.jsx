@@ -16,7 +16,7 @@ export default function Footer() {
     >
       <Center>
         <Text fontSize="sm" color="gray.500">
-          © {new Date().getFullYear()} PortfoliOmatic. Created by Thejus & Samuel.
+          {new Date().getFullYear()} PortfoliOmatic. Created by Thejus & Samuel.
         </Text>
       </Center>
     </Box>
