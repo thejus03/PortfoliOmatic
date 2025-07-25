@@ -9,7 +9,7 @@ const generateRandomCredentials = () => {
   };
 };
 
-test('New user signup and portfolio selection flow', async ({ page }) => {
+test('New user signup and ultra low risk portfolio selection flow', async ({ page }) => {
   const { email, password } = generateRandomCredentials();
   console.log(`Signing up with ${email} / ${password}`);
 

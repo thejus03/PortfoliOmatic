@@ -41,6 +41,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
             width="95%" 
             justifySelf="center" 
             maxWidth="1500px"
+            mb={11}
         >
 
             <Box display="flex" flexWrap="wrap" gap={4} justifyContent="center" >

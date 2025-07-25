@@ -238,7 +238,7 @@ export const getPortfolioByRisk = async (risk, token) => {
 
 export const deleteUserAccount = async (token) => {
     try {
-        const response = await baseClient.post("/delete_user", {
+        const response = await baseClient.post("/delete_account", null, {
             headers: {
                 Authorization: token,
             }

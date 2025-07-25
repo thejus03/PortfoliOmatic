@@ -1,5 +1,5 @@
 "use client";
-import { VStack, Box, Button, Text, Tabs, Flex, Skeleton } from "@chakra-ui/react";
+import { VStack, Box, Button, Text, Tabs, Flex, Skeleton, Center } from "@chakra-ui/react";
 import { Space_Grotesk } from "next/font/google";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -187,7 +187,7 @@ export default function Home() {
 
 
   return (
-    <div className="w-full min-h-screen bg-slate-950">
+    <div className="w-full min-h-screen bg-slate-950 ">
       {/* Navbar */}
       <Navbar />
 
@@ -287,13 +287,15 @@ export default function Home() {
               setLiquidatePortfolio={setLiquidatePortfolio}
             />
           ): (
-            <Box display="flex" flexDirection="row" gap={4} flexWrap="wrap" justifyContent="center" maxWidth="1500px" padding="5">
-                <Skeleton height="300px" width="500px" borderRadius="lg" />
-                <Skeleton height="300px" width="500px" borderRadius="lg" />
-                <Skeleton height="300px" width="500px" borderRadius="lg" />
-                <Skeleton height="300px" width="500px" borderRadius="lg" />
-                <Skeleton height="300px" width="500px" borderRadius="lg" />
-            </Box>
+            <Center minHeight="100vh" width="100%">
+              <Box display="flex" flexDirection="row" gap={4} flexWrap="wrap" justifyContent="center" maxWidth="1500px" padding="5">
+                  <Skeleton height="300px" width="500px" borderRadius="lg" />
+                  <Skeleton height="300px" width="500px" borderRadius="lg" />
+                  <Skeleton height="300px" width="500px" borderRadius="lg" />
+                  <Skeleton height="300px" width="500px" borderRadius="lg" />
+                  <Skeleton height="300px" width="500px" borderRadius="lg" />
+              </Box>
+            </Center>
           )}
         </Tabs.Content>
 
@@ -319,18 +321,22 @@ export default function Home() {
             />
           ): (holdingPortfolios.length == 0) ? 
           (
-            <Box justifyContent="center">
-              <Text>You do not have any portfolios</Text>
-            </Box>
+            <Center minHeight="100vh" width="100%">
+              <Box display="flex" flexDirection="row" gap={4} flexWrap="wrap" justifyContent="center" maxWidth="1500px" padding="5">
+                <Text>You do not have any portfolios</Text>
+              </Box>
+            </Center>
           )
           :(
-            <Box display="flex" flexDirection="row" gap={4} flexWrap="wrap" justifyContent="center" maxWidth="1500px" padding="5">
-                <Skeleton height="300px" width="500px" borderRadius="lg" />
-                <Skeleton height="300px" width="500px" borderRadius="lg" />
-                <Skeleton height="300px" width="500px" borderRadius="lg" />
-                <Skeleton height="300px" width="500px" borderRadius="lg" />
-                <Skeleton height="300px" width="500px" borderRadius="lg" />
-            </Box>
+            <Center minHeight="100vh" width="100%">
+              <Box display="flex" flexDirection="row" gap={4} flexWrap="wrap" justifyContent="center" maxWidth="1500px" padding="5">
+                  <Skeleton height="300px" width="500px" borderRadius="lg" />
+                  <Skeleton height="300px" width="500px" borderRadius="lg" />
+                  <Skeleton height="300px" width="500px" borderRadius="lg" />
+                  <Skeleton height="300px" width="500px" borderRadius="lg" />
+                  <Skeleton height="300px" width="500px" borderRadius="lg" />
+              </Box>
+            </Center>
           )}
         </Tabs.Content>
 

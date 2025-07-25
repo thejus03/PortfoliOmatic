@@ -178,9 +178,14 @@ export default function Navbar() {
                                     padding={2}
                                     _hover={{bg:"red.800"}}
                                     onClick={async () => {
-                                    await deleteUserAccount();
-                                    localStorage.removeItem("token");
-                                    router.push("/register");
+                                        const result = await deleteUserAccount(localStorage.getItem("token"));
+                                        if (result.success) {
+                                            localStorage.removeItem("token");
+                                            router.push("/register");
+                                        } else {
+                                            console.error("Deletion failed:", result.error);
+                                            alert("Failed to delete account");
+                                        }
                                     }}
                                 >
                                     Confirm Delete

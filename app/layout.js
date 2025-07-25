@@ -3,6 +3,8 @@ import "./globals.css";
 import { Provider } from "@/components/ui/provider";
 import { Toaster } from "@/components/ui/toaster";
 import ProtectedRoutes from "@/utils/ProtectedRoutes";
+import Footer from "@/components/Footer";
+import { Box } from "@chakra-ui/react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +35,10 @@ export default function RootLayout({ children }) {
       >
         <Provider>
           <ProtectedRoutes>
-            {children}
+              <Box>
+                {children}
+              </Box>
+              <Footer />
           </ProtectedRoutes>
           <Toaster />
         </Provider>

@@ -171,7 +171,7 @@ export default function ActivityChart( {chartData, performanceData} ) {
     const offset = gradientOffset();
 
     useEffect(() => {
-        if (chartData?.length === 0) {
+        if (!chartData || chartData.length === 0) {
             setDisplayData([]);
             return;
         }
@@ -191,20 +191,34 @@ export default function ActivityChart( {chartData, performanceData} ) {
                 daysToShow = 365;
                 break;
             case "All":
-                daysToShow = chartData?.length;
+                daysToShow = chartData.length;
                 break;
             default:
                 daysToShow = 30;
         }
-        setValue(chartData[chartData?.length - 1].value);
+
         const filteredData = chartData.slice(-daysToShow);
-        setValueChange(filteredData[filteredData.length - 1].value - filteredData[0].value);
-        setPercentageChange(((filteredData[filteredData.length - 1].value - filteredData[0].value) / filteredData[0].value) * 100);
+
+        // Check if filteredData has at least 2 points to compute changes
+        if (filteredData.length >= 2) {
+            const last = filteredData[filteredData.length - 1];
+            const first = filteredData[0];
+            const secondLast = filteredData[filteredData.length - 2];
+
+            if (last?.value !== undefined && first?.value !== undefined && secondLast?.value !== undefined) {
+                setValue(last.value);
+                setValueChange(last.value - first.value);
+                setPercentageChange(((last.value - first.value) / first.value) * 100);
+                setDailyValueChange(last.value - secondLast.value);
+                setDailyPercentageChange(((last.value - secondLast.value) / secondLast.value) * 100);
+            }
+        } else {
+            setValue(filteredData[0].value)
+        }
+
         setDisplayData(filteredData);
-        setDisplayPerformanceData(performanceData?.slice(-daysToShow));
-        setDailyValueChange(filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value);
-        setDailyPercentageChange(((filteredData[filteredData.length - 1].value - filteredData[filteredData.length - 2].value) / filteredData[filteredData.length - 2].value) * 100);
-    }, [selectedPeriod, chartData, value, percentageChange])
+        setDisplayPerformanceData(performanceData?.slice(-daysToShow) || []);
+    }, [selectedPeriod, chartData]);
 
     const chart = useChart({
         data: displayData,

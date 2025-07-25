@@ -15,7 +15,7 @@ export default function AccountSetupLayout({ children }) {
                         className="font-space-grotesk"
                         color="white"
                         >
-                        Portfoli-O-matic
+                        PortfoliO-matic
                         </Box>
                     </div>
                 </div>
