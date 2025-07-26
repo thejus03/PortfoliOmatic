@@ -343,36 +343,52 @@ def get_portfolio_value(payload: dict = Depends(validate_token)):
 
 @app.get("/api/all_portfolios")
 def get_all_portfolios(payload: dict = Depends(validate_token)):
+    for attempt in range(5):
+        try:
+            # Query the database to get all the portfolios available 
+            response = supabase.table("Portfolios").select("*").order("id", desc=False).execute()
 
-    # Query the database to get all the portfolios available 
-    response = supabase.table("Portfolios").select("*").order("id", desc=False).execute()
-
-    # Check if data was returned
-    if not response.data or len(response.data) == 0:
-        raise HTTPException(status_code=404, detail="Portfolios not found")
-    
-    return JSONResponse(response.data)
+            # Check if data was returned
+            if not response.data or len(response.data) == 0:
+                raise HTTPException(status_code=404, detail="Portfolios not found")
+            
+            return JSONResponse(response.data)
+        except ReadError as e:
+            if "10035" in str(e):
+                time.sleep(1)
+                continue
+            else:
+                raise
 
 @app.get("/api/current_holdings")
 def get_current_holdings(payload:dict = Depends(validate_token)):
-    user_id = payload["id"]
+    for attempt in range(5):
+        try:
+            user_id = payload["id"]
 
-    # Get User's Portfolio IDs
-    user_response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
+            # Get User's Portfolio IDs
+            user_response = supabase.table("Users").select("portfolio_ids").eq("id", user_id).execute()
 
-    portfolio_ids = user_response.data[0]["portfolio_ids"]
-    portfolios = []
+            portfolio_ids = user_response.data[0]["portfolio_ids"]
+            portfolios = []
 
-    if portfolio_ids:
-        # Get Portfolio Details
-        portfolio_response = supabase.table("Portfolios").select("*").in_("id", portfolio_ids).execute()
+            if portfolio_ids:
+                # Get Portfolio Details
+                portfolio_response = supabase.table("Portfolios").select("*").in_("id", portfolio_ids).execute()
 
-        if not portfolio_response.data:
-            raise HTTPException(status_code=404, detail="Portfolios not found")    
+                if not portfolio_response.data:
+                    raise HTTPException(status_code=404, detail="Portfolios not found")    
+                
+                portfolios = portfolio_response.data
+
+            return JSONResponse(portfolios)
         
-        portfolios = portfolio_response.data
-
-    return JSONResponse(portfolios)
+        except ReadError as e:
+            if "10035" in str(e):
+                time.sleep(1)
+                continue
+            else:
+                raise
 
 @app.get("/api/current_holdings_value")
 def get_current_holdings(payload:dict = Depends(validate_token)):
