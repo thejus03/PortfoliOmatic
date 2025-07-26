@@ -96,6 +96,7 @@ function Login() {
                       className="font-space-grotesk"
                       minW="300px"
                       borderColor="blue.800"
+                      color="white"
                       _focus={{ borderColor: "blue.600" , outline: "none"}}
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -112,6 +113,7 @@ function Login() {
                       minW="300px"
                       className="font-space-grotesk"
                       borderColor="blue.800"
+                      color="white"
                       onKeyDown={handleEnter}
                       _focus={{ borderColor: "blue.600" , outline: "none"}}
                       value={password}
