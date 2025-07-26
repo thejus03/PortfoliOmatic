@@ -41,7 +41,6 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
             width="95%" 
             justifySelf="center" 
             maxWidth="1500px"
-            mb={11}
         >
 
             <Box display="flex" flexWrap="wrap" gap={4} justifyContent="center" >
@@ -83,6 +82,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                             {/* portfoliosValue[portfolio.id.toString()] */}
                             {portfoliosValue[portfolio.id.toString()] > 0 && (
                                 <Box 
+                                    data-testid={`Holdings ${portfolio.id}`}
                                     fontSize="sm"
                                     color="green.600"
                                     fontWeight="semibold"
@@ -103,6 +103,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                             <Card.Footer justifyContent="space-between" alignItems="flex-end">
                             <Popup portfolio={portfolio} title={name_and_description[portfolio.name].name}/>
                             <Button
+                                data-testid={`Card ${typeOfTrade} ${portfolio.id}`}
                                 fontWeight="semibold"
                                 borderRadius="sm"
                                 bgColor="blue.500/30"
@@ -146,7 +147,8 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                     <VStack gap={10}>
                                         <Text fontSize="xl">Enter a amount to {typeOfTrade.toLowerCase()}</Text>
 
-                                        <NumberInput.Root 
+                                        <NumberInput.Root
+                                        data-testid="Number Input" 
                                         value={tradeAmount} 
                                         onValueChange={(e) => setTradeAmount(e.value)} 
                                         width="250px" 
@@ -192,6 +194,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                 <Dialog.Root>
                                         <Dialog.Trigger asChild>
                                             <Button 
+                                            data-testid={`Drawer ${typeOfTrade} ${tradePortfolioId}`}
                                             color="blue.200" 
                                             size="xl"
                                             bgColor="blue.600/50"
@@ -209,6 +212,7 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                         <Dialog.Trigger asChild>
                                             {typeOfTrade == "Sell" ? 
                                                 (<Button 
+                                                data-testid="Liquidate"
                                                 borderWidth="3px"
                                                 color="white" 
                                                 borderColor="white" 
@@ -267,7 +271,8 @@ export default function Trade({tradePortfolioId, setTradePortfolioId, allPortfol
                                                     </Dialog.ActionTrigger>
                                                     {((tradeAmount > 0 && tradeAmount < upperBound) || liquidatePortfolio) &&
                                                         (<Dialog.ActionTrigger asChild>
-                                                            <Button 
+                                                            <Button
+                                                            data-testid={`Confirm ${typeOfTrade} ${tradePortfolioId}`} 
                                                             borderWidth="1px"
                                                             color="white" 
                                                             borderColor="white" 

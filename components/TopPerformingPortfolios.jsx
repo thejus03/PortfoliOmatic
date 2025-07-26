@@ -50,6 +50,7 @@ export default function TopPerformingPortfolios() {
                     Top Performing ETFs
                 </Heading>
                 <Box
+                    data-testid="top-etfs"
                     width="100%"
                     display="flex"
                     flexDirection="column"

@@ -107,6 +107,7 @@ function Page() {
                                 {error}
                             </Text>
                             <Button 
+                                data-testid="try-again"
                                 onClick={fetchPortfolio}
                                 variant="outline"
                                 borderWidth="2px"

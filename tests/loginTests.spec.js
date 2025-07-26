@@ -24,32 +24,34 @@ test('New user signup and ultra low risk portfolio selection flow', async ({ pag
   await page.getByRole('button', { name: /Create Account/ }).click();
 
   // Wait for navigation to risk assessment page
-  await page.waitForURL('**/account-setup/risk-assessment');
-  await expect(page).toHaveURL(/\/account-setup\/risk-assessment$/);
-
-  // Simulate answering risk questions
-  await page.getByRole('button', { name: /Next/ }).click();
+  await page.waitForURL('**/account-setup/risk-preference');
+  await expect(page).toHaveURL(/\/account-setup\/risk-preference$/);
+  await page.getByTestId('risk-next').click();
 
   // Background section
   await page.waitForURL('**/account-setup/background');
   await expect(page).toHaveURL(/\/account-setup\/background$/);
-  await page.getByRole('button', { name: /Next/ }).click();
+  await page.getByTestId('risk-next').click();
 
   // Behavioural section
   await page.waitForURL('**/account-setup/behavioural');
   await expect(page).toHaveURL(/\/account-setup\/behavioural$/);
-  await page.getByRole('button', { name: /Submit/ }).click();
+  await page.getByRole('button', { name: 'Submit' }).click();
 
   // Wait for portfolio suggestions page
   await page.waitForURL('**/account-setup/portfolio-suggestions');
-  await expect(page).toHaveURL(/\/account-setup\/portfolio-suggestions$/);
+  await expect(page).toHaveURL(/\/account-setup\/portfolio-suggestions/);
 
-  // Wait for loading state to disappear
-  await page.waitForSelector('text=Loading Portfolio Suggestions', { state: 'detached', timeout: 10000 });
+  // If "Try Again" is seen, click it
+  const refreshButton = page.getByTestId('try-again');
+  if (await refreshButton.isVisible().catch(() => false)) {
+    await refreshButton.click();
+  }
 
   // Click select portfolio
-  await page.click('text=Select Portfolio');
+  await page.getByRole('button', { name: 'Select Portfolio' }).click();
 
-  // Optional: verify what page you're on now or what happens after selection
-  console.log('Signup flow completed successfully.');
+  // Check if the correct order ticket has been generated
+  await page.waitForURL('**/trade?pid=1');
+  await page.getByRole('dialog', { name: 'Order Ticket' }).waitFor(); 
 });

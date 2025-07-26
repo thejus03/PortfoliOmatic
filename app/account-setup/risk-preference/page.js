@@ -53,7 +53,7 @@ function page() {
   const option5 = 30
 
   return (
-      <Stack direction="column" align="center" justify="center" gap="10" mb={10}>
+      <Stack direction="column" align="center" justify="center" gap="10">
           <Box className="mt-16">
               <Center>
                   <Breadcrumb.Root size="sm" border="1px solid" borderColor="blue.600" borderRadius="full" padding="2" paddingX="4" backgroundColor="blue.900" opacity={0.75}>

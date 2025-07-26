@@ -36,6 +36,7 @@ export default function LatestNews() {
             
             {news.length > 0 ? (
                 <Box 
+                    data-testid="latest-news"
                     border="1px solid"
                     borderColor="gray.800"
                     borderRadius="lg"

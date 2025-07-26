@@ -214,6 +214,7 @@ export default function Home() {
             Our Risk Assessment
           </Tabs.Trigger>
           <Tabs.Trigger
+            data-testid="Buy Tab"
             value="buy"
             px={4}
             py={2}
@@ -224,6 +225,7 @@ export default function Home() {
             Buy New Portfolios
           </Tabs.Trigger>
           <Tabs.Trigger
+            data-testid="Sell Tab"
             value="sell"
             px={4}
             py={2}

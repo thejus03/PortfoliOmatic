@@ -244,6 +244,7 @@ export default function ActivityChart( {chartData, performanceData} ) {
     return (
         <Center marginX="2rem" marginTop="1rem">
             <Box 
+                data-testid="graph"
                 width="95%"
                 border="1px solid"
                 borderColor="gray.800"
