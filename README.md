@@ -20,14 +20,13 @@ Use the test account for full feature exploration:
 
 ## 📌 Table of Contents
 
-* [Overview](##overview)
-* [Features](##features)
+* [Overview](#overview)
+* [Features](#features)
 * [Architecture](#architecture)
 * [Tech Stack](#tech-stack)
 * [Financial Models](#financial-models)
-* [Software Engineering Principles](#software-engineering-principles)
 * [Testing & Quality Assurance](#testing--quality-assurance)
-* [Project Roadmap](#project-roadmap)
+* [Local Deployment](#local-deployment)
 
 ---
 
