@@ -67,7 +67,7 @@ Inspired by leading platforms like **Syfe** and **StashAway**, PortfoliOmatic is
 
 ### Advanced Portfolio Generation
 
-* Assets curated using YAML definitions ([`assets.yaml`](https://github.com/thejus03/PortfoliOmatic/blob/main/backend/assets/))
+* Assets curated using YAML definitions ([`assets/`](https://github.com/thejus03/PortfoliOmatic/blob/main/backend/assets/))
 * Weights computed using:
 
   * **Black-Litterman Model** (for expected returns)
