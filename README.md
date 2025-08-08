@@ -258,4 +258,7 @@ NEXT_PUBLIC_FINNHUB_TOKEN='your_finnhub_token'
 5. APIs are available at `http://localhost:8000/docs`
 
 ---
-> This project is an **educational proof-of-concept** that explores how modern portfolio theory can be implemented, how to translate user risk profiling into algorithmic decision making and how a scalable and versatile platform can be built to support personalised portfolio generation.
+> This project is an **educational proof-of-concept** that explores:
+> - how modern portfolio theory can be implemented
+> - how to translate user risk profiling into algorithmic decision making
+> - how a scalable and versatile platform can be built to support personalised portfolio generation
